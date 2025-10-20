@@ -7,23 +7,16 @@ interface AnimatedPageLoaderProps {
 }
 
 const AnimatedPageLoader = ({ isLoading, children }: AnimatedPageLoaderProps) => {
-  const [showLoader, setShowLoader] = useState(true); // Always start with loader
-  const [showContent, setShowContent] = useState(false); // Never show content initially
+  const [showLoader, setShowLoader] = useState(true);
+  const [showContent, setShowContent] = useState(false);
 
   useEffect(() => {
-    if (isLoading && !showLoader) {
-      setShowLoader(true);
+    if (!isLoading) {
+      setShowContent(true);
+    } else {
       setShowContent(false);
-    } else if (!isLoading) {
-      if (showLoader) {
-        // Show content immediately when loading finishes
-        setShowContent(true);
-      } else {
-        // If loader isn't showing and we're not loading, show content immediately
-        setShowContent(true);
-      }
     }
-  }, [isLoading, showLoader]);
+  }, [isLoading]);
 
   const handleExitComplete = () => {
     setShowLoader(false);

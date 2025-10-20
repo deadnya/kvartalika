@@ -35,6 +35,7 @@ interface ApartmentCardProps {
     imageSrc: string;
     flatId: string | number;
     includeComplexButton?: boolean;
+    purpleBlockText?: string;
 }
 
 const ApartmentCard: React.FC<ApartmentCardProps> = ({
@@ -46,14 +47,22 @@ const ApartmentCard: React.FC<ApartmentCardProps> = ({
     houseComplexId,
     imageSrc,
     flatId,
-    includeComplexButton = true
+    includeComplexButton = true,
+    purpleBlockText
 }) => {
 
     const navigate = useNavigate();
 
     return (
         <div className={styles.container} onClick={() => {navigate(`/apartment/${flatId}`)}}>
-            <img src={imageSrc}></img>
+            <div className={styles.imageContainer}>
+                <img src={imageSrc}></img>
+                {purpleBlockText && (
+                    <div className={styles.purpleTextBlock}>
+                        {purpleBlockText}
+                    </div>
+                )}
+            </div>
             <div className={styles.apartmentDescription}>
                 <div className={styles.apartmentGeneralInfo}>
                     <h3 className={styles.apartmentTitle}>{roomCount}-комнатная квартира</h3>

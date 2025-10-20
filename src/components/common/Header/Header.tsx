@@ -8,11 +8,10 @@ import FindApartmentModal from "../FindApartmentModal/FindApartmentModal";
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const location = useLocation();
-
   const { isAuthenticated, logout } = useAuthStore();
-
+  
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const handleModalOpen = () => {
     setIsModalOpen(true);
   };

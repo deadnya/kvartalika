@@ -1,7 +1,7 @@
 .checkboxLabel {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
     cursor: pointer;
     user-select: none;
 }
@@ -11,10 +11,10 @@
 }
 
 .checkboxBox {
+    margin: 4px;
     width: 20px;
     height: 20px;
     border: 1px solid var(--color-gray3);
-    border-radius: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -28,8 +28,7 @@
 }
 
 .checkboxBoxChecked {
-    background-color: var(--color-purple);
-    border-color: var(--color-purple);
+    
 }
 
 .checkboxCheck {
@@ -50,8 +49,8 @@
 
 .checkboxSquare {
     display: block;
-    width: 6px;
-    height: 6px;
+    width: 14px;
+    height: 14px;
     background-color: var(--color-purple);
     border-radius: 1px;
     animation: checkAnimation 0.2s ease;

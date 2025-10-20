@@ -4,6 +4,7 @@ import { Input } from "../Input/Input";
 import styles from "./FindApartmentModal.module.css"
 
 import CloseIcon from "../../../assets/icons/close.svg?react"
+import { Link } from "react-router-dom";
 
 interface FindApartmentModalProps {
     onClose?: () => void;
@@ -177,7 +178,7 @@ const FindApartmentModal = ({ onClose }: FindApartmentModalProps) => {
                         </div>
 
                         <div className={styles.bottomContainer}>
-                            <p className={styles.bottomText}>Нажимая "Отправить заявку", вы соглашаетесь с <span className={styles.bottomTextLink}>Политикой конфиденциальности</span></p>
+                            <p className={styles.bottomText}>Нажимая "Отправить заявку", вы соглашаетесь с <Link to="/privacy" className={styles.bottomTextLink}>Политикой конфиденциальности</Link></p>
                             <div className={styles.buttonContainer}>
                                 <Button
                                     includeArrow={true}

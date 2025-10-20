@@ -1,0 +1,88 @@
+.sortingVariantContainer {
+    position: relative;
+    display: inline-block;
+}
+
+.sortingButton {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: transparent;
+    border: 0px solid #e0e0e0;
+    cursor: pointer;
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0%;
+    color: var(--color-purple-main);
+    transition: all 0.2s ease;
+}
+
+.buttonText {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.arrow {
+    font-size: 12px;
+    font-weight: bold;
+    color: #666;
+}
+
+.arrow svg {
+    height: 20px;
+    width: 20px;
+}
+
+.arrow path {
+    stroke: var(--color-gray2);
+}
+
+.sortingDropdown {
+    width: calc(100% + 24px);
+    position: absolute;
+    top: calc(100% + 4px);
+    left: -12px;
+    right: 0;
+    background-color: white;
+    border: 1px solid var(--color-gray3);
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.sortingOption {
+    display: block;
+    width: 100%;
+    padding: 10px 12px;
+    background-color: white;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0%;
+    color: var(--color-purple-main);
+    transition: background-color 0.2s ease;
+}
+
+.sortingOption:hover {
+    background-color: #7B2CBF22;
+}
+
+.sortingOption.active {
+    color: var(--color-purple);
+}
+
+.sortingOption.active path {
+    stroke: var(--color-purple);
+}
+
+.optionText {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}

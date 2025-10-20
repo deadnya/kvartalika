@@ -1,0 +1,193 @@
+.container {
+    margin-top: 80px;
+    background-color: white;
+    font-family: var(--font-family-open-sans);
+}
+
+.titleContainer {
+    padding-top: 40px;
+    padding-bottom: 32px;
+}
+
+.title {
+    padding: 0px 208px;
+    font-family: var(--font-family-montserrat);
+    font-weight: 500;
+    font-style: Medium;
+    font-size: 56px;
+    line-height: 72px;
+    letter-spacing: -5%;
+}
+
+.content {
+    display: flex;
+    flex-direction: row;
+    padding-right: 208px;
+    padding-bottom: 100px;
+    padding-left: 208px;
+    gap: 40px;
+}
+
+.contentLeft {
+    width: 996px;
+    display: flex;
+    flex-direction: column;
+}
+
+.galleryContainer {
+    width: 996px;
+    height: 744px;
+    position: relative;
+}
+
+.galleryInfoContainer {
+    position: absolute;
+    top: 24px;
+    left: 0px;
+    padding-top: 10px;
+    padding-right: 16px;
+    padding-bottom: 10px;
+    padding-left: 32px;
+    gap: 8px;
+    background: #7B2CBF99;
+    display: flex;
+    align-items: center;
+    z-index: 10;
+}
+
+.galleryInfoContainerText {
+    color: white;
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0%;
+}
+
+.descriptionContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    padding: 32px;
+    box-shadow: 0px 0px 12px 0px #12121224;
+}
+
+.topDescriptionContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.descriptionText {
+    color: var(--color-gray2);
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0%;
+}
+
+.goodThings {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+}
+
+.goodThing {
+    background-color: #6C757D26;
+    display: flex;
+    flex-direction: row;
+    padding-top: 6px;
+    padding-right: 16px;
+    padding-bottom: 6px;
+    padding-left: 10px;
+    gap: 8px;
+    align-items: center;
+}
+
+.goodThing path {
+    stroke: var(--color-purple);
+}
+
+.goodThing svg {
+    height: 20px;
+    width: 20px;
+}
+
+.bottomDescriptionContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.bottomDescriptionHeader {
+    color: var(--color-purple-main);
+    font-family: var(--font-family-montserrat);
+    font-weight: 700;
+    font-style: Bold;
+    font-size: 24px;
+    line-height: 32px;
+    letter-spacing: 0%;
+}
+
+.apartmentProps {
+    display: flex;
+    flex-direction: column;
+}
+
+.apartmentProp {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.apartmentProp:not(:last-child) {
+    border-bottom: 1px solid var(--color-gray);
+    padding-bottom: 20px;
+}
+
+.apartmentProp:not(:first-child) {
+    padding-top: 20px;
+}
+
+.apartmentPropLabel {
+    color: var(--color-gray2);
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0%;
+}
+
+.apartmentPropValue {
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0%;
+}
+
+.contentRight {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    width: 468px;
+}
+
+.buttonContainer {
+    box-shadow: 0px 0px 12px 0px #12121224;
+    display: flex;
+    flex-direction: column;
+    padding-top: 24px;
+    padding-right: 20px;
+    padding-bottom: 24px;
+    padding-left: 20px;
+    gap: 16px;
+}
+
+.apartmentVariants {
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0px 0px 12px 0px #12121224;
+    gap: 20px;
+}

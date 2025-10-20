@@ -1,5 +1,5 @@
 import styles from "./RangeSelect.module.css"
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 
 interface RangeSelectProps {
     minValue?: number;
@@ -27,6 +27,11 @@ export const RangeSelect = ({
     const [fromValue, setFromValue] = useState(minValue);
     const [toValue, setToValue] = useState(maxValue);
     const containerRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        setFromValue(minValue);
+        setToValue(maxValue);
+    }, [minValue, maxValue]);
 
     const handleFromChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = Math.min(Number(e.target.value), toValue - step);

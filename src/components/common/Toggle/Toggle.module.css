@@ -1,0 +1,63 @@
+.toggleWrapper {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.labelText {
+    font-family: var(--font-family-open-sans);
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0%;
+}
+
+.toggle {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 48px;
+    height: 24px;
+    background-color: #e0e0e0;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    padding: 0;
+    transition: background-color 0.15s ease;
+    overflow: visible;
+}
+
+.toggle.on {
+    background-color: var(--color-purple);
+}
+
+.toggle.off {
+    background-color: var(--color-gray);
+}
+
+.slider {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background-color: white;
+    border-radius: 9px;
+    transition: transform 0.15s ease;
+    left: 3px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+}
+
+.toggle.on .slider {
+    transform: translateX(24px) translateY(-50%);
+}
+
+.toggle:hover {
+    opacity: 0.9;
+}
+
+.toggle:active {
+    transform: scale(0.98);
+}

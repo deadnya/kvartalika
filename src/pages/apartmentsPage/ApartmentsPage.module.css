@@ -93,3 +93,156 @@
     flex-direction: row;
     gap: 80px;
 }
+
+.checkboxContainer {
+    display: flex;
+    flex-direction: row;
+    gap: 32px;
+}
+
+.buttonsContainer {
+    display: flex;
+    flex-direction: row;
+    gap: 27px;
+    align-items: center;
+}
+
+.clearFiltersContainer {
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+    color: var(--color-gray2);
+    align-items: center;
+    transition: 0.15s;
+}
+
+.clearFiltersContainer:hover {
+    color: var(--color-purple-main);
+    cursor: pointer;
+}
+
+.buttonsContainer path {
+    transition: 0.15s;
+    stroke: var(--color-gray2);
+}
+
+.buttonsContainer:hover path {
+    stroke: var(--color-purple-main);
+}
+
+.buttonsContainer svg {
+    height: 20px;
+    width: 20px;
+}
+
+.clearFiltersText {
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0%;
+}
+
+.apartmentVariants {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    padding-top: 80px;
+    padding-right: 208px;
+    padding-bottom: 100px;
+    padding-left: 208px;
+    gap: 80px;
+    position: relative;
+    overflow: hidden;
+}
+
+.apartmentVariants::before {
+    content: '';
+    position: absolute;
+    right: -800px;
+    top: 10%;
+    width: 1500px;
+    height: 900px;
+    background-color: #7B2CBF1A;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.apartmentVariants::after {
+    content: '';
+    position: absolute;
+    left: -800px;
+    top: 40%;
+    width: 1500px;
+    height: 900px;
+    background-color: #7B2CBF1A;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.apartmentVariantsTriangleOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    background-color: var(--color-background);
+    clip-path: polygon(0% 0%, 0% 100%, 100% 0%);
+    pointer-events: none;
+    z-index: 3;
+}
+
+.apartmentVariantsBlurLeft {
+    position: absolute;
+    right: -800px;
+    top: 70%;
+    width: 1500px;
+    height: 900px;
+    background-color: #7B2CBF1A;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.sortingAndApartCount {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    position: relative;
+    z-index: 10;
+}
+
+.sortingText {
+    color: var(--color-gray2);
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0%;
+}
+
+.sortingContainer {
+    display: flex;
+    flex-direction: row;
+    gap: 32px;
+}
+
+.sortingVariants {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.apartmentsContainer {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    column-gap: 24px;
+    row-gap: 40px;
+    position: relative;
+    z-index: 2;
+}

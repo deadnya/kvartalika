@@ -13,7 +13,7 @@ const LayoutsPage = lazy(() => import("./pages/LayoutsPage.tsx"));
 const LayoutPage = lazy(() => import("./pages/LayoutPage.tsx"));
 const ApartmentComplexesPage = lazy(() => import("./pages/apartmentComplexesPage/ApartmentComplexesPage.tsx"));
 const ComplexPage = lazy(() => import("./pages/apartmentComplexPage/ApartmentComplexPage.tsx"));
-const ApartmentPage = lazy(() => import("./pages/ApartmentPage.tsx"));
+const ApartmentPage = lazy(() => import("./pages/apartmentPage/ApartmentPage.tsx"));
 const AuthPage = lazy(() => import("./pages/AuthPage.tsx"));
 const AdminPage = lazy(() => import("./components/admin/AdminPage.tsx"));
 const ContentManagementPage = lazy(
@@ -27,6 +27,7 @@ import { useUIStore } from "./store/ui.store.ts";
 import { useFlatsStore } from "./store/flats.store.ts";
 import AboutUsPage from "./pages/aboutUsPage/AboutUsPage.tsx";
 import TermsOfServicePage from "./pages/termsOfServicePage/TermsOfServicePage.tsx";
+import NotFoundPage from "./pages/notFoundPage/NotFoundPage.tsx";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -49,11 +50,6 @@ const InnerApp = () => {
   const loadAboutUsInfo = useUIStore((state) => state.loadAboutUsInfo);
 
   const loadAllData = useFlatsStore((state) => state.loadAllData);
-  const { 
-    isLoadingCategories, 
-    isLoadingHomePageFlats, 
-    isLoadingHomes
-  } = useFlatsStore();
 
   const { role, isAuthenticated } = useAuthStore();
   const location = useLocation();
@@ -74,6 +70,10 @@ const InnerApp = () => {
 
     loadData().then(async () => {
       await loadAllData(true);
+      
+      // Add a delay to let images actually load and render
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
       setLoading("global", false);
     });
   }, [
@@ -87,11 +87,6 @@ const InnerApp = () => {
   const shouldShowLoader =
     !["/auth", "/admin", "/content"].includes(location.pathname) &&
     (globalLoading ||
-      (location.pathname === "/" && (
-        isLoadingCategories || 
-        isLoadingHomePageFlats || 
-        isLoadingHomes
-      )) ||
       (pageInfo?.published &&
         (!isAuthenticated ||
           (role !== "ADMIN" && role !== "CONTENT_MANAGER"))));
@@ -137,19 +132,8 @@ const InnerApp = () => {
                 <Route path="/privacy" element={<PrivacyPage />} />
                 <Route path="/termsofservice" element={<TermsOfServicePage />} />
                 <Route path="/about" element={<AboutUsPage />} />
-                <Route
-                  path="*"
-                  element={
-                    <div className="flex items-center justify-center min-h-[400px]">
-                      <div className="text-center">
-                        <h1 className="text-4xl font-bold text-surface-900 mb-4">
-                          404
-                        </h1>
-                        <p className="text-surface-600">Страница не найдена</p>
-                      </div>
-                    </div>
-                  }
-                />
+                
+                <Route path="*" element={<NotFoundPage />}/>
               </Routes>
             </Suspense>
           </main>

@@ -1,4 +1,3 @@
-import { KvartalikaLogo } from "../../icons/Logo.tsx";
 import styles from "./PageLoader.module.css";
 import { useEffect, useState } from "react";
 
@@ -20,7 +19,7 @@ const PageLoader = ({ isLoading, onExitComplete }: PageLoaderProps) => {
     if (isExiting) {
       const timer = setTimeout(() => {
         onExitComplete?.();
-      }, 2000);
+      }, 1000);
 
       return () => {
         clearTimeout(timer);
@@ -30,21 +29,11 @@ const PageLoader = ({ isLoading, onExitComplete }: PageLoaderProps) => {
 
   return (
     <div className={`${styles.container} ${isExiting ? styles.exiting : ''}`}>
-      <div className={`${styles.content} ${isExiting ? styles.exiting : ''}`}>
-        <div className={styles.logoSection}>
-          <div className={styles.logoContainer}>
-            <KvartalikaLogo width="64" height="64" />
-          </div>
-          <h2 className={styles.title}>Кварталика</h2>
-          <p className={styles.subtitle}>Загружаем для вас лучшие предложения</p>
-        </div>
-
-        <div className={styles.loadingDots}>
-          <div className={styles.dot}></div>
-          <div className={styles.dot}></div>
-          <div className={styles.dot}></div>
-        </div>
-      </div>
+      <img 
+        src="/images/Cover.png" 
+        alt="Cover" 
+        className={`${styles.coverImage} ${isExiting ? styles.exiting : ''}`}
+      />
     </div>
   );
 };

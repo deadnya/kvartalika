@@ -1,0 +1,91 @@
+.paginationContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.chevron {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: transparent;
+    border: 0px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.chevron:hover:not(:disabled) path {
+    stroke: var(--color-purple);
+}
+
+.chevron:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.chevron svg {
+    width: 40px;
+    height: 40px;
+}
+
+.chevron path {
+    stroke: var(--color-main);
+}
+
+.pagesContainer {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.pageButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    background-color: white;
+    border: 1px solid var(--color-gray);
+    cursor: pointer;
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 16px;
+    line-height: 22px;
+    letter-spacing: -0.6px;
+    text-align: center;
+    vertical-align: middle;
+    color: var(--color-main);
+    transition: all 0.15s ease;
+}
+
+.pageButton:hover:not(:disabled):not(.active) {
+    border-color: var(--color-purple);
+    color: var(--color-purple);
+}
+
+.pageButton.active {
+    background-color: #7B2CBF;
+    border-color: #7B2CBF;
+    color: white;
+    font-weight: 600;
+}
+
+.pageButton.ellipsis {
+    border: none;
+    background-color: transparent;
+    cursor: default;
+    color: #999;
+}
+
+.pageButton.ellipsis:hover {
+    background-color: transparent;
+    border: none;
+}
+
+.pageButton:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}

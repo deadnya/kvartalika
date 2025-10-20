@@ -10,6 +10,7 @@
 
   --color-background: #fafbfc;
   --color-main: #121212;
+  --color-main-55: rgba(18, 18, 18, 0.55);
   --color-main-45: rgba(18, 18, 18, 0.45);
   --color-main-40: rgba(18, 18, 18, 0.40);
   --color-main-12: rgba(18, 18, 18, 0.12);
@@ -22,6 +23,8 @@
   --color-purple-active: #53078E;
   --color-purple90: #8F4CC9;
   --color-purple-main: #444057;
+  --color-green-light: #D8F3DC;
+  --color-green: #2D6A4F;
 
   --color-primary-50: #f9fafb;
   --color-primary-100: #f3f4f6;
