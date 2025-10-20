@@ -1,4 +1,4 @@
-import {usePhotoStore} from '../store/usePhotoStore';
+import {usePhotoStore} from '../store/usePhotoStore.ts';
 
 type PhotoFieldMap<T> = {
   [K in keyof T]?: 'single' | 'array';

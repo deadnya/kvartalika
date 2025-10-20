@@ -1,13 +1,18 @@
-import {useAuthStore} from "../../store/auth.store.ts";
-import type {ReactNode} from "react";
+import { useAuthStore } from "../../store/auth.store.ts";
+import type { ReactNode } from "react";
 
 interface HomePageManagerProps {
   onCancel: () => void;
   children: ReactNode;
+  title: string;
 }
 
-const HomePageManager = ({onCancel, children}: HomePageManagerProps) => {
-  const {role, isAuthenticated} = useAuthStore();
+const HomePageManager = ({
+  onCancel,
+  children,
+  title,
+}: HomePageManagerProps) => {
+  const { role, isAuthenticated } = useAuthStore();
 
   if (!isAuthenticated || !role || role === "CLIENT") {
     return null;
@@ -17,7 +22,7 @@ const HomePageManager = ({onCancel, children}: HomePageManagerProps) => {
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-200">
       <div className="bg-white rounded-lg p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">Редактировать главную страницу</h2>
+          <h2 className="text-2xl font-bold">{title}</h2>
           <button
             onClick={onCancel}
             className="text-gray-500 hover:text-gray-700"

@@ -1,7 +1,7 @@
-import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
-import type { BidRequest, RequestCreate } from '../services'
+import type { BidRequest, RequestCreate } from "../services";
 import {
   addSocialMedia,
   createRequest,
@@ -9,8 +9,10 @@ import {
   getPageInfo,
   getSocialMedia,
   updatePageInfo,
-  updateSocialMedia
-} from '../services'
+  getAboutUsInfo,
+  updateAboutUsInfo,
+  updateSocialMedia,
+} from "../services";
 
 export interface BidForm {
   id: number;
@@ -28,10 +30,17 @@ export interface PageInfo {
   email?: string;
   footerDescription?: string;
   title?: string;
-  address?: string
+  address?: string;
   description?: string;
   published?: boolean;
-  privacy?: string
+  privacy?: string;
+}
+
+export interface AboutUsInfo {
+  text1?: string;
+  text2?: string;
+  text3?: string;
+  text4?: string;
 }
 
 export interface SocialMedia {
@@ -42,7 +51,7 @@ export interface SocialMedia {
 
 export interface Notification {
   id: string;
-  type: 'success' | 'error' | 'warning' | 'info';
+  type: "success" | "error" | "warning" | "info";
   title: string;
   message?: string;
   duration?: number;
@@ -65,7 +74,8 @@ export interface UIState {
 
     mainPage: boolean;
     social: boolean;
-    bidManager: boolean
+    bidManager: boolean;
+    aboutUsManager: boolean;
   };
 
   modalData: {
@@ -93,6 +103,8 @@ export interface UIState {
   pageInfo: PageInfo;
   socialMediaList: SocialMedia[];
 
+  aboutUsInfo: AboutUsInfo;
+
   notifications: Notification[];
 
   errors: {
@@ -101,8 +113,8 @@ export interface UIState {
 }
 
 export interface UIActions {
-  openModal: (modal: keyof UIState['modals'], data?: unknown) => void;
-  closeModal: (modal: keyof UIState['modals']) => void;
+  openModal: (modal: keyof UIState["modals"], data?: unknown) => void;
+  closeModal: (modal: keyof UIState["modals"]) => void;
   closeAllModals: () => void;
 
   openGallery: (images: string[], index?: number) => void;
@@ -110,7 +122,7 @@ export interface UIActions {
 
   openImagePreview: (image: string) => void;
 
-  showConfirmDialog: (config: UIState['modalData']['confirmDialog']) => void;
+  showConfirmDialog: (config: UIState["modalData"]["confirmDialog"]) => void;
   hideConfirmDialog: () => void;
 
   // Bid form
@@ -119,11 +131,15 @@ export interface UIActions {
   submitBid: () => Promise<boolean>;
 
   // Loading states
-  setLoading: (key: keyof UIState['loading'], loading: boolean) => void;
+  setLoading: (key: keyof UIState["loading"], loading: boolean) => void;
 
   // Homepage
   loadPageInfo: () => Promise<void>;
   updatePageInfo: (newPageInfo: PageInfo) => Promise<void>;
+
+  // About us
+  loadAboutUsInfo: () => Promise<void>;
+  updateAboutUsInfo: (newAboutUsInfo: AboutUsInfo) => Promise<void>;
 
   //Media
   loadSocialMediaList: () => Promise<void>;
@@ -131,7 +147,7 @@ export interface UIActions {
   addSocialMediaList: (media: SocialMedia) => Promise<void>;
   deleteSocialMediaList: (id: number) => Promise<void>;
 
-  addNotification: (notification: Omit<Notification, 'id'>) => void;
+  addNotification: (notification: Omit<Notification, "id">) => void;
   removeNotification: (id: string) => void;
   clearNotifications: () => void;
 
@@ -140,21 +156,20 @@ export interface UIActions {
 }
 
 export const initialBidForm: BidRequest = {
-  name: '',
-  surname: '',
-  patronymic: '',
-  phone: '',
-  email: '',
+  name: "",
+  surname: "",
+  patronymic: "",
+  phone: "",
+  email: "",
   createdAt: Date.now(),
   isChecked: false,
-}
+};
 
-const generateId = () => Math.random().toString(36).substring(2, 9)
+const generateId = () => Math.random().toString(36).substring(2, 9);
 
-export const useUIStore = create<
-  UIState & UIActions
->()(
-  persist((set, get) => ({
+export const useUIStore = create<UIState & UIActions>()(
+  persist(
+    (set, get) => ({
       modals: {
         bid: false,
         manager: false,
@@ -167,7 +182,8 @@ export const useUIStore = create<
 
         mainPage: false,
         social: false,
-        bidManager: false
+        bidManager: false,
+        aboutUsManager: false,
       },
 
       modalData: {},
@@ -175,15 +191,22 @@ export const useUIStore = create<
       bidForm: initialBidForm,
 
       pageInfo: {
-        phone: '',
-        email: '',
-        footerDescription: '',
-        title: '',
-        address: '',
-        description: '',
-        published: true
+        phone: "",
+        email: "",
+        footerDescription: "",
+        title: "",
+        address: "",
+        description: "",
+        published: true,
       },
       socialMediaList: [],
+
+      aboutUsInfo: {
+        text1: "",
+        text2: "",
+        text3: "",
+        text4: "",
+      },
 
       loading: {
         global: false,
@@ -196,189 +219,229 @@ export const useUIStore = create<
       errors: {},
 
       openModal: (modal, data) => {
-        set(state => ({
+        set((state) => ({
           modals: { ...state.modals, [modal]: true },
           modalData: data ? { ...state.modalData, ...data } : state.modalData,
-        }))
+        }));
       },
 
       closeModal: (modal) => {
-        set(state => ({
+        set((state) => ({
           modals: { ...state.modals, [modal]: false },
-        }))
+        }));
       },
 
       loadPageInfo: async () => {
-        const { setLoading, addNotification } = get()
-        setLoading('global', true)
+        const { setLoading, addNotification } = get();
+        setLoading("global", true);
         try {
-          const info = await getPageInfo()
-          set({ pageInfo: info })
+          const info = await getPageInfo();
+          set({ pageInfo: info });
         } catch {
           addNotification({
-            type: 'error',
-            title: 'Ошибка',
-            message: 'Не удалось загрузить настройки страницы',
+            type: "error",
+            title: "Ошибка",
+            message: "Не удалось загрузить настройки страницы",
             duration: 2500,
-          })
+          });
+        }
+      },
+
+      loadAboutUsInfo: async () => {
+        const { setLoading, addNotification } = get();
+        setLoading("global", true);
+
+        try {
+          const info = await getAboutUsInfo();
+          set({ aboutUsInfo: info });
+        } catch {
+          addNotification({
+            type: "error",
+            title: "Ошибка",
+            message: "Не удалось загрузить секцию 'О нас'",
+            duration: 2500,
+          });
+        } finally {
+          setLoading("global", false);
+        }
+      },
+      updateAboutUsInfo: async (newAboutUsInfo: AboutUsInfo) => {
+        const { setLoading, addNotification } = get();
+        setLoading("upload", true);
+
+        try {
+          await updateAboutUsInfo(newAboutUsInfo);
+          set({ aboutUsInfo: newAboutUsInfo });
+        } catch {
+          addNotification({
+            type: "error",
+            title: "Ошибка",
+            message: "Не удалось обновить настройки страницы",
+            duration: 2500,
+          });
+        } finally {
+          setLoading("upload", false);
         }
       },
 
       loadSocialMediaList: async () => {
-        const { addNotification } = get()
+        const { addNotification } = get();
         try {
-          const list = await getSocialMedia()
-          set({ socialMediaList: list })
+          const list = await getSocialMedia();
+          set({ socialMediaList: list });
         } catch {
           addNotification({
-            type: 'error',
-            title: 'Ошибка',
-            message: 'Не удалось загрузить соцсети',
+            type: "error",
+            title: "Ошибка",
+            message: "Не удалось загрузить соцсети",
             duration: 2500,
-          })
+          });
         }
       },
 
       updateSocialMediaList: async (list: SocialMedia[]) => {
-        const { setLoading, addNotification } = get()
-        setLoading('upload', true)
+        const { setLoading, addNotification } = get();
+        setLoading("upload", true);
 
         try {
-          await updateSocialMedia(list)
+          await updateSocialMedia(list);
         } catch {
           addNotification({
-            type: 'error',
-            title: 'Ошибка',
-            message: 'Не удалось обновить медиа',
+            type: "error",
+            title: "Ошибка",
+            message: "Не удалось обновить медиа",
             duration: 2500,
-          })
+          });
         } finally {
-          setLoading('upload', false)
+          setLoading("upload", false);
         }
       },
 
       addSocialMediaList: async (media: SocialMedia) => {
-        const { setLoading, addNotification } = get()
-        setLoading('upload', true)
+        const { setLoading, addNotification } = get();
+        setLoading("upload", true);
 
         try {
-          await addSocialMedia(media)
-          set({ socialMediaList: [...get().socialMediaList, media] })
+          await addSocialMedia(media);
+          set({ socialMediaList: [...get().socialMediaList, media] });
         } catch {
           addNotification({
-            type: 'error',
-            title: 'Ошибка',
-            message: 'Не удалось обновить медиа',
+            type: "error",
+            title: "Ошибка",
+            message: "Не удалось обновить медиа",
             duration: 2500,
-          })
+          });
         } finally {
-          setLoading('upload', false)
+          setLoading("upload", false);
         }
       },
 
       deleteSocialMediaList: async (id: number) => {
-        const { setLoading, addNotification } = get()
-        setLoading('upload', true)
+        const { setLoading, addNotification } = get();
+        setLoading("upload", true);
 
         try {
-          await deleteSocialMedia(id)
+          await deleteSocialMedia(id);
         } catch {
           addNotification({
-            type: 'error',
-            title: 'Ошибка',
-            message: 'Не удалось удалить медиа',
+            type: "error",
+            title: "Ошибка",
+            message: "Не удалось удалить медиа",
             duration: 2500,
-          })
+          });
         } finally {
-          setLoading('upload', false)
+          setLoading("upload", false);
         }
       },
 
       updatePageInfo: async (newPageInfo: PageInfo) => {
-        const { setLoading, addNotification } = get()
-        setLoading('upload', true)
+        const { setLoading, addNotification } = get();
+        setLoading("upload", true);
 
         try {
-          await updatePageInfo(newPageInfo)
-          set({ pageInfo: newPageInfo })
+          await updatePageInfo(newPageInfo);
+          set({ pageInfo: newPageInfo });
         } catch {
           addNotification({
-            type: 'error',
-            title: 'Ошибка',
-            message: 'Не удалось обновить настройки страницы',
+            type: "error",
+            title: "Ошибка",
+            message: "Не удалось обновить настройки страницы",
             duration: 2500,
-          })
+          });
         } finally {
-          setLoading('upload', false)
+          setLoading("upload", false);
         }
       },
 
       closeAllModals: () => {
-        set(state => ({
-          modals: Object.keys(state.modals).reduce((acc, key) => ({
-            ...acc,
-            [key]: false,
-          }), {} as UIState['modals']),
+        set((state) => ({
+          modals: Object.keys(state.modals).reduce(
+            (acc, key) => ({
+              ...acc,
+              [key]: false,
+            }),
+            {} as UIState["modals"],
+          ),
           modalData: {},
-        }))
+        }));
       },
 
       // Gallery actions
       openGallery: (images, index = 0) => {
-        set(state => ({
+        set((state) => ({
           modals: { ...state.modals, gallery: true },
           modalData: {
             ...state.modalData,
             galleryImages: images,
-            galleryIndex: index
+            galleryIndex: index,
           },
-        }))
+        }));
       },
 
       setGalleryIndex: (index) => {
-        set(state => ({
+        set((state) => ({
           modalData: { ...state.modalData, galleryIndex: index },
-        }))
+        }));
       },
 
       // Image preview
       openImagePreview: (image) => {
-        set(state => ({
+        set((state) => ({
           modals: { ...state.modals, imagePreview: true },
           modalData: { ...state.modalData, previewImage: image },
-        }))
+        }));
       },
 
       // Confirm dialog
       showConfirmDialog: (config) => {
-        set(state => ({
+        set((state) => ({
           modals: { ...state.modals, confirmDialog: true },
           modalData: { ...state.modalData, confirmDialog: config },
-        }))
+        }));
       },
 
       hideConfirmDialog: () => {
-        set(state => ({
+        set((state) => ({
           modals: { ...state.modals, confirmDialog: false },
           modalData: { ...state.modalData, confirmDialog: undefined },
-        }))
+        }));
       },
 
       // bid form
       setBidForm: (form) => {
-        set(state => ({
+        set((state) => ({
           bidForm: { ...state.bidForm, ...form },
-        }))
+        }));
       },
 
       resetBidForm: () => {
-        set({ bidForm: initialBidForm })
+        set({ bidForm: initialBidForm });
       },
 
       submitBid: async () => {
-        const { bidForm, addNotification, setLoading } = get()
+        const { bidForm, addNotification, setLoading } = get();
 
-        setLoading('bid', true)
+        setLoading("bid", true);
 
         try {
           const requestData: RequestCreate = {
@@ -387,89 +450,89 @@ export const useUIStore = create<
             patronymic: bidForm.patronymic,
             phone: bidForm.phone,
             email: bidForm.email,
-          }
+          };
 
-          await createRequest(requestData)
+          await createRequest(requestData);
 
           addNotification({
-            type: 'success',
-            title: 'Заявка принята!',
-            message: 'С вами свяжутся в течение 2-х рабочих дней',
+            type: "success",
+            title: "Заявка принята!",
+            message: "С вами свяжутся в течение 2-х рабочих дней",
             duration: 3500,
-          })
+          });
 
-          get().resetBidForm()
-          setTimeout(() => get().closeModal('bid'), 3500)
-          setLoading('bid', false)
+          get().resetBidForm();
+          setTimeout(() => get().closeModal("bid"), 3500);
+          setLoading("bid", false);
 
-          return true
+          return true;
         } catch {
           addNotification({
-            type: 'error',
-            title: 'Ошибка отправки',
-            message: 'Не удалось отправить заявку',
+            type: "error",
+            title: "Ошибка отправки",
+            message: "Не удалось отправить заявку",
             duration: 1500,
-          })
+          });
 
-          setLoading('bid', false)
-          return false
+          setLoading("bid", false);
+          return false;
         }
       },
 
       setLoading: (key, loadingFlag) => {
-        set(state => ({
+        set((state) => ({
           loading: { ...state.loading, [key]: loadingFlag },
-        }))
+        }));
       },
 
       addNotification: (notification) => {
-        const id = generateId()
+        const id = generateId();
         const newNotification: Notification = {
           id,
           duration: 5000,
           ...notification,
-        }
+        };
 
-        set(state => ({
+        set((state) => ({
           notifications: [...state.notifications, newNotification],
-        }))
+        }));
 
         if (newNotification.duration && newNotification.duration > 0) {
           setTimeout(() => {
-            get().removeNotification(id)
-          }, newNotification.duration)
+            get().removeNotification(id);
+          }, newNotification.duration);
         }
       },
 
       removeNotification: (id) => {
-        set(state => ({
-          notifications: state.notifications.filter(n => n.id !== id),
-        }))
+        set((state) => ({
+          notifications: state.notifications.filter((n) => n.id !== id),
+        }));
       },
 
       clearNotifications: () => {
-        set({ notifications: [] })
+        set({ notifications: [] });
       },
 
       setError: (key, error) => {
-        set(state => ({
+        set((state) => ({
           errors: { ...state.errors, [key]: error },
-        }))
+        }));
       },
 
       clearErrors: () => {
-        set({ errors: {} })
-      }
+        set({ errors: {} });
+      },
     }),
     {
-      name: 'ui-store',
+      name: "ui-store",
       partialize: (state) => ({
         modals: state.modals,
         bidForm: state.bidForm,
         socialMediaList: state.socialMediaList,
         pageInfo: state.pageInfo,
-        loading: state.loading
+        loading: state.loading,
       }),
-    }
-  )
-)
+    },
+  ),
+);

@@ -1,0 +1,110 @@
+.card {
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+    font-family: var(--font-family-open-sans);
+}
+
+.complexDescription {
+    white-space: pre-wrap;
+    color: var(--color-purple-main);
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 32px;
+    letter-spacing: -0.6px;
+    vertical-align: middle;
+}
+
+.complexLeftContainer {
+    display: flex;
+    flex-direction: column;
+    width: 597px;
+    height: 600px;
+    justify-content: space-between;
+}
+
+.complexData {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.complexTopData {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 30px;
+    gap: 16px;
+    border-bottom: 1px solid var(--color-gray)
+}
+
+.complexTitle {
+    font-family: var(--font-family-montserrat);
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 40px;
+    line-height: 100%;
+    letter-spacing: -5%;
+    text-transform: uppercase;
+    color: var(--color-purple);
+}
+
+.complexTopParams {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.complexTopParam {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.complexTopParamText {
+    color: var(--color-purple-main);
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 24px;
+    letter-spacing: -0.6px;
+    vertical-align: middle;
+}
+
+.complexTopParam path {
+    stroke: #A9B3BD;
+}
+
+.fillFix path {
+    fill: #A9B3BD;
+}
+
+.complexButtons {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.imageContainer {
+    position: relative;
+    width: 1075px;
+    height: 600px;
+}
+
+.image {
+    object-fit: cover;
+    object-position: center;
+    width: 1075px;
+    height: 600px;
+}
+
+.finishDateContainer {
+    backdrop-filter: blur(8px);
+    position: absolute;
+    left: 24px;
+    top: 24px;
+    background-color: var(--color-main-45);
+    padding-top: 13px;
+    padding-right: 20px;
+    padding-bottom: 13px;
+    padding-left: 20px;
+    color: white;
+}

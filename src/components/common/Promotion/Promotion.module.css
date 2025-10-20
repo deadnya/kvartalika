@@ -1,0 +1,39 @@
+.promotion {
+    display: flex;
+    flex-direction: column;
+    width: 737px;
+    background-color: var(--color-background);
+    box-shadow: 0px 0px 12px var(--color-main-8);
+}
+
+.image {
+    height: 300px;
+    object-fit: cover;
+}
+
+.promotionDetails {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 24px;
+}
+
+.promotionText {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.promotionTitle {
+    color: var(--color-purple);
+    font-family: var(--font-family-montserrat);
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 32px;
+    letter-spacing: 0%;
+}
+
+.promotionDescription {
+    font-size: 16px;
+    line-height: 24px;
+}

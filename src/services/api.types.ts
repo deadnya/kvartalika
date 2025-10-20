@@ -1,5 +1,5 @@
-import type { UserRole } from '../store/auth.store.ts'
-import type { TABS } from './index.ts'
+import type { UserRole } from "../store/auth.store.ts";
+import type { TABS } from "./index.ts";
 
 export interface LoginRequest {
   username?: string;
@@ -53,9 +53,9 @@ export interface CategoryRequest {
 }
 
 export const defaultCategory = {
-  name: '',
+  name: "",
   isOnMainPage: false,
-}
+};
 
 export interface DescriptionRequest {
   title: string;
@@ -63,12 +63,50 @@ export interface DescriptionRequest {
   type?: string;
 }
 
+export interface VariantRequest {
+  flatId?: number;
+  id?: number;
+  area: number;
+  price: number;
+  floor: number;
+  status: string;
+  hasDecoration?: boolean;
+}
+
+export interface CreateFlatVariantRequest {
+  flatId: number;
+  area: number;
+  price: number;
+  floor: number;
+  status: "AVAILABLE" | "RESERVED" | "SOLD";
+  hasDecoration: boolean;
+}
+
+export interface UpdateFlatVariantRequest {
+  id: number;
+  area: number;
+  price: number;
+  floor: number;
+  status: "AVAILABLE" | "RESERVED" | "SOLD";
+  hasDecoration: boolean;
+}
+
+export interface FlatVariantDto {
+  flatId: number;
+  id: number;
+  area: number;
+  price: number;
+  floor: number;
+  status: "AVAILABLE" | "RESERVED" | "SOLD";
+  hasDecoration: boolean;
+}
+
 export interface FlatRequest {
   id?: number;
   name?: string;
   description?: string;
   images?: string[];
-  layout?: string;
+  layoutId?: string;
   address?: string;
   price?: number;
   latitude?: number;
@@ -79,12 +117,12 @@ export interface FlatRequest {
   about?: string;
   floor?: number;
   homeId?: number;
-  numberOfBathrooms?: number
-  hasDecoration?: boolean;
-  numberForSale?: number
+  numberOfBathrooms?: number;
+  numberForSale?: number;
   published?: boolean;
   imagesClean?: string[];
   pan?: string;
+  variants?: VariantRequest[];
 }
 
 export interface HomeRequest {
@@ -109,6 +147,13 @@ export interface HomeRequest {
   model3D?: string;
   pan?: string;
   published?: boolean;
+}
+
+export interface LayoutRequest {
+  id?: number;
+  homeId?: number;
+  name?: string;
+  layoutImage?: string;
 }
 
 export interface RequestCreate {
@@ -138,12 +183,12 @@ export interface SearchRequest {
 
   categoriesId?: number[];
 
-  sortBy?: 'price' | 'rooms' | 'area' | 'location';
-  sortOrder?: 'asc' | 'desc';
+  sortBy?: "price" | "rooms" | "area" | "location";
+  sortOrder?: "asc" | "desc";
 }
 
 // API Response Types
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T> {
   data?: T;
   message?: string;
   success?: boolean;
@@ -160,6 +205,13 @@ export interface Category {
   id: number;
   name?: string;
   isOnMainPage?: boolean;
+}
+
+export interface Layout {
+  id: number;
+  layoutImage: string;
+  name: string;
+  homeId: number;
 }
 
 export interface BidRequest {
@@ -201,7 +253,7 @@ export interface ResolvedFlat extends FlatWithCategoryRequest {
   imagesResolved?: string[];
   layoutResolved?: string;
   imagesCleanResolved?: string[];
-  panResolved?: string,
+  panResolved?: string;
 }
 
 export interface HomePageFlats {
@@ -214,7 +266,7 @@ export interface ResolvedHome extends HomeRequest {
   historyImagesResolved?: string[];
   yardsImagesResolved?: string[];
   model3DResolved?: string;
-  panResolved?: string,
+  panResolved?: string;
 }
 
 export interface AuthResponse {
@@ -235,7 +287,7 @@ export interface PaginationParams {
   page?: number;
   limit?: number;
   sortBy?: string;
-  sortOrder?: 'asc' | 'desc';
+  sortOrder?: "asc" | "desc";
 }
 
 export interface FileUploadRequest {
@@ -275,3 +327,4 @@ export interface FileEntry {
   name: string;
   blob: Blob;
 }
+

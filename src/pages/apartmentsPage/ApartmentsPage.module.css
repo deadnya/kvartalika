@@ -1,0 +1,95 @@
+.container {
+    margin-top: 80px;
+    font-family: var(--font-family-open-sans);
+}
+
+.topImageContainer {
+    position: relative;
+    display: inline-block;
+}
+
+.topImageTriangleOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fafbfc;
+    clip-path: polygon(0% 82%, 0% 100%, 100% 100%);
+    pointer-events: none;
+}
+
+.searchParamsContainer {
+    display: flex;
+    flex-direction: column;
+    padding-top: 24px;
+    padding-right: 208px;
+    padding-left: 208px;
+    gap: 40px;
+}
+
+.searchParamsHeaderContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.searchParamsHeader {
+    color: var(--color-purple-main);
+    font-family: var(--font-family-montserrat);
+    font-weight: 500;
+    font-style: Medium;
+    font-size: 56px;
+    line-height: 72px;
+    letter-spacing: -5%;
+}
+
+.searchParamsText {
+    color: var(--color-main);
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 18px;
+    line-height: 24px;
+    letter-spacing: 0%;
+}
+
+.params {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.topParamRow {
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+}
+
+.inputBlock {
+    width: 358px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.inputBlock2 {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.inputBlockLabel {
+    color: var(--color-main-40);
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 14px;
+    line-height: 18px;
+    letter-spacing: -0.6px;
+    vertical-align: middle;
+}
+
+.bottomParamRow {
+    display: flex;
+    flex-direction: row;
+    gap: 80px;
+}

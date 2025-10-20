@@ -58,7 +58,7 @@ const YandexMap = ({ latitude, longitude, description }: MapProps) => {
     };
   }, [ymaps]);
 
-  return <div id="map" style={{ width: "100%", height: "400px" }}></div>;
+  return <div id="map" style={{ width: "867px", height: "580px" }}></div>;
 };
 
 export default YandexMap;

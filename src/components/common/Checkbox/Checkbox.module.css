@@ -1,0 +1,72 @@
+.checkboxLabel {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.checkboxInput {
+    display: none;
+}
+
+.checkboxBox {
+    width: 20px;
+    height: 20px;
+    border: 1px solid var(--color-gray3);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.checkboxLabel:hover .checkboxBox {
+    border-color: var(--color-purple);
+}
+
+.checkboxBoxChecked {
+    background-color: var(--color-purple);
+    border-color: var(--color-purple);
+}
+
+.checkboxCheck {
+    display: block;
+    animation: checkAnimation 0.2s ease;
+}
+
+@keyframes checkAnimation {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.checkboxSquare {
+    display: block;
+    width: 6px;
+    height: 6px;
+    background-color: var(--color-purple);
+    border-radius: 1px;
+    animation: checkAnimation 0.2s ease;
+}
+
+.checkboxText {
+    font-family: var(--font-family-open-sans);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 22px;
+    letter-spacing: -0.6px;
+    color: var(--color-main);
+}
+
+.checkboxLabel:has(input:disabled) {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

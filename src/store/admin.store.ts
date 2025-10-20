@@ -1,4 +1,4 @@
-import {create} from 'zustand';
+import { create } from "zustand";
 import {
   addAdmin,
   addContentManager,
@@ -20,8 +20,8 @@ import {
   updateContentManager,
   uploadFile,
   type UserDto,
-} from '../services';
-import type {UserRole} from "./auth.store.ts";
+} from "../services";
+import type { UserRole } from "./auth.store.ts";
 
 export interface AdminState {
   contentManagers: UserDto[];
@@ -32,7 +32,7 @@ export interface AdminState {
 
   directories: string[];
 
-  currentPath: string[]
+  currentPath: string[];
   currentDirectoryDirs: string[];
   currentDirectoryFiles: FileEntry[];
 
@@ -49,7 +49,10 @@ export interface AdminState {
 export interface AdminActions {
   loadContentManagers: (params?: PaginationParams) => Promise<void>;
   addContentManager: (managerData: UserDto) => Promise<void>;
-  editContentManager: (email: string, managerData: Partial<UserDto>) => Promise<void>;
+  editContentManager: (
+    email: string,
+    managerData: Partial<UserDto>,
+  ) => Promise<void>;
   removeContentManager: (email: string) => Promise<void>;
 
   loadAdmins: (params?: PaginationParams) => Promise<void>;
@@ -96,10 +99,10 @@ export const useAdminStore = create<AdminState & AdminActions>((set, get) => ({
   fileError: null,
   directoryError: null,
 
-  setCurrentPath: (pathParts: string[]) => set({currentPath: pathParts}),
+  setCurrentPath: (pathParts: string[]) => set({ currentPath: pathParts }),
 
   loadContentManagers: async (params?: PaginationParams) => {
-    set({isLoadingContentManagers: true, error: null});
+    set({ isLoadingContentManagers: true, error: null });
 
     try {
       const managers = await getContentManagers(params);
@@ -110,17 +113,20 @@ export const useAdminStore = create<AdminState & AdminActions>((set, get) => ({
     } catch (error) {
       set({
         isLoadingContentManagers: false,
-        error: error instanceof Error ? error.message : 'Failed to load content managers',
+        error:
+          error instanceof Error
+            ? error.message
+            : "Failed to load content managers",
       });
     }
   },
 
   addContentManager: async (managerData: UserDto) => {
-    set({error: null});
+    set({ error: null });
 
     const formalizedData = {
       ...managerData,
-      role: 'CONTENT_MANAGER' as UserRole,
+      role: "CONTENT_MANAGER" as UserRole,
     };
 
     try {
@@ -128,17 +134,20 @@ export const useAdminStore = create<AdminState & AdminActions>((set, get) => ({
       await get().loadContentManagers();
     } catch (error) {
       set({
-        error: error instanceof Error ? error.message : 'Failed to add content manager',
+        error:
+          error instanceof Error
+            ? error.message
+            : "Failed to add content manager",
       });
     }
   },
 
   editContentManager: async (email: string, managerData: Partial<UserDto>) => {
-    set({error: null});
+    set({ error: null });
 
     const formalizedData = {
       ...managerData,
-      role: 'CONTENT_MANAGER' as UserRole,
+      role: "CONTENT_MANAGER" as UserRole,
     };
 
     try {
@@ -146,26 +155,32 @@ export const useAdminStore = create<AdminState & AdminActions>((set, get) => ({
       await get().loadContentManagers();
     } catch (error) {
       set({
-        error: error instanceof Error ? error.message : 'Failed to update content manager',
+        error:
+          error instanceof Error
+            ? error.message
+            : "Failed to update content manager",
       });
     }
   },
 
   removeContentManager: async (email: string) => {
-    set({error: null});
+    set({ error: null });
 
     try {
       await deleteContentManager(email);
       await get().loadContentManagers();
     } catch (error) {
       set({
-        error: error instanceof Error ? error.message : 'Failed to delete content manager',
+        error:
+          error instanceof Error
+            ? error.message
+            : "Failed to delete content manager",
       });
     }
   },
 
   loadAdmins: async (params?: PaginationParams) => {
-    set({isLoadingAdmins: true, error: null});
+    set({ isLoadingAdmins: true, error: null });
 
     try {
       const admins = await getAdmins(params);
@@ -176,17 +191,17 @@ export const useAdminStore = create<AdminState & AdminActions>((set, get) => ({
     } catch (error) {
       set({
         isLoadingAdmins: false,
-        error: error instanceof Error ? error.message : 'Failed to load admins',
+        error: error instanceof Error ? error.message : "Failed to load admins",
       });
     }
   },
 
   addAdmin: async (adminData: UserDto) => {
-    set({error: null});
+    set({ error: null });
 
     const formalizedData = {
       ...adminData,
-      role: 'ADMIN' as UserRole,
+      role: "ADMIN" as UserRole,
     };
 
     try {
@@ -194,17 +209,17 @@ export const useAdminStore = create<AdminState & AdminActions>((set, get) => ({
       await get().loadAdmins();
     } catch (error) {
       set({
-        error: error instanceof Error ? error.message : 'Failed to add admin',
+        error: error instanceof Error ? error.message : "Failed to add admin",
       });
     }
   },
 
   editAdmin: async (email: string, adminData: Partial<UserDto>) => {
-    set({error: null});
+    set({ error: null });
 
     const formalizedData = {
       ...adminData,
-      role: 'ADMIN' as UserRole,
+      role: "ADMIN" as UserRole,
     };
 
     try {
@@ -212,111 +227,116 @@ export const useAdminStore = create<AdminState & AdminActions>((set, get) => ({
       await get().loadAdmins();
     } catch (error) {
       set({
-        error: error instanceof Error ? error.message : 'Failed to update admin',
+        error:
+          error instanceof Error ? error.message : "Failed to update admin",
       });
     }
   },
 
   removeAdmin: async (email: string) => {
-    set({error: null});
+    set({ error: null });
 
     try {
       await deleteAdmin(email);
       await get().loadAdmins();
     } catch (error) {
       set({
-        error: error instanceof Error ? error.message : 'Failed to delete admin',
+        error:
+          error instanceof Error ? error.message : "Failed to delete admin",
       });
     }
   },
 
   listDirectories: async () => {
-    set({isLoadingDirectories: true, directoryError: null});
+    set({ isLoadingDirectories: true, directoryError: null });
     try {
       const dirsResponse = await listDirectories();
       const dirs = dirsResponse.directories;
 
-      set({directories: dirs, isLoadingDirectories: false});
+      set({ directories: dirs, isLoadingDirectories: false });
     } catch (e) {
       set({
         isLoadingDirectories: false,
-        directoryError: e instanceof Error ? e.message : 'Failed to list directories',
+        directoryError:
+          e instanceof Error ? e.message : "Failed to list directories",
       });
     }
   },
 
   getDirectory: async () => {
-    set({isLoadingDirectories: true, directoryError: null});
+    set({ isLoadingDirectories: true, directoryError: null });
     try {
-
       const contents = await getDirectory(get().currentPath);
       const children = contents.children;
 
-      set({currentDirectoryDirs: children, isLoadingDirectories: false});
+      set({ currentDirectoryDirs: children, isLoadingDirectories: false });
     } catch (e) {
       set({
         isLoadingDirectories: false,
-        directoryError: e instanceof Error ? e.message : 'Failed to get directory',
+        directoryError:
+          e instanceof Error ? e.message : "Failed to get directory",
       });
     }
   },
 
   createDirectory: async (pathParts: string[]) => {
-    set({isManagingDirectory: true, directoryError: null});
+    set({ isManagingDirectory: true, directoryError: null });
     try {
       await createDirectory(pathParts);
       await get().listDirectories();
-      set({isManagingDirectory: false});
+      set({ isManagingDirectory: false });
     } catch (e) {
       set({
         isManagingDirectory: false,
-        directoryError: e instanceof Error ? e.message : 'Failed to create directory'
+        directoryError:
+          e instanceof Error ? e.message : "Failed to create directory",
       });
     }
   },
 
   deleteDirectory: async (pathParts: string[]) => {
-    set({isManagingDirectory: true, directoryError: null});
+    set({ isManagingDirectory: true, directoryError: null });
     try {
       await deleteDirectory(pathParts);
       await get().listDirectories();
-      set({isManagingDirectory: false});
+      set({ isManagingDirectory: false });
     } catch (e) {
       set({
         isManagingDirectory: false,
-        directoryError: e instanceof Error ? e.message : 'Failed to delete directory'
+        directoryError:
+          e instanceof Error ? e.message : "Failed to delete directory",
       });
     }
   },
 
   listFilesInDir: async (dirParts) => {
-    set({isLoadingFiles: true, fileError: null});
+    set({ isLoadingFiles: true, fileError: null });
     try {
       const filesResponses = await listFilesInDir(dirParts);
-      const files = filesResponses.files.map(file => ({
+      const files = filesResponses.files.map((file) => ({
         blob: file,
         name: file as unknown as string,
       }));
 
-      set({currentDirectoryFiles: files, isLoadingFiles: false});
+      set({ currentDirectoryFiles: files, isLoadingFiles: false });
     } catch (e) {
       set({
         isLoadingFiles: false,
-        fileError: e instanceof Error ? e.message : 'Failed to list files',
+        fileError: e instanceof Error ? e.message : "Failed to list files",
       });
     }
   },
 
   uploadFile: async (dirParts, file) => {
-    set({isUploadingFile: true, fileError: null});
+    set({ isUploadingFile: true, fileError: null });
     try {
       await uploadFile(dirParts, file);
       await get().listFilesInDir(dirParts);
-      set({isUploadingFile: false});
+      set({ isUploadingFile: false });
     } catch (e) {
       set({
         isUploadingFile: false,
-        fileError: e instanceof Error ? e.message : 'Failed to upload file',
+        fileError: e instanceof Error ? e.message : "Failed to upload file",
       });
     }
   },
@@ -325,7 +345,9 @@ export const useAdminStore = create<AdminState & AdminActions>((set, get) => ({
     try {
       return await downloadFile(pathParts);
     } catch (e) {
-      set({fileError: e instanceof Error ? e.message : 'Failed to download file'});
+      set({
+        fileError: e instanceof Error ? e.message : "Failed to download file",
+      });
       return null;
     }
   },
@@ -334,26 +356,26 @@ export const useAdminStore = create<AdminState & AdminActions>((set, get) => ({
     try {
       return await getFile(pathParts);
     } catch (e) {
-      set({fileError: e instanceof Error ? e.message : 'Failed to get file'});
+      set({ fileError: e instanceof Error ? e.message : "Failed to get file" });
       return null;
     }
   },
 
   deleteFile: async (pathParts) => {
-    set({isLoadingFiles: true, fileError: null});
+    set({ isLoadingFiles: true, fileError: null });
     try {
       await deleteFile(pathParts);
-      set({isLoadingFiles: false});
+      set({ isLoadingFiles: false });
     } catch (e) {
       set({
         isLoadingFiles: false,
-        fileError: e instanceof Error ? e.message : 'Failed to delete file',
+        fileError: e instanceof Error ? e.message : "Failed to delete file",
       });
     }
   },
 
-  setError: (error) => set({error}),
-  clearError: () => set({error: null}),
-  clearFileError: () => set({fileError: null}),
-  clearDirectoryError: () => set({directoryError: null}),
+  setError: (error) => set({ error }),
+  clearError: () => set({ error: null }),
+  clearFileError: () => set({ fileError: null }),
+  clearDirectoryError: () => set({ directoryError: null }),
 }));

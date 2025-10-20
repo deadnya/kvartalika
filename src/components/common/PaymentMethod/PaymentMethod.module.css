@@ -1,0 +1,28 @@
+.paymentMethod {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 30px;
+    height: 300px;
+    width: 358px;
+    background-color: #FFFFFF;
+    box-shadow: 0px 0px 12px var(--color-main-8);
+}
+
+.paymentTextContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.paymentTitle {
+    font-family: var(--font-family-montserrat);
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 30px;
+    color: var(--color-purple-main);
+}
+
+.paymentDescription {
+    color: var(--color-gray);
+}

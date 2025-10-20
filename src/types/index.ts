@@ -88,7 +88,6 @@ export interface FormData {
 
   images?: string[];
   features?: string[];
-  hasDecoration?: boolean;
   storesNearby?: boolean;
   schoolsNearby?: boolean;
   hospitalsNearby?: boolean;

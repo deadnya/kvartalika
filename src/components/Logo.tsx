@@ -1,4 +1,4 @@
-import { KvartalikaLogo } from "./icons/Logo";
+import { KvartalikaLogo } from "./icons/Logo.tsx";
 
 interface LogoProps {
   className?: string;

@@ -1,10 +1,10 @@
-import {apiClient} from './api.config';
+import {apiClient} from './api.config.ts';
 import type {
   AuthResponse,
   LoginRequest,
   RegisterRequest,
   RegisterResponse,
-} from './api.types';
+} from './api.types.ts';
 import {AxiosError} from "axios";
 import {useAuthStore} from "../store/auth.store.ts";
 

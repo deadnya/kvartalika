@@ -1,0 +1,209 @@
+.conveniencies {
+    display: flex;
+    flex-direction: column;
+    padding-right: 208px;
+    padding-bottom: 100px;
+    padding-left: 208px;
+    gap: 32px;
+    background-color: white;
+    font-family: var(--font-family-open-sans);
+    position: relative;
+}
+
+.conveniencies::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    left: -300px;
+    width: 1500px;
+    height: 900px;
+    background: radial-gradient(ellipse 300px 200px, #7B2CBF14, transparent);
+    filter: blur(40px);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.conveniencies > * {
+    position: relative;
+    z-index: 1;
+}
+
+.convenienciesHeaderContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 32px;
+}
+
+.convenienciesHeader {
+    color: var(--color-purple-main);
+    font-family: var(--font-family-montserrat);
+    font-weight: 500;
+    font-style: Medium;
+    font-size: 30px;
+    line-height: 40px;
+    letter-spacing: -2%;
+    vertical-align: middle;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+.convenienciesContent {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 32px;
+}
+
+.convenienciesLeftContainer {
+    display: flex;
+    flex-direction: column;
+    width: 597px;
+    gap: 40px;
+}
+
+.convenienciesLeftContainer2 {
+    display: flex;
+    flex-direction: column;
+    width: 597px;
+    gap: 32px;
+}
+
+.convenienciesMotto {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0%;
+    margin: 0;
+    color: var(--color-main);
+}
+
+.convenienciesList {
+    display: flex;
+    flex-direction: column;
+}
+
+.conveniencyItem {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+}
+
+.conveniencyItem:not(:last-child) {
+    border-bottom: 1px solid var(--color-gray);
+}
+
+.conveniencyItem:first-child {
+    padding-right: 16px;
+    padding-bottom: 20px;
+    padding-left: 8px;
+}
+
+.conveniencyItem:not(:first-child):not(:last-child) {
+    padding-top: 20px;
+    padding-right: 16px;
+    padding-bottom: 20px;
+    padding-left: 8px;
+}
+
+.conveniencyItem:last-child {
+    padding-top: 20px;
+    padding-right: 16px;
+    padding-left: 8px;
+}
+
+.conveniencyItem2 {
+    width: 573px;
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+}
+
+.conveniencyText {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.conveniencyTitle {
+    color: var(--color-purple-main);
+    font-family: var(--font-family-montserrat);
+    font-family: Montserrat;
+    font-weight: 600;
+    font-style: SemiBold;
+    font-size: 17px;
+    line-height: 24px;
+    letter-spacing: 0%;
+}
+
+.conveniencyDescription {
+    color: var(--color-gray);
+    font-family: var(--font-family-montserrat);
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0%;
+}
+
+.conveniencyItem svg {
+    height: 24px;
+    width: 24px;
+    flex-shrink: 0;
+}
+
+.convenienciesImage {
+    height: 580px;
+    width: 867px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.paginationContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 24px;
+}
+
+.paginationButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border: 1px solid var(--color-main);
+    background-color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.paginationButton:hover {
+    border: 1px solid var(--color-purple);
+}
+
+.paginationButton svg {
+    width: 40px;
+    height: 40px;
+}
+
+.paginationButton svg path {
+    stroke: var(--color-main);
+    transition: stroke 0.2s ease;
+}
+
+.paginationButton:hover path {
+    stroke: var(--color-purple);
+}
+
+.paginationCounter {
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 20px;
+    line-height: 30px;
+    letter-spacing: -0.6px;
+    text-align: center;
+    vertical-align: middle;
+    width: 60px;
+}

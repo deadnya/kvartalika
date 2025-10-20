@@ -1,26 +1,30 @@
-import {useState, useMemo, useCallback, useEffect} from 'react';
-import {
-  type BidForm,
-} from '../../store/ui.store.ts';
+import { useState, useMemo, useCallback, useEffect } from "react";
+import { type BidForm } from "../../store/ui.store.ts";
 import type {
   FlatWithCategoryRequest,
   HomeRequest,
-  Category
-} from '../../services';
-import ContentEditor, {type ContentType} from "./ContentEditor.tsx";
-import {useDebounce} from "../../hooks/useDebounce.ts";
-import {useContentStore} from "../../store/content.store.ts";
-import {useFlatsStore} from "../../store/flats.store.ts";
-import {useContentManagerStore} from "../../store/contentManager.store.ts";
+  Category,
+  LayoutRequest,
+} from "../../services";
+import ContentEditor, { type ContentType } from "./ContentEditor.tsx";
+import { useDebounce } from "../../hooks/useDebounce.ts";
+import { useContentStore } from "../../store/content.store.ts";
+import { useFlatsStore } from "../../store/flats.store.ts";
+import { useContentManagerStore } from "../../store/contentManager.store.ts";
 
-const TABS: Array<ContentType> = ['flat', 'home', 'category', 'bid'];
+const TABS: Array<ContentType> = ["flat", "home", "category", "bid", "layout"];
 type PayLoadType = FlatWithCategoryRequest | HomeRequest | Category | BidForm;
 
 const GUIDE: Record<string, string> = {
-  flats: "Квартиры: создавайте, редактируйте и удаляйте квартиры. Используйте поиск для фильтрации по адресу или ID.",
-  homes: "Комплексы: управляйте жилыми комплексами, сопоставляйте квартиры с комплексами.",
-  categories: "Категории: держите классификацию актуальной. Назначайте категории на объекты.",
-  bids: "Заявки: просматривайте входящие заявки, отмечайте как просмотренные и редактируйте."
+  flats:
+    "Квартиры: создавайте, редактируйте и удаляйте квартиры. Используйте поиск для фильтрации по адресу или ID.",
+  homes:
+    "Комплексы: управляйте жилыми комплексами, сопоставляйте квартиры с комплексами.",
+  categories:
+    "Категории: держите классификацию актуальной. Назначайте категории на объекты.",
+  bids: "Заявки: просматривайте входящие заявки, отмечайте как просмотренные и редактируйте.",
+  layouts:
+    "Планировки: создавайте, редактируйте и удаляйте планировки. Используйте поиск для фильтрации по ID.",
 };
 
 const ContentManagementSection = () => {
@@ -29,28 +33,34 @@ const ContentManagementSection = () => {
     selectedFlat,
     selectedHome,
     selectedCategory,
+    selectedLayout,
     saveFlat,
     saveHome,
+    saveLayout,
     saveCategory,
     editFlat,
     editHome,
+    editLayout,
     editCategory,
     removeFlat,
     removeHome,
+    removeLayout,
     removeCategory,
     setActiveTab,
     setShowForm,
     setEditMode,
-    loading
+    loading,
   } = useContentStore();
 
   const {
     loadFlats,
     loadHomes,
     loadCategories,
+    loadLayouts,
     flats,
     homes,
-    categories
+    categories,
+    layouts,
   } = useFlatsStore();
 
   const {
@@ -63,71 +73,123 @@ const ContentManagementSection = () => {
     isLoadingBids,
   } = useContentManagerStore();
 
-  const [filter, setFilter] = useState('');
+  const [filter, setFilter] = useState("");
   const debouncedFilter = useDebounce(filter, 250);
 
   const activeContentType: ContentType = useMemo(() => {
-    if (ui.activeTab === 'flats') return 'flat';
-    if (ui.activeTab === 'homes') return 'home';
-    if (ui.activeTab === 'categories') return 'category';
-    if (ui.activeTab === 'bids') return 'bid';
-    return 'flat';
+    if (ui.activeTab === "flats") return "flat";
+    if (ui.activeTab === "homes") return "home";
+    if (ui.activeTab === "categories") return "category";
+    if (ui.activeTab === "bids") return "bid";
+    if (ui.activeTab === "layouts") return "layout";
+    return "flat";
   }, [ui.activeTab]);
 
   const refreshCurrent = useCallback(() => {
-    if (ui.activeTab === 'bids') {
+    if (ui.activeTab === "bids") {
       void getBids();
-    } else if (ui.activeTab === 'flats') {
+    } else if (ui.activeTab === "flats") {
       void loadFlats(true);
-    } else if (ui.activeTab === 'homes') {
+    } else if (ui.activeTab === "homes") {
       void loadHomes(true);
-    } else if (ui.activeTab === 'categories') {
+    } else if (ui.activeTab === "categories") {
       void loadCategories(true);
+    } else if (ui.activeTab === "layouts") {
+      void loadLayouts(true);
     }
-    setFilter('');
-  }, [ui.activeTab, getBids, loadFlats, loadHomes, loadCategories]);
+    setFilter("");
+  }, [
+    ui.activeTab,
+    getBids,
+    loadFlats,
+    loadHomes,
+    loadCategories,
+    loadLayouts,
+  ]);
 
   useEffect(() => {
     refreshCurrent();
   }, [refreshCurrent]);
 
-  const switchTab = useCallback((type: ContentType) => {
-    if (type === 'flat') setActiveTab('flats');
-    if (type === 'home') setActiveTab('homes');
-    if (type === 'category') setActiveTab('categories');
-    if (type === 'bid') setActiveTab('bids');
-    setFilter('');
-  }, [setActiveTab]);
+  const switchTab = useCallback(
+    (type: ContentType) => {
+      if (type === "flat") setActiveTab("flats");
+      if (type === "home") setActiveTab("homes");
+      if (type === "category") setActiveTab("categories");
+      if (type === "bid") setActiveTab("bids");
+      if (type === "layout") setActiveTab("layouts");
+      setFilter("");
+    },
+    [setActiveTab],
+  );
 
-  const openNew = useCallback((type: ContentType) => {
-    setEditMode(false);
-    setShowForm(true);
-    switchTab(type);
-  }, [setEditMode, setShowForm, switchTab]);
+  const openNew = useCallback(
+    (type: ContentType) => {
+      setEditMode(false);
+      setShowForm(true);
+      switchTab(type);
+    },
+    [setEditMode, setShowForm, switchTab],
+  );
 
-  const openEdit = useCallback((type: ContentType, payload: PayLoadType) => {
-    if (type === 'flat') editFlat(payload as FlatWithCategoryRequest);
-    if (type === 'home') editHome(payload as HomeRequest);
-    if (type === 'category') editCategory(payload as Category);
-    if (type === 'bid') editBid(payload as BidForm);
-    setEditMode(true);
-    setShowForm(true);
-    switchTab(type);
-  }, [editFlat, editHome, editCategory, editBid, setEditMode, setShowForm, switchTab]);
+  const openEdit = useCallback(
+    (type: ContentType, payload: PayLoadType) => {
+      if (type === "flat") editFlat(payload as FlatWithCategoryRequest);
+      if (type === "home") editHome(payload as HomeRequest);
+      if (type === "category") editCategory(payload as Category);
+      if (type === "bid") editBid(payload as BidForm);
+      if (type === "layout") editLayout(payload as LayoutRequest);
+      setEditMode(true);
+      setShowForm(true);
+      switchTab(type);
+    },
+    [
+      editFlat,
+      editHome,
+      editCategory,
+      editBid,
+      editLayout,
+      setEditMode,
+      setShowForm,
+      switchTab,
+    ],
+  );
 
-  const handleSave = useCallback(async (payload: PayLoadType) => {
-    if (activeContentType === 'flat') await saveFlat(payload as FlatWithCategoryRequest);
-    if (activeContentType === 'home') await saveHome(payload as HomeRequest);
-    if (activeContentType === 'category') await saveCategory(payload as Category);
-    if (activeContentType === 'bid') await saveBid(payload as BidForm);
-    refreshCurrent();
-  }, [refreshCurrent, activeContentType, saveFlat, saveHome, saveCategory, saveBid]);
+  const handleSave = useCallback(
+    async (payload: PayLoadType) => {
+      console.log("SAVINGGGG");
+      if (activeContentType === "flat")
+        await saveFlat(payload as FlatWithCategoryRequest);
+      if (activeContentType === "home") await saveHome(payload as HomeRequest);
+      if (activeContentType === "category")
+        await saveCategory(payload as Category);
+      if (activeContentType === "bid") await saveBid(payload as BidForm);
+      if (activeContentType === "layout")
+        await saveLayout(payload as LayoutRequest);
+      refreshCurrent();
+    },
+    [
+      refreshCurrent,
+      activeContentType,
+      saveFlat,
+      saveHome,
+      saveLayout,
+      saveCategory,
+      saveBid,
+    ],
+  );
 
   const handleDelete = useCallback(async () => {
-    if (activeContentType === 'flat' && selectedFlat?.flat.id) await removeFlat(selectedFlat.flat.id);
-    if (activeContentType === 'home' && selectedHome?.id) await removeHome(selectedHome.id);
-    if (activeContentType === 'category' && selectedCategory?.id) await removeCategory(selectedCategory.id);
-    if (activeContentType === 'bid' && selectedBid?.id) await removeBid(selectedBid.id);
+    if (activeContentType === "flat" && selectedFlat?.flat.id)
+      await removeFlat(selectedFlat.flat.id);
+    if (activeContentType === "home" && selectedHome?.id)
+      await removeHome(selectedHome.id);
+    if (activeContentType === "category" && selectedCategory?.id)
+      await removeCategory(selectedCategory.id);
+    if (activeContentType === "bid" && selectedBid?.id)
+      await removeBid(selectedBid.id);
+    if (activeContentType === "layout" && selectedLayout?.id)
+      await removeLayout(selectedLayout.id);
     setShowForm(false);
     refreshCurrent();
   }, [
@@ -137,105 +199,132 @@ const ContentManagementSection = () => {
     selectedHome,
     selectedCategory,
     selectedBid,
+    selectedLayout,
     removeFlat,
     removeHome,
     removeCategory,
     removeBid,
+    removeLayout,
     setShowForm,
   ]);
 
   const currentList = useMemo(() => {
     let base: Array<{
-      type: ContentType | 'bid';
+      type: ContentType | "bid";
       payload: PayLoadType;
       label: string;
     }> = [];
 
-    if (activeContentType === 'bid') {
-      base = bids.map(b => ({
-        type: 'bid' as const,
+    if (activeContentType === "bid") {
+      base = bids.map((b) => ({
+        type: "bid" as const,
         payload: b,
-        label: `${b.id}-${b.name || ''} ${b.email || ''}`.trim(),
+        label: `${b.id}-${b.name || ""} ${b.email || ""}`.trim(),
       }));
-    } else if (activeContentType === 'flat') {
-      base = flats.map(f => ({
-        type: 'flat' as const,
+    } else if (activeContentType === "flat") {
+      base = flats.map((f) => ({
+        type: "flat" as const,
         payload: f,
-        label: `${f.flat.id} ${f.flat.address || ''} ${f.flat.homeId || ''}`.trim(),
+        label:
+          `${f.flat.id} ${f.flat.address || ""} ${f.flat.homeId || ""}`.trim(),
       }));
-    } else if (activeContentType === 'home') {
-      base = homes.map(h => ({
-        type: 'home' as const,
+    } else if (activeContentType === "home") {
+      base = homes.map((h) => ({
+        type: "home" as const,
         payload: h,
-        label: `${h.id} ${h.address || ''}`.trim(),
+        label: `${h.id} ${h.address || ""}`.trim(),
       }));
-    } else if (activeContentType === 'category') {
-      base = categories.map(c => ({
-        type: 'category' as const,
+    } else if (activeContentType === "category") {
+      base = categories.map((c) => ({
+        type: "category" as const,
         payload: c,
         label: c.name ?? `${c.id}`,
+      }));
+    } else if (activeContentType === "layout") {
+      base = layouts.map((l) => ({
+        type: "layout" as const,
+        payload: l,
+        label: l.id.toString() + " " + l.layoutImage,
       }));
     }
 
     if (!debouncedFilter) return base;
     const lowered = debouncedFilter.toLowerCase();
-    return base.filter(i => i.label.toLowerCase().includes(lowered));
-  }, [activeContentType, debouncedFilter, bids, flats, homes, categories]);
+    return base.filter((i) => i.label.toLowerCase().includes(lowered));
+  }, [
+    activeContentType,
+    debouncedFilter,
+    bids,
+    flats,
+    homes,
+    categories,
+    layouts,
+  ]);
 
   return (
     <div className="space-y-6">
       <div className="flex gap-2 mb-4 flex-wrap">
-        {TABS.map(t => (
+        {TABS.map((t) => (
           <button
             key={t}
             onClick={() => switchTab(t)}
             className={`px-3 py-1 rounded ${
-              (t === 'flat' && ui.activeTab === 'flats') ||
-              (t === 'home' && ui.activeTab === 'homes') ||
-              (t === 'category' && ui.activeTab === 'categories') ||
-              (t === 'bid' && ui.activeTab === 'bids')
-                ? 'bg-primary-600 text-white'
-                : 'bg-gray-100'
+              (t === "flat" && ui.activeTab === "flats") ||
+              (t === "home" && ui.activeTab === "homes") ||
+              (t === "category" && ui.activeTab === "categories") ||
+              (t === "bid" && ui.activeTab === "bids") ||
+              (t === "layout" && ui.activeTab === "layouts")
+                ? "bg-primary-600 text-white"
+                : "bg-gray-100"
             }`}
             type="button"
           >
-            {t === 'flat'
-              ? 'Квартиры'
-              : t === 'home'
-                ? 'Комплексы'
-                : t === 'category'
-                  ? 'Категории'
-                  : 'Заявки'}
+            {t === "flat"
+              ? "Квартиры"
+              : t === "home"
+                ? "Комплексы"
+                : t === "category"
+                  ? "Категории"
+                  : t === "layout"
+                    ? "Планировки"
+                    : "Заявки"}
           </button>
         ))}
         <div className="ml-auto flex gap-2 flex-wrap">
           <button
-            onClick={() => openNew('flat')}
+            onClick={() => openNew("flat")}
             className="px-3 py-1 bg-green-600 text-white rounded text-sm"
             type="button"
           >
             Новая квартира
           </button>
           <button
-            onClick={() => openNew('home')}
+            onClick={() => openNew("home")}
             className="px-3 py-1 bg-green-600 text-white rounded text-sm"
             type="button"
           >
             Новый комплекс
           </button>
           <button
-            onClick={() => openNew('category')}
+            onClick={() => openNew("category")}
             className="px-3 py-1 bg-green-600 text-white rounded text-sm"
             type="button"
           >
             Новая категория
           </button>
           <button
-            onClick={() => openNew('bid')}
+            onClick={() => openNew("bid")}
             className="px-3 py-1 bg-green-600 text-white rounded text-sm"
             type="button"
           >
             Новая заявка
+          </button>
+          <button
+            onClick={() => openNew("layout")}
+            className="px-3 py-1 bg-green-600 text-white rounded text-sm"
+            type="button"
+          >
+            Новая планировка
           </button>
         </div>
       </div>
@@ -244,29 +333,39 @@ const ContentManagementSection = () => {
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <h3 className="font-semibold">
-              {ui.activeTab === 'bids' && 'Список заявок'}
-              {ui.activeTab === 'flats' && 'Список квартир'}
-              {ui.activeTab === 'homes' && 'Список комплексов'}
-              {ui.activeTab === 'categories' && 'Список категорий'}
+              {ui.activeTab === "bids" && "Список заявок"}
+              {ui.activeTab === "flats" && "Список квартир"}
+              {ui.activeTab === "homes" && "Список комплексов"}
+              {ui.activeTab === "categories" && "Список категорий"}
+              {ui.activeTab === "layouts" && "Список планировок"}
             </h3>
-            {ui.activeTab === 'bids' && (
+            {ui.activeTab === "bids" && (
               <div className="text-sm text-gray-500">
-                {isLoadingBids ? 'Загрузка...' : `${bids.length} заявок`}
+                {isLoadingBids ? "Загрузка..." : `${bids.length} заявок`}
               </div>
             )}
-            {ui.activeTab === 'flats' && (
+            {ui.activeTab === "flats" && (
               <div className="text-sm text-gray-500">
-                {loading.flats ? 'Загрузка...' : `${flats.length} квартир`}
+                {loading.flats ? "Загрузка..." : `${flats.length} квартир`}
               </div>
             )}
-            {ui.activeTab === 'homes' && (
+            {ui.activeTab === "homes" && (
               <div className="text-sm text-gray-500">
-                {loading.homes ? 'Загрузка...' : `${homes.length} ЖК`}
+                {loading.homes ? "Загрузка..." : `${homes.length} ЖК`}
               </div>
             )}
-            {ui.activeTab === 'categories' && (
+            {ui.activeTab === "categories" && (
               <div className="text-sm text-gray-500">
-                {loading.categories ? 'Загрузка...' : `${categories.length} категорий`}
+                {loading.categories
+                  ? "Загрузка..."
+                  : `${categories.length} категорий`}
+              </div>
+            )}
+            {ui.activeTab === "layouts" && (
+              <div className="text-sm text-gray-500">
+                {loading.layouts
+                  ? "Загрузка..."
+                  : `${layouts.length} планировок`}
               </div>
             )}
           </div>
@@ -275,7 +374,7 @@ const ContentManagementSection = () => {
             <input
               placeholder="Поиск..."
               value={filter}
-              onChange={e => setFilter(e.target.value)}
+              onChange={(e) => setFilter(e.target.value)}
               className="flex-grow px-3 py-2 border rounded"
               type="text"
             />
@@ -283,10 +382,11 @@ const ContentManagementSection = () => {
               onClick={refreshCurrent}
               className="px-3 py-2 bg-gray-200 rounded"
               disabled={
-                (ui.activeTab === 'flats' && loading.flats) ||
-                (ui.activeTab === 'homes' && loading.homes) ||
-                (ui.activeTab === 'categories' && loading.categories) ||
-                (ui.activeTab === 'bids' && isLoadingBids)
+                (ui.activeTab === "flats" && loading.flats) ||
+                (ui.activeTab === "homes" && loading.homes) ||
+                (ui.activeTab === "categories" && loading.categories) ||
+                (ui.activeTab === "bids" && isLoadingBids) ||
+                (ui.activeTab === "layouts" && loading.layouts)
               }
               type="button"
             >
@@ -294,10 +394,11 @@ const ContentManagementSection = () => {
             </button>
           </div>
 
-          {currentList.length === 0 &&
-            <div className="text-gray-500">Нет данных</div>}
-          {currentList.map(item => {
-            const isBid = item.type === 'bid';
+          {currentList.length === 0 && (
+            <div className="text-gray-500">Нет данных</div>
+          )}
+          {currentList.map((item) => {
+            const isBid = item.type === "bid";
             const bid = item.payload as BidForm;
             const isChecked = isBid && bid?.isChecked;
 
@@ -306,14 +407,18 @@ const ContentManagementSection = () => {
                 key={`${item.label}-${item.type}`}
                 onClick={() => openEdit(item.type, item.payload)}
                 className={`flex justify-between items-center p-2 border rounded hover:shadow-sm transition cursor-pointer ${
-                  isBid ? (isChecked ? 'bg-green-50' : 'bg-yellow-50 font-semibold') : ''
+                  isBid
+                    ? isChecked
+                      ? "bg-green-50"
+                      : "bg-yellow-50 font-semibold"
+                    : ""
                 }`}
               >
                 <div className="flex flex-col">
                   <div>{item.label}</div>
                   {isBid && (
                     <div className="text-xs text-gray-600">
-                      {(bid.phone || '')} — {(bid.email || '')}
+                      {bid.phone || ""} — {bid.email || ""}
                     </div>
                   )}
                 </div>
@@ -321,14 +426,14 @@ const ContentManagementSection = () => {
                   {isBid && (
                     <div
                       className={`text-sm px-2 py-1 rounded text-white mr-4 ${
-                        isChecked ? 'bg-green-600' : 'bg-red-500'
+                        isChecked ? "bg-green-600" : "bg-red-500"
                       }`}
                     >
-                      {isChecked ? 'Просмотрено' : 'Не просмотрено'}
+                      {isChecked ? "Просмотрено" : "Не просмотрено"}
                     </div>
                   )}
                   <button
-                    onClick={e => {
+                    onClick={(e) => {
                       e.stopPropagation();
                       openEdit(item.type, item.payload);
                     }}
@@ -347,7 +452,8 @@ const ContentManagementSection = () => {
           <div className="flex-1">
             <h4 className="font-semibold mb-2">Руководство</h4>
             <p className="text-sm text-gray-700 whitespace-pre-line">
-              {GUIDE[ui.activeTab] || "Выберите вкладку, чтобы увидеть руководство."}
+              {GUIDE[ui.activeTab] ||
+                "Выберите вкладку, чтобы увидеть руководство."}
             </p>
           </div>
 
@@ -358,13 +464,15 @@ const ContentManagementSection = () => {
                 className="px-3 py-1 bg-green-600 text-white rounded text-sm w-full"
                 type="button"
               >
-                {ui.activeTab === 'flats'
-                  ? 'Новая квартира'
-                  : ui.activeTab === 'homes'
-                    ? 'Новый комплекс'
-                    : ui.activeTab === 'categories'
-                      ? 'Новая категория'
-                      : 'Новая заявка'}
+                {ui.activeTab === "flats"
+                  ? "Новая квартира"
+                  : ui.activeTab === "homes"
+                    ? "Новый комплекс"
+                    : ui.activeTab === "categories"
+                      ? "Новая категория"
+                      : ui.activeTab === "layouts"
+                        ? "Новая планировка"
+                        : "Новая заявка"}
               </button>
             </div>
             {ui.editMode && (
@@ -385,10 +493,25 @@ const ContentManagementSection = () => {
       {ui.showForm && (
         <ContentEditor
           contentType={activeContentType}
-          initialFlat={activeContentType === 'flat' ? selectedFlat || undefined : undefined}
-          initialHome={activeContentType === 'home' ? selectedHome || undefined : undefined}
-          initialCategory={activeContentType === 'category' ? selectedCategory || undefined : undefined}
-          initialBid={activeContentType === 'bid' ? selectedBid || undefined : undefined}
+          initialFlat={
+            activeContentType === "flat" ? selectedFlat || undefined : undefined
+          }
+          initialHome={
+            activeContentType === "home" ? selectedHome || undefined : undefined
+          }
+          initialCategory={
+            activeContentType === "category"
+              ? selectedCategory || undefined
+              : undefined
+          }
+          initialBid={
+            activeContentType === "bid" ? selectedBid || undefined : undefined
+          }
+          initialLayout={
+            activeContentType === "layout"
+              ? selectedLayout || undefined
+              : undefined
+          }
           allCategories={categories}
           isEditing={ui.editMode}
           onSave={handleSave}

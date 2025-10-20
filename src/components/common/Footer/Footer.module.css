@@ -1,0 +1,130 @@
+.footer {
+    background: linear-gradient(to right, #2D3748, #2D3748D9);
+    color: white;
+    font-family: var(--font-family-open-sans);
+    font-weight: 400;
+    font-style: normal;
+    font-size: 16px;
+    line-height: 22px;
+    letter-spacing: -0.6px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    padding-left: 208px;
+    padding-right: 208px;
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+
+.topFooter {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.logoAndDescription {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.logo {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    font-family: var(--font-family-montserrat);
+}
+
+.logoTitle {
+    font-weight: 700;
+    font-style: bold;
+    font-size: 20px;
+    line-height: 1.2;
+    letter-spacing: 0%;
+}
+
+.menuAndContacts {
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 358px;
+}
+
+.title {
+    text-transform: uppercase;
+    font-weight: 600;
+    font-style: bold;
+    line-height: 24px;
+    letter-spacing: 0%;
+    font-family: var(--font-family-montserrat);;
+}
+
+.menuItems {
+    display: flex;
+    flex-direction: column;
+}
+
+.menuItem {
+    padding: 4px 0px;
+    transition: 0.2s;
+}
+
+.menuItem:hover {
+    color: rgb(230, 230, 230);
+}
+
+.contacts {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 485px;
+}
+
+.contactsItems {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.contactItem {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.bottomFooter {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: end;
+}
+
+.copyright {
+    opacity: 0.5;
+    line-height: 20px;
+    font-size: 14px;
+    letter-spacing: -0.6px;
+}
+
+.termsLinks {
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+}
+
+.termsLink {
+    padding: 4px 0px;
+    transition: 0.2s;
+}
+
+.termsLink:hover {
+    color: rgb(230, 230, 230);;
+}

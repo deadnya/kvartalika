@@ -1,0 +1,15 @@
+.container {
+    width: 1122px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.header {
+    font-family: var(--font-family-montserrat);
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 100%;
+    letter-spacing: -5%;
+    color: var(--color-purple-main);
+}

@@ -1,88 +1,159 @@
-import {apiClient} from './api.config';
+import { apiClient } from "./api.config.ts";
 import type {
   Category,
-  Description, FlatWithCategoryRequest,
+  Description,
+  FlatWithCategoryRequest,
   HomeRequest,
+  Layout,
   PaginatedResponse,
   PaginationParams,
   Photo,
   RequestCreate,
   RequestsPost201Response,
   SearchRequest,
-} from './api.types';
-import {AxiosError} from "axios";
-import type {PageInfo, SocialMedia} from "../store/ui.store";
+} from "./api.types.ts";
+import { AxiosError } from "axios";
+import type { AboutUsInfo, PageInfo, SocialMedia } from "../store/ui.store.ts";
 
 export class PublicService {
   // Page Info
   static async getPageInfo(params?: PaginationParams): Promise<PageInfo> {
     try {
-      const response = await apiClient.get<PageInfo>('/page_info', {params});
+      const response = await apiClient.get<PageInfo>("/page_info", { params });
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError) {
-        throw new Error(error.response?.data?.message || 'Failed to get Page Info');
+        throw new Error(
+          error.response?.data?.message || "Failed to get Page Info",
+        );
       }
       throw error;
     }
   }
 
-  static async updatePageInfo(data: PageInfo, params?: PaginationParams): Promise<void> {
+  static async updatePageInfo(
+    data: PageInfo,
+    params?: PaginationParams,
+  ): Promise<void> {
     try {
-      const response = await apiClient.put<void, PageInfo>('/page_info', data, {params});
+      const response = await apiClient.put<void, PageInfo>("/page_info", data, {
+        params,
+      });
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError) {
-        throw new Error(error.response?.data?.message || 'Failed to update Page Info');
+        throw new Error(
+          error.response?.data?.message || "Failed to update Page Info",
+        );
+      }
+      throw error;
+    }
+  }
+
+  // About us
+  static async getAboutUsInfo(): Promise<AboutUsInfo> {
+    try {
+      const response = await apiClient.get<AboutUsInfo>("/aboutus");
+      return response.data;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        throw new Error(
+          error.response?.data?.message || "Failed to get About Us Info",
+        );
+      }
+      throw error;
+    }
+  }
+
+  static async updateAboutUsInfo(data: AboutUsInfo): Promise<void> {
+    try {
+      const response = await apiClient.put<void, AboutUsInfo>("/aboutus", data);
+      return response.data;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        throw new Error(
+          error.response?.data?.message || "Failed to update About Us Info",
+        );
       }
       throw error;
     }
   }
 
   // Social Media
-  static async getSocialMedia(params?: PaginationParams): Promise<SocialMedia[]> {
+  static async getSocialMedia(
+    params?: PaginationParams,
+  ): Promise<SocialMedia[]> {
     try {
-      const response = await apiClient.get<SocialMedia[]>('/social_media', {params});
+      const response = await apiClient.get<SocialMedia[]>("/social_media", {
+        params,
+      });
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError) {
-        throw new Error(error.response?.data?.message || 'Failed to get Social Media');
+        throw new Error(
+          error.response?.data?.message || "Failed to get Social Media",
+        );
       }
       throw error;
     }
   }
 
-  static async updateSocialMedia(data: SocialMedia[], params?: PaginationParams): Promise<void> {
+  static async updateSocialMedia(
+    data: SocialMedia[],
+    params?: PaginationParams,
+  ): Promise<void> {
     try {
-      const response = await apiClient.put<void, SocialMedia[]>('/social_media', data, {params});
+      const response = await apiClient.put<void, SocialMedia[]>(
+        "/social_media",
+        data,
+        { params },
+      );
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError) {
-        throw new Error(error.response?.data?.message || 'Failed to update Social Media');
+        throw new Error(
+          error.response?.data?.message || "Failed to update Social Media",
+        );
       }
       throw error;
     }
   }
 
-  static async addSocialMedia(data: SocialMedia, params?: PaginationParams): Promise<void> {
+  static async addSocialMedia(
+    data: SocialMedia,
+    params?: PaginationParams,
+  ): Promise<void> {
     try {
-      const response = await apiClient.post<void, SocialMedia>('/social_media', data, {params});
+      const response = await apiClient.post<void, SocialMedia>(
+        "/social_media",
+        data,
+        { params },
+      );
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError) {
-        throw new Error(error.response?.data?.message || 'Failed to update Social Media');
+        throw new Error(
+          error.response?.data?.message || "Failed to update Social Media",
+        );
       }
       throw error;
     }
   }
 
-  static async deleteSocialMedia(id: number, params?: PaginationParams): Promise<void> {
+  static async deleteSocialMedia(
+    id: number,
+    params?: PaginationParams,
+  ): Promise<void> {
     try {
-      const response = await apiClient.delete<void>(`/social_media/${id}`, {params});
+      const response = await apiClient.delete<void>(`/social_media/${id}`, {
+        params,
+      });
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError) {
-        throw new Error(error.response?.data?.message || 'Failed to update Social Media');
+        throw new Error(
+          error.response?.data?.message || "Failed to update Social Media",
+        );
       }
       throw error;
     }
@@ -91,11 +162,15 @@ export class PublicService {
   // Categories - Public Read
   static async getCategories(params?: PaginationParams): Promise<Category[]> {
     try {
-      const response = await apiClient.get<Category[]>('/categories', {params});
+      const response = await apiClient.get<Category[]>("/categories", {
+        params,
+      });
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError) {
-        throw new Error(error.response?.data?.message || 'Failed to get categories');
+        throw new Error(
+          error.response?.data?.message || "Failed to get categories",
+        );
       }
       throw error;
     }
@@ -110,20 +185,60 @@ export class PublicService {
         if (error.response?.status === 404) {
           return null;
         }
-        throw new Error(error.response?.data?.message || 'Failed to get category');
+        throw new Error(
+          error.response?.data?.message || "Failed to get category",
+        );
+      }
+      throw error;
+    }
+  }
+
+  // Layouts
+  static async getLayouts(params?: PaginationParams): Promise<Layout[]> {
+    try {
+      const response = await apiClient.get<Layout[]>("/layouts", { params });
+      return response.data;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        // throw new Error(
+        //   error.response?.data?.message || "Failed to get layouts",
+        // );
+      }
+      throw error;
+    }
+  }
+
+  static async getLayoutById(id: number): Promise<Layout | null> {
+    try {
+      const response = await apiClient.get<Layout>(`/layouts/${id}`);
+      return response.data;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 404) {
+          return null;
+        }
+        // throw new Error(
+        //   error.response?.data?.message || "Failed to get layout",
+        // );
       }
       throw error;
     }
   }
 
   // Descriptions - Public Read
-  static async getDescriptions(params?: PaginationParams): Promise<Description[]> {
+  static async getDescriptions(
+    params?: PaginationParams,
+  ): Promise<Description[]> {
     try {
-      const response = await apiClient.get<Description[]>('/descriptions', {params});
+      const response = await apiClient.get<Description[]>("/descriptions", {
+        params,
+      });
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError) {
-        throw new Error(error.response?.data?.message || 'Failed to get descriptions');
+        throw new Error(
+          error.response?.data?.message || "Failed to get descriptions",
+        );
       }
       throw error;
     }
@@ -138,47 +253,66 @@ export class PublicService {
         if (error.response?.status === 404) {
           return null;
         }
-        throw new Error(error.response?.data?.message || 'Failed to get description');
+        throw new Error(
+          error.response?.data?.message || "Failed to get description",
+        );
       }
       throw error;
     }
   }
 
   // Flats - Public Read
-  static async getFlats(params?: PaginationParams): Promise<FlatWithCategoryRequest[]> {
+  static async getFlats(
+    params?: PaginationParams,
+  ): Promise<FlatWithCategoryRequest[]> {
     try {
-      const response = await apiClient.get<FlatWithCategoryRequest[]>('/flats', {params});
+      const response = await apiClient.get<FlatWithCategoryRequest[]>(
+        "/flats",
+        { params },
+      );
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError) {
-        throw new Error(error.response?.data?.message || 'Failed to get flats');
+        throw new Error(error.response?.data?.message || "Failed to get flats");
       }
       throw error;
     }
   }
 
-  static async getFlatById(id: number): Promise<FlatWithCategoryRequest | null> {
+  static async getFlatById(
+    id: number,
+  ): Promise<FlatWithCategoryRequest | null> {
     try {
-      const response = await apiClient.get<FlatWithCategoryRequest>(`/flats/${id}`);
+      const response = await apiClient.get<FlatWithCategoryRequest>(
+        `/flats/${id}`,
+      );
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError) {
         if (error.response?.status === 404) {
           return null;
         }
-        throw new Error(error.response?.data?.message || 'Failed to get flat');
+        throw new Error(error.response?.data?.message || "Failed to get flat");
       }
       throw error;
     }
   }
 
-  static async getFlatsByHome(homeId: number, params?: PaginationParams): Promise<FlatWithCategoryRequest[]> {
+  static async getFlatsByHome(
+    homeId: number,
+    params?: PaginationParams,
+  ): Promise<FlatWithCategoryRequest[]> {
     try {
-      const response = await apiClient.get<FlatWithCategoryRequest[]>(`/homes/${homeId}/flats`, {params});
+      const response = await apiClient.get<FlatWithCategoryRequest[]>(
+        `/homes/${homeId}/flats`,
+        { params },
+      );
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError) {
-        throw new Error(error.response?.data?.message || 'Failed to get flats for home');
+        throw new Error(
+          error.response?.data?.message || "Failed to get flats for home",
+        );
       }
       throw error;
     }
@@ -187,11 +321,11 @@ export class PublicService {
   // Homes - Public Read
   static async getHomes(params?: PaginationParams): Promise<HomeRequest[]> {
     try {
-      const response = await apiClient.get<HomeRequest[]>('/homes', {params});
+      const response = await apiClient.get<HomeRequest[]>("/homes", { params });
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError) {
-        throw new Error(error.response?.data?.message || 'Failed to get homes');
+        throw new Error(error.response?.data?.message || "Failed to get homes");
       }
       throw error;
     }
@@ -206,19 +340,27 @@ export class PublicService {
         if (error.response?.status === 404) {
           return null;
         }
-        throw new Error(error.response?.data?.message || 'Failed to get home');
+        throw new Error(error.response?.data?.message || "Failed to get home");
       }
       throw error;
     }
   }
 
-  static async getFlatsByCategory(categoryId: number, params?: PaginationParams): Promise<FlatWithCategoryRequest[]> {
+  static async getFlatsByCategory(
+    categoryId: number,
+    params?: PaginationParams,
+  ): Promise<FlatWithCategoryRequest[]> {
     try {
-      const response = await apiClient.get<FlatWithCategoryRequest[]>(`/flats/categories/${categoryId}`, {params});
+      const response = await apiClient.get<FlatWithCategoryRequest[]>(
+        `/flats/categories/${categoryId}`,
+        { params },
+      );
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError) {
-        throw new Error(error.response?.data?.message || 'Failed to get flats for category');
+        throw new Error(
+          error.response?.data?.message || "Failed to get flats for category",
+        );
       }
       throw error;
     }
@@ -226,11 +368,13 @@ export class PublicService {
 
   static async getPhotos(params?: PaginationParams): Promise<Photo[]> {
     try {
-      const response = await apiClient.get<Photo[]>('/photos', {params});
+      const response = await apiClient.get<Photo[]>("/photos", { params });
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError) {
-        throw new Error(error.response?.data?.message || 'Failed to get photos');
+        throw new Error(
+          error.response?.data?.message || "Failed to get photos",
+        );
       }
       throw error;
     }
@@ -245,48 +389,66 @@ export class PublicService {
         if (error.response?.status === 404) {
           return null;
         }
-        throw new Error(error.response?.data?.message || 'Failed to get photo');
+        throw new Error(error.response?.data?.message || "Failed to get photo");
       }
       throw error;
     }
   }
 
-
-  static async searchFlats(searchParams: SearchRequest): Promise<FlatWithCategoryRequest[]> {
+  static async searchFlats(
+    searchParams: SearchRequest,
+  ): Promise<FlatWithCategoryRequest[]> {
     try {
-      const response = await apiClient.post<FlatWithCategoryRequest[], SearchRequest>('/search', searchParams);
+      const response = await apiClient.post<
+        FlatWithCategoryRequest[],
+        SearchRequest
+      >("/search", searchParams);
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError) {
-        throw new Error(error.response?.data?.message || 'Search failed');
+        throw new Error(error.response?.data?.message || "Search failed");
       }
       throw error;
     }
   }
 
-  static async advancedSearch(searchParams: SearchRequest & PaginationParams): Promise<PaginatedResponse<FlatWithCategoryRequest>> {
+  static async advancedSearch(
+    searchParams: SearchRequest & PaginationParams,
+  ): Promise<PaginatedResponse<FlatWithCategoryRequest>> {
     try {
-      const response = await apiClient.post<PaginatedResponse<FlatWithCategoryRequest>, SearchRequest & PaginationParams>('/search/advanced', searchParams);
+      const response = await apiClient.post<
+        PaginatedResponse<FlatWithCategoryRequest>,
+        SearchRequest & PaginationParams
+      >("/search/advanced", searchParams);
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError) {
-        throw new Error(error.response?.data?.message || 'Advanced search failed');
+        throw new Error(
+          error.response?.data?.message || "Advanced search failed",
+        );
       }
       throw error;
     }
   }
 
   // Requests - Public Create
-  static async createRequest(requestData: RequestCreate): Promise<RequestsPost201Response> {
+  static async createRequest(
+    requestData: RequestCreate,
+  ): Promise<RequestsPost201Response> {
     try {
-      const response = await apiClient.post<RequestsPost201Response, RequestCreate>('/bids', requestData);
+      const response = await apiClient.post<
+        RequestsPost201Response,
+        RequestCreate
+      >("/bids", requestData);
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError) {
         if (error.response?.status === 400) {
-          throw new Error('Invalid request data');
+          throw new Error("Invalid request data");
         }
-        throw new Error(error.response?.data?.message || 'Failed to create request');
+        throw new Error(
+          error.response?.data?.message || "Failed to create request",
+        );
       }
       throw error;
     }
@@ -319,6 +481,8 @@ export class PublicService {
 
 export const {
   getPageInfo,
+  getAboutUsInfo,
+  updateAboutUsInfo,
   getSocialMedia,
   updateSocialMedia,
   addSocialMedia,
@@ -331,6 +495,8 @@ export const {
   getFlatById,
   getFlatsByHome,
   getHomes,
+  getLayouts,
+  getLayoutById,
   getHomeById,
   getFlatsByCategory,
   getPhotos,

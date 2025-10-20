@@ -1,0 +1,78 @@
+.container {
+    margin-top: 80px;
+    font-family: var(--font-family-open-sans);
+}
+
+.topImageContainer {
+    position: relative;
+    display: inline-block;
+}
+
+.topImageTriangleOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fafbfc;
+    clip-path: polygon(0% 82%, 0% 100%, 100% 100%);
+    pointer-events: none;
+}
+
+.apartmentComplexesList {
+    display: flex;
+    flex-direction: column;
+    padding-top: 32px;
+    gap: 40px;
+}
+
+.apartmentComplexesListHeader {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 0px 208px;
+}
+
+.apartmentComplexesListTitle {
+    font-family: var(--font-family-montserrat);
+    font-weight: 500;
+    font-style: Medium;
+    font-size: 56px;
+    line-height: 72px;
+    letter-spacing: -5%;
+    color: var(--color-purple-main);
+}
+
+.apartmentComplexesListDescription {
+    font-family: Open Sans;
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 18px;
+    line-height: 24px;
+    letter-spacing: 0%;
+}
+
+.apartmentComplexesListContent {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    background-color: white;
+    padding-top: 80px;
+    padding-bottom: 100px;
+    padding-left: 208px;
+    gap: 40px;
+    position: relative;
+}
+
+.apartmentComplexesListContent::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fafbfc;
+    clip-path: polygon(0% 0%, 0% 7.5%, 100% 0%);
+    pointer-events: none;
+    z-index: 0;
+}

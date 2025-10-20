@@ -1,0 +1,91 @@
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 30px;
+    border: 1px solid transparent;
+    font-family: var(--font-family-montserrat);
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    outline: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.default {
+    background-color: var(--color-purple);
+    color: white;
+}
+
+.default:hover:not(.disabled) {
+    background-color: var(--color-purple90);
+}
+
+.default:active:not(.disabled) {
+    background-color: var(--color-purple-active);
+}
+
+.outlined {
+    font-weight: 500;
+    border: 1px solid var(--color-main);
+    background-color: transparent;
+    color: var(--color-main);
+}
+
+.outlined:hover:not(.disabled) {
+    opacity: 0.6;
+}
+
+.outlined:active:not(.disabled) {
+    border: 1px solid var(--color-purple);
+    color: var(--color-purple);
+    opacity: 1;
+}
+
+.disabled {
+    background-color: var(--color-gray);
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.disabled:hover {
+    cursor: not-allowed;
+}
+
+.content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.arrow {
+    font-weight: bold;
+    transform: translateX(7px);
+}
+
+.default:not(.disabled) .arrow path {
+    stroke: white;
+}
+
+.outlined .arrow path {
+    stroke: var(--color-main);
+}
+
+.default.disabled {
+    opacity: 0.6;
+}
+
+.outlined.disabled {
+    background-color: transparent;
+    color: var(--color-gray);
+    border-color: var(--color-gray);
+}
+
+.outlined.disabled .arrow path {
+    stroke: var(--color-gray);
+}

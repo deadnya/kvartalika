@@ -1,7 +1,12 @@
 import { useState, useEffect, useCallback, type FC } from 'react'
 
+const capitalize = (str: string | undefined, lower = false) =>
+    (lower ? str?.toLowerCase() : str)?.replace(/(?:^|\s|["'([{])+\S/, match => match.toUpperCase());
+
+
 interface TextSliderProps {
   items: string[];
+  images?: string[];
   labels?: string[];
   className?: string;
   autoPlay?: boolean;
@@ -11,13 +16,16 @@ interface TextSliderProps {
 
 const TextSlider: FC<TextSliderProps> = ({
                                            items,
+                                           images,
                                            labels = [],
                                            className = '',
                                            autoPlay = false,
                                            autoPlayInterval = 6000,
                                            onIndexChange,
                                          }) => {
-  const [currentIndex, setCurrentIndex] = useState(0)
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  labels = items.map(s => s.split(' - ')[0]);
 
   const next = useCallback(() => {
     setCurrentIndex((p) => {
@@ -73,10 +81,12 @@ const TextSlider: FC<TextSliderProps> = ({
           <div className="text-2xl sm:text-3xl font-extrabold text-gray-900 leading-none">
             {labels[currentIndex] ?? currentIndex + 1}
           </div>
-          <div className="flex-1 border-b border-primary-600 opacity-80" />
+          {/*<div className="flex-1 border-b border-primary-600 opacity-80" />*/}
         </div>
       </div>
-
+      <div className="history-image-wrapper">
+        {images?.[currentIndex] ? <img src={images?.[currentIndex]} alt={images?.[currentIndex]} /> : "Нет изображения"}
+      </div>
       <div className="min-w-0 min-h-0 overflow-y-auto">
         <div className="h-full bg-white rounded-md p-4 shadow-sm border border-transparent hover:border-gray-100">
           <div
@@ -87,7 +97,7 @@ const TextSlider: FC<TextSliderProps> = ({
             style={{ WebkitOverflowScrolling: 'touch' }}
           >
             <div className="tracking-wide break-words">
-              {items[currentIndex]}
+              {capitalize(items[currentIndex].substring(items[currentIndex].indexOf(' - ') + 2))}
             </div>
           </div>
         </div>

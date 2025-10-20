@@ -260,7 +260,7 @@ const UnifiedFileManager: FC<UnifiedFileManagerProps> = ({
                   <button
                     onClick={() =>
                       onDownload(
-                        name.includes("/") ? [name] : [...currentPath, name]
+                        name.includes("/") ? [name] : [...currentPath, name],
                       )
                     }
                     className="px-2 py-1 bg-primary-500 text-white rounded hover:bg-primary-600 transition-colors"
@@ -270,7 +270,7 @@ const UnifiedFileManager: FC<UnifiedFileManagerProps> = ({
                   <button
                     onClick={() =>
                       onDeleteFile(
-                        name.includes("/") ? [name] : [...currentPath, name]
+                        name.includes("/") ? [name] : [...currentPath, name],
                       )
                     }
                     className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"

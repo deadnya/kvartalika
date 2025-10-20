@@ -1,0 +1,40 @@
+.breadcrumbNav {
+    background-color: transparent;
+
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0%;
+
+    padding-top: 32px;
+    padding-right: 208px;
+    padding-left: 208px;
+
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+}
+
+.breadcrumbNav svg {
+    height: 20px;
+    width: 20px;
+}
+
+.breadcrumbLink {
+    color: #2D3748;
+    transition: 0.2s;
+}
+
+.breadcrumbLink:hover {
+    color: #7B2CBF;
+}
+
+.breadcrumbCurrent {
+    color: #2D3748;
+    opacity: 0.5;
+}
+
+.breadcrumbItem {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+}

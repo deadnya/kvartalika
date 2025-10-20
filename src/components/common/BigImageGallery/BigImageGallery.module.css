@@ -1,0 +1,187 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    height: 600px;
+}
+
+@keyframes exitToLeft {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+}
+
+@keyframes exitToRight {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+}
+
+@keyframes enterFromRight {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes enterFromLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.imageContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    height: 600px;
+}
+
+.image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.image.exitLeft {
+    animation: exitToLeft 0.5s ease-in-out forwards;
+    z-index: 1;
+}
+
+.image.exitRight {
+    animation: exitToRight 0.5s ease-in-out forwards;
+    z-index: 1;
+}
+
+.image.enterFromRight {
+    animation: enterFromRight 0.5s ease-in-out;
+    z-index: 2;
+}
+
+.image.enterFromLeft {
+    animation: enterFromLeft 0.5s ease-in-out;
+    z-index: 2;
+}
+
+.arrowButton {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    backdrop-filter: blur(8px);
+    background-color: var(--color-main-45);
+}
+
+.arrowButton:hover {
+    opacity: 0.7;
+}
+
+.arrowButton:active {
+    transform: translateY(-50%) scale(0.95);
+    opacity: 0.8;
+}
+
+.arrowLeft {
+    left: 200px;
+}
+
+.arrowRight {
+  right: 200px;
+}
+
+.dotPagination {
+    backdrop-filter: blur(8px);
+    background-color: var(--color-main-45);
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    border-radius: 13px;
+    padding: 8px;
+}
+
+.dot {
+    display: inline-flex;
+    width: 10px;
+    height: 10px;
+    padding: 0;
+    background-color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.5s ease-in-out;
+}
+
+.dot:hover {
+    background-color: rgba(255, 255, 255, 0.7);
+}
+
+.dot.activeDot {
+    background-color: var(--color-purple);
+}
+
+.paginationTop {
+    display: none;
+}
+
+.navButton {
+    display: none;
+}
+
+.pageIndicator {
+    display: none;
+}
+
+.emptyState {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 300px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    color: #999;
+    font-size: 16px;
+}

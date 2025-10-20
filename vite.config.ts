@@ -1,11 +1,15 @@
 import {defineConfig} from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
+import svgr from "vite-plugin-svgr";
 
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [react(), tailwindcss(), svgr()],
+  define: {
+    global: 'globalThis',
+  },
   build: {
-    target: 'esnext',
+    target: 'es2020',
     minify: 'esbuild',
     sourcemap: false,
     rollupOptions: {
@@ -23,6 +27,9 @@ export default defineConfig({
   },
   optimizeDeps: {
     include: ['react', 'react-dom'],
+    esbuildOptions: {
+      target: 'es2020',
+    },
   },
   server: {
     port: 5173

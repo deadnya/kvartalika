@@ -1,14 +1,15 @@
-import type {FlatWithCategoryRequest, HomeRequest} from "../services";
-import {useAuthStore} from "../store/auth.store.ts";
+import type { FlatWithCategoryRequest, HomeRequest } from "../services";
 
-export const publishChecker = (data: HomeRequest | FlatWithCategoryRequest) => {
-  if (useAuthStore.getState().isAuthenticated) {
-    return true;
-  }
+export const publishChecker = (_data: HomeRequest | FlatWithCategoryRequest) => {
+  // if (useAuthStore.getState().isAuthenticated) {
+  //   return true;
+  // }
+  //
+  // if ('flat' in _data) {
+  //   return _data.flat.published ?? false;
+  // } else {
+  //   return _data.published ?? false;
+  // }
 
-  if ('flat' in data) {
-    return data.flat.published ?? false;
-  } else {
-    return data.published ?? false;
-  }
-}
+  return true;
+};

@@ -1,5 +1,5 @@
-import {apiClient} from './api.config';
-import type {ApiResponse, PaginationParams, UserDto,} from './api.types';
+import {apiClient} from './api.config.ts';
+import type {ApiResponse, PaginationParams, UserDto,} from './api.types.ts';
 import {AxiosError} from 'axios';
 
 export class AdminService {
