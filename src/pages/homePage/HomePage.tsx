@@ -1,10 +1,8 @@
 //import { useAuthStore } from "../../store/auth.store.ts";
 import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import Button from "../../components/common/Button";
 import styles from "./HomePage.module.css"
-
-import HomePage1 from "/images/HomePage1.png"
-import FallbackImage from "/fallback.png"
 
 import MapIcon from "../../assets/icons/map.svg?react"
 import BuildingIcon from "../../assets/icons/building.svg?react"
@@ -20,9 +18,27 @@ import PaymentIcon2 from "../../assets/icons/homePagePayment2.svg?react"
 import PaymentIcon3 from "../../assets/icons/homePagePayment3.svg?react"
 import PaymentIcon4 from "../../assets/icons/homePagePayment4.svg?react"
 import Promotion from "../../components/common/Promotion/Promotion";
+import { getHomePageContent } from "../../services/api/pages.api.requests";
+import type { HomePageContent, ProjectInfo } from "../../services/api/pages.api.types";
+import { DEFAULT_HOME_PAGE_CONTENT } from "../../services/api/pages.api.defaults";
 
 const HomePage = () => {
     const navigate = useNavigate();
+    const [content, setContent] = useState<HomePageContent>(DEFAULT_HOME_PAGE_CONTENT);
+
+    useEffect(() => {
+        const fetchContent = async () => {
+            try {
+                const data = await getHomePageContent();
+                setContent(data);
+            } catch (error) {
+                console.error("Error fetching home page content:", error);
+                setContent(DEFAULT_HOME_PAGE_CONTENT);
+            }
+        };
+
+        fetchContent();
+    }, []);
     //const role = useAuthStore((state) => state.role);
     //const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
     //{isAuthenticated && role && role !== "CLIENT" && (<div></div>)} adminka
@@ -32,20 +48,20 @@ const HomePage = () => {
             <div className={styles.titleMainContainer}>
                 <div className={styles.titleImageContainer}>
                     <div className={styles.imageWrapper}>
-                        <img src={HomePage1}></img>
+                        <img src={content.heroImageSrc}></img>
                         <div className={styles.triangleOverlay}></div>
                     </div>
                 </div>
 
                 <div className={styles.titleContainer}>
                     <div className={styles.titleBlock}>
-                        <span className={styles.title + " " + styles.titlePartOne}>ГК Кварталика</span>
-                        <span className={styles.title + " " + styles.titlePartTwo}>Девелопмент полного цикла:</span>
-                        <span className={styles.title + " " + styles.titlePartThree}>от идеи до жизни</span>
+                        <span className={styles.title + " " + styles.titlePartOne}>{content.heroTitle.partOne}</span>
+                        <span className={styles.title + " " + styles.titlePartTwo}>{content.heroTitle.partTwo}</span>
+                        <span className={styles.title + " " + styles.titlePartThree}>{content.heroTitle.partThree}</span>
                     </div>
                     <div className={styles.titleMenu}>
                         <div className={styles.mottoContainer}>
-                            <span className={styles.motto}>Сочетаем глубокую экспертизу в области недвижимости с современным подходом к созданию комфортной городской среды. С нами вы сможете наслаждаться каждым днём, чувствуя себя в безопасности и комфорте.</span>
+                            <span className={styles.motto}>{content.heroMotto}</span>
                         </div>
                         <div className={styles.titleButtonsContainer}>
                             <Button
@@ -71,38 +87,45 @@ const HomePage = () => {
                 </div>
 
                 <div className={styles.projectContainer}>
-                    <div className={styles.projectBottomContent}>
-                        <div className={styles.projectInfo}>
-                            <div className={styles.projectMainInfo}>
-                                <h2 className={styles.projectTitle}>ЖК «Нижний 51»</h2>
-                                <div className={styles.projectParameters}>
-                                    <div className={styles.projectParam}>
-                                        <MapIcon /><span>Томск, переулок Нижний, дом 51</span>
-                                    </div>
-                                    <div className={styles.projectParam + " " + styles.fillFix}>
-                                        <BuildingIcon /><span>10 этажей</span>
+                    {content.projects.map((project: ProjectInfo) => (
+                        <div key={project.id} className={styles.projectBottomContent}>
+                            <div className={styles.projectInfo}>
+                                <div className={styles.projectMainInfo}>
+                                    <h2 className={styles.projectTitle}>{project.title}</h2>
+                                    <div className={styles.projectParameters}>
+                                        {project.params.map((param, index) => (
+                                            <div key={index} className={styles.projectParam + (index === project.params.length - 1 ? " " + styles.fillFix : "")}>
+                                                {param.icon === "map" && <MapIcon />}
+                                                {param.icon === "building" && <BuildingIcon />}
+                                                <span>{param.value}</span>
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
+                                <div className={styles.projectDescription}>
+                                    <p className={styles.projectDescriptionText}>
+                                        {project.description.split('\n').map((line, index) => (
+                                            <span key={index}>
+                                                {line}
+                                                {index < project.description.split('\n').length - 1 && <br />}
+                                            </span>
+                                        ))}
+                                    </p>
+                                </div>
                             </div>
-                            <div className={styles.projectDescription}>
-                                <p className={styles.projectDescriptionText}>
-                                    Экологичный формат жизни в развивающемся районе Томска<br />
-                                    Современный жилой комплекс комфорт-класса на стыке спокойствия и здорового образа жизни.
-                                </p>
-                            </div>
-                        </div>
-                        <div className={styles.projectButtonsContainer}>
-                            <Button
-                                includeArrow={true}
-                                onClick={() => {}} //navigate()
-                            >Смотреть квартиры</Button>
+                            <div className={styles.projectButtonsContainer}>
+                                <Button
+                                    includeArrow={true}
+                                    onClick={() => {}} //navigate()
+                                >Смотреть квартиры</Button>
 
-                            <Button
-                                variant="outlined"
-                                onClick={() => {}} //navigate()
-                            >Подробнее о ЖК</Button>
+                                <Button
+                                    variant="outlined"
+                                    onClick={() => {navigate("/complex/1")}} //navigate()
+                                >Подробнее о ЖК</Button>
+                            </div>
                         </div>
-                    </div>
+                    ))}
                 </div>
             </div>
 
@@ -116,119 +139,59 @@ const HomePage = () => {
                     >Смотреть все</Link>
                 </div>
                 <div className={styles.hotDealsContent}>
-                    <ApartmentCard
-                        roomCount={0}
-                        toiletCount={0}
-                        houseComplexTitle={"Test"}
-                        address={"Test"}
-                        area={0}
-                        houseComplexId={"1"}
-                        flatId={"1"}
-                        imageSrc={FallbackImage}
-                    />
-
-                    <ApartmentCard
-                        roomCount={0}
-                        toiletCount={0}
-                        houseComplexTitle={"Test"}
-                        address={"Test"}
-                        area={0}
-                        houseComplexId={"1"}
-                        flatId={"1"}
-                        imageSrc={FallbackImage}
-                    />
-
-                    <ApartmentCard
-                        roomCount={0}
-                        toiletCount={0}
-                        houseComplexTitle={"Test"}
-                        address={"Test"}
-                        area={0}
-                        houseComplexId={"1"}
-                        flatId={"1"}
-                        imageSrc={FallbackImage}
-                    />
-
-                    <ApartmentCard
-                        roomCount={0}
-                        toiletCount={0}
-                        houseComplexTitle={"Test"}
-                        address={"Test"}
-                        area={0}
-                        houseComplexId={"1"}
-                        flatId={"1"}
-                        imageSrc={FallbackImage}
-                    />
+                    {content.hotDeals.map((deal) => (
+                        <ApartmentCard
+                            key={deal.id}
+                            roomCount={deal.roomCount}
+                            toiletCount={deal.toiletCount}
+                            houseComplexTitle={deal.houseComplexTitle}
+                            address={deal.address}
+                            area={deal.area}
+                            houseComplexId={deal.houseComplexId}
+                            flatId={deal.flatId}
+                            imageSrc={deal.imageSrc}
+                        />
+                    ))}
                 </div>
             </div>
 
             <div className={styles.paymentMethodsContainer}>
                 <div className={styles.paymentBlurOverlay}></div>
                 <h2 className={styles.paymentMethodsHeader}>Способы покупки</h2>
-                <div className={styles.paymentMethods}>
-                    <PaymentMethod 
-                        title="100% оплата"
-                        description="Специальные условаия при покупке со 100% оплатой"
-                        icon={PaymentIcon1}
-                    />
-
-                    <PaymentMethod 
-                        title="Любые ипотечные программы"
-                        description="Льготная ставка по семейной и IT-ипотеке от Сбера"
-                        icon={PaymentIcon2}
-                    />
-
-                    <PaymentMethod 
-                        title="Оплата через эскроу-счёт*"
-                        description="Безопасность и надёжность сделки с обеих сторон"
-                        icon={PaymentIcon3}
-                    />
-
-                    <PaymentMethod 
-                        title="Договор долевого участия в строительстве, эскроу-счёт*"
-                        description="Выгодные условия сделки"
-                        icon={PaymentIcon4}
-                    />
+                                <div className={styles.paymentMethods}>
+                    {content.paymentMethods.map((method, index) => {
+                        const iconMap: { [key: string]: React.ComponentType<any> } = {
+                            'payment1': PaymentIcon1,
+                            'payment2': PaymentIcon2,
+                            'payment3': PaymentIcon3,
+                            'payment4': PaymentIcon4,
+                        };
+                        const IconComponent = iconMap[method.iconType];
+                        return (
+                            <PaymentMethod
+                                key={index}
+                                title={method.title}
+                                description={method.description}
+                                icon={IconComponent}
+                            />
+                        );
+                    })}
                 </div>
             </div>
 
             <div className={styles.promotions}>
                 <h2 className={styles.promotionsHeader}>Акции</h2>
                 <div className={styles.promotionsContent}>
-                    <Promotion
-                        title="Ставка 4,6% НА ВЕСЬ СРОК!"
-                        description="Уважаемые клиенты! Мы рады предложить вам уникальные условия по семейной ипотеке."
-                        imageSrc={FallbackImage}
-                        promotionId="1"
-                        longDescription={"Уважаемые клиенты! Мы рады предложить вам уникальные условия по семейной ипотеке.\n" +
-                            "Воспользуйтесь государственной программой поддержки и сохраните единую низкую ставку на весь период кредитования.\n" + 
-                            "Ключевые условия программы: \n" +
-                            "  ·  Ставка по кредиту: 4,6% годовых. Фиксируется на весь срок действия кредитного договора.\n" + 
-                            "  ·  Льготные условия распространяются на семьи с двумя детьми до 18 лет; семьи с одним ребенком до 6 лет.\n" +
-                            "Ваше преимущество: Вы получаете полную предсказуемость платежей и защиту от изменения процентных ставок на рынке. Это возможность приобрести жилье на выгодных и стабильных условиях.\n" +
-                            "Оформите консультацию, чтобы рассчитать ежемесячный платеж и узнать полный перечень документов."
-                    }/>
-
-                    <Promotion
-                        title="Бесплатный трансфер для жителей ЖК «Нижний 51»!"
-                        description="Уважаемые жители! Рады сообщить о запуске бесплатного трансфера от нашего ЖК «Нижний 51» до остановки «Автоцентр»."
-                        imageSrc={FallbackImage}
-                        promotionId="1"
-                        longDescription={"Уважаемые жители! Рады сообщить о запуске бесплатного трансфера от нашего ЖК «Нижний 51» до остановки «Автоцентр». Теперь добираться до центра города стало еще проще и комфортнее.\n" +
-                            "Основная информация о маршруте:\n" +
-                            "Начало работы: с ввода дома в эксплуатацию.\n" +
-                            "Маршрут: отправная точка — дом №51 (ЖК «Нижний 51»). Конечная остановка: «Автоцентр».\n" +
-                            "Время в пути: не более 10 минут.\n" +
-                            "Вместимость микроавтобуса: 8 пассажиров.\n" +
-                            "Временной промежуток	Периодичность трансфера:\n" +
-                            "  ·  7:00-10:00	Каждые 15 минут\n" +
-                            "  ·  10:00-13:00	Каждые 30 минут\n" +
-                            "  ·  13:00-15:00	Каждые 15 минут\n" +
-                            "  ·  15:00-17:00	Каждые 30 минут\n" +
-                            "  ·  17:00-19:00	Каждые 15 минут\n" + 
-                            "Почему это удобно для вас? Это временное решение проблемы с транспортом, пока в наш переулок не организованы городские маршруты. От остановки «Автоцентр» вы легко попадете на любой другой общественный транспорт и доберетесь в нужную часть города.\n" +
-                            "Ждем вас в новом году! Ваша компания застройщика."
-                        }/>
+                    {content.promotions.map((promotion) => (
+                        <Promotion
+                            key={promotion.id}
+                            title={promotion.title}
+                            description={promotion.description}
+                            imageSrc={promotion.imageSrc}
+                            promotionId={promotion.id}
+                            longDescription={promotion.longDescription || promotion.description}
+                        />
+                    ))}
                 </div>
             </div>
 
@@ -245,11 +208,10 @@ const HomePage = () => {
                                 <div className={styles.contactInfoBlock}>
                                     <MapIcon />
                                     <div className={styles.contactInfoContent}>
-                                        <span>Томск, площадь Батенькова 2, подъезд 7, этаж 3, офис 310</span>
+                                        <span>{content.contactInfo.address}</span>
                                         <span>
                                             Режим работы:<br/>
-                                            пн–пт: 9:00 –19:00<br/>
-                                            сб: 10:00 –18:00
+                                            {content.contactInfo.workingHours}
                                         </span>
                                     </div>
                                 </div>
@@ -258,13 +220,13 @@ const HomePage = () => {
                                 <div className={styles.contactInfoBlock}>
                                     <PhoneIcon />
                                     <div className={styles.contactInfoContent}>
-                                        <span>+7 (3822) 30-99-22</span>
+                                        <span>{content.contactInfo.phone}</span>
                                     </div>
                                 </div>
                                 <div className={styles.contactInfoBlock}>
                                     <EmailIcon />
                                     <div className={styles.contactInfoContent}>
-                                        <span>info@kvartalika.ru</span>
+                                        <span>{content.contactInfo.email}</span>
                                     </div>
                                 </div>
                             </div>

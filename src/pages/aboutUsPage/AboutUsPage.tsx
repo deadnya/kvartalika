@@ -1,13 +1,9 @@
 import { Link } from 'react-router-dom'
+import { useEffect, useState } from 'react'
 import styles from "./AboutUsPage.module.css"
 
-import aboutUsImage1 from "/images/AboutUsPage1.jpg"
-import aboutUsImage2p1 from "/images/AboutUsPage2-1.jpg"
-import aboutUsImage2p2 from "/images/AboutUsPage2-2.jpg"
-import aboutUsImage2p3 from "/images/AboutUsPage2-3.jpg"
 import image01 from "/images/01.png"
 import image02 from "/images/02.png"
-import aboutUsImage3 from"/images/AboutUsPage3.jpg"
 
 import Principle1Icon from "../../assets/icons/principle1.svg?react"
 import Principle2Icon from "../../assets/icons/principle2.svg?react"
@@ -22,110 +18,105 @@ import EmailIcon from "../../assets/icons/email.svg?react"
 import { Input } from '../../components/common/Input/Input'
 import Button from '../../components/common/Button/Button'
 import BreadcrumbNav from '../../components/common/BreadcrumbNav'
+import { getAboutUsPageContent } from '../../services/api/pages.api.requests'
+import type { AboutUsPageContent } from '../../services/api/pages.api.types'
+import { DEFAULT_ABOUT_US_PAGE_CONTENT } from '../../services/api/pages.api.defaults'
 
 const AboutUsPage = () => {
+    const [content, setContent] = useState<AboutUsPageContent>(DEFAULT_ABOUT_US_PAGE_CONTENT)
+
+    useEffect(() => {
+        const fetchContent = async () => {
+            try {
+                const data = await getAboutUsPageContent()
+                setContent(data)
+            } catch (error) {
+                console.error("Error fetching about us page content:", error)
+                setContent(DEFAULT_ABOUT_US_PAGE_CONTENT)
+            }
+        }
+
+        fetchContent()
+    }, [])
     return (
         <div className={styles.container}>
             <div className={styles.topContainer}>
                 <div className={styles.topImageContainer}>
-                    <img src={aboutUsImage1}></img>
+                    <img src={content.hero.imageSrc}></img>
                     <div className={styles.topImageTriangleOverlay}></div>
                 </div>
                 <BreadcrumbNav currentPage="О нас" />
                 <div className={styles.mottoContainer}>
                     <div className={styles.mottoTopContainer}>
-                        <span className={styles.motto + " " + styles.motto1}>С ГК «Кварталика»</span>
-                        <span className={styles.motto + " " + styles.motto2}>ваша жизнь становится</span>
-                        <span className={styles.motto + " " + styles.motto3}>комфортнее и безопаснее</span>
+                        <span className={styles.motto + " " + styles.motto1}>{content.hero.motto.partOne}</span>
+                        <span className={styles.motto + " " + styles.motto2}>{content.hero.motto.partTwo}</span>
+                        <span className={styles.motto + " " + styles.motto3}>{content.hero.motto.partThree}</span>
                     </div>
                     <p className={styles.mottoBottomText}>
-                        Мы — девелопер полного цикла, который сочетает глубокие знания рынка с современным видением городской среды.<br/>
-                        Наслаждайтесь каждым днём в пространстве, созданном для жизни.
+                        {content.hero.bottomText.split('\n').map((line, index) => (
+                            <span key={index}>
+                                {line}
+                                {index < content.hero.bottomText.split('\n').length - 1 && <br/>}
+                            </span>
+                        ))}
                     </p>
                 </div>
             </div>
 
             <div className={styles.imageRow}>
                 <div className={styles.imageRowTriangleOverlay}></div>
-                <img src={aboutUsImage2p1}></img>
-                <img src={aboutUsImage2p2}></img>
-                <img src={aboutUsImage2p3}></img>
+                <img src={content.imageRow.imageSrc1}></img>
+                <img src={content.imageRow.imageSrc2}></img>
+                <img src={content.imageRow.imageSrc3}></img>
             </div>
 
             <div className={styles.principles}>
-                <div className={styles.principle}>
-                    <div className={styles.principleTitle}>
-                        <img src={image01} className={styles.principleImage}></img>
-                        <h2 className={styles.principleTitleText}>
-                            НАДЕЖНОСТЬ<br/>
-                            КАК ФУНДАМЕНТ
-                        </h2>
+                {content.principles.map((principle) => (
+                    <div key={principle.id} className={styles.principle}>
+                        <div className={styles.principleTitle}>
+                            <img 
+                                src={principle.imageNumber === "01" ? image01 : image02} 
+                                className={styles.principleImage}
+                            ></img>
+                            <h2 className={styles.principleTitleText}>
+                                {principle.title}
+                            </h2>
+                        </div>
+                        <p className={styles.principleDescription}>
+                            {principle.description}
+                        </p>
                     </div>
-                    <p className={styles.principleDescription}>
-                        Наша репутация основана на принципах прозрачности, ответственности и соблюдения сроков. Мы реализуем полный цикл работ — от проектирования до управления объектами, обеспечивая надёжность на каждом этапе.<br/>
-                        Все обязательства перед клиентами подкрепляются современными эскроу-механизмами и строгим контролем качества.
-                    </p>
-                </div>
-
-                <div className={styles.principle}>
-                    <div className={styles.principleTitle}>
-                        <img src={image02} className={styles.principleImage}></img>
-                        <h2 className={styles.principleTitleText}>
-                            ИННОВАЦИИ<br/>
-                            И ЭКОЛОГИЧНОСТЬ
-                        </h2>
-                    </div>
-                    <p className={styles.principleDescription}>
-                        Мы интегрируем в проекты smart-технологии, энергоэффективные системы и экологичные материалы, создавая комфортную и устойчивую среду для жизни.<br/>
-                        Наш подход — это синтез современной архитектуры, технологических решений и бережного отношения к окружающей среде.
-                    </p>
-                </div>
+                ))}
             </div>
 
             <div className={styles.ourValues}>
                 <div className={styles.valuesImageContainer}>
-                    <img src={aboutUsImage3}></img>
+                    <img src={content.valuesImage}></img>
                     <div className={styles.valuesImageTriangleOverlay}></div>
                 </div>
                 <div className={styles.ourValuesList}>
                     <h2 className={styles.ourValuesHeader}>Наши ценности</h2>
                     <div className={styles.ourValuesElements}>
-                        <div className={styles.ourValuesElement}>
-                            <div className={styles.principleIconContainer}>
-                                <Principle1Icon />
-                            </div>
-                            <div className={styles.ourValuesTextBlock}>
-                                <h3 className={styles.ourValuesTextBlockHeader}>Профессионализм</h3>
-                                <p className={styles.ourValuesTextBlockDescription}>— экспертиза и опыт нашей команды гарантируют высочайший уровень реализации проектов</p>
-                            </div>
-                        </div>
-                        <div className={styles.ourValuesElement}>
-                            <div className={styles.principleIconContainer}>
-                                <Principle2Icon />
-                            </div>
-                            <div className={styles.ourValuesTextBlock}>
-                                <h3 className={styles.ourValuesTextBlockHeader}>Качество</h3>
-                                <p className={styles.ourValuesTextBlockDescription}>— мы используем проверенные материалы и передовые технологии строительства</p>
-                            </div>
-                        </div>
-                        <div className={styles.ourValuesElement}>
-                            <div className={styles.principleIconContainer}>
-                                <Principle3Icon />
-                            </div>
-                            <div className={styles.ourValuesTextBlock}>
-                                <h3 className={styles.ourValuesTextBlockHeader}>Ответственность</h3>
-                                <p className={styles.ourValuesTextBlockDescription}>— четкое соблюдение обязательств перед клиентами и партнерами</p>
-                            </div>
-                        </div>
-                        <div className={styles.ourValuesElement}>
-                            <div className={styles.principleIconContainer}>
-                                <Principle4Icon />
-                            </div>
-                            <div className={styles.ourValuesTextBlock}>
-                                <h3 className={styles.ourValuesTextBlockHeader}>Устойчивое развитие</h3>
-                                <p className={styles.ourValuesTextBlockDescription}>— создаем современную жилую среду, ориентированную на будущее</p>
-                            </div>
-                        </div>
+                        {content.values.map((value) => {
+                            const iconMap: { [key: string]: React.ComponentType<any> } = {
+                                'principle1': Principle1Icon,
+                                'principle2': Principle2Icon,
+                                'principle3': Principle3Icon,
+                                'principle4': Principle4Icon,
+                            };
+                            const IconComponent = iconMap[value.iconType];
+                            return (
+                                <div key={value.id} className={styles.ourValuesElement}>
+                                    <div className={styles.principleIconContainer}>
+                                        <IconComponent />
+                                    </div>
+                                    <div className={styles.ourValuesTextBlock}>
+                                        <h3 className={styles.ourValuesTextBlockHeader}>{value.title}</h3>
+                                        <p className={styles.ourValuesTextBlockDescription}>{value.description}</p>
+                                    </div>
+                                </div>
+                            );
+                        })}
                     </div>
                 </div>
             </div>
@@ -133,20 +124,22 @@ const AboutUsPage = () => {
             <div className={styles.worksWithUs}>
                 <h2 className={styles.worksWithUsHeader}>С нами уже работают</h2>
                 <div className={styles.worksWithUsContent}>
-                    <div className={styles.worksWithUsCompany}>
-                        <SberbankIcon />
-                        <div className={styles.worksWithUsCompanyText}>
-                            <h3 className={styles.worksWithUsCompanyHeader}>Сбербанк</h3>
-                            <span className={styles.worksWithUsCompanyDescription}>Ключевой партнер компании ООО СЗ «Стройгрупп»</span>
-                        </div>
-                    </div>
-                    <div className={styles.worksWithUsCompany}>
-                        <StroygroupIcon />
-                        <div className={styles.worksWithUsCompanyText}>
-                            <h3 className={styles.worksWithUsCompanyHeader}>ООО СЗ «Стройгрупп»</h3>
-                            <span className={styles.worksWithUsCompanyDescription}>Застройщик ЖК «Нижний, 51»</span>
-                        </div>
-                    </div>
+                    {content.partners.map((partner) => {
+                        const iconMap: { [key: string]: React.ComponentType<any> } = {
+                            'sberbank': SberbankIcon,
+                            'stroygroup': StroygroupIcon,
+                        };
+                        const IconComponent = iconMap[partner.iconType];
+                        return (
+                            <div key={partner.id} className={styles.worksWithUsCompany}>
+                                <IconComponent />
+                                <div className={styles.worksWithUsCompanyText}>
+                                    <h3 className={styles.worksWithUsCompanyHeader}>{partner.name}</h3>
+                                    <span className={styles.worksWithUsCompanyDescription}>{partner.description}</span>
+                                </div>
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
 
@@ -167,11 +160,10 @@ const AboutUsPage = () => {
                                 <div className={styles.contactInfoBlock}>
                                     <MapIcon />
                                     <div className={styles.contactInfoContent}>
-                                        <span>Томск, площадь Батенькова 2, подъезд 7, этаж 3, офис 310</span>
+                                        <span>{content.contactInfo.address}</span>
                                         <span>
                                             Режим работы:<br/>
-                                            пн–пт: 9:00 –19:00<br/>
-                                            сб: 10:00 –18:00
+                                            {content.contactInfo.workingHours}
                                         </span>
                                     </div>
                                 </div>
@@ -180,13 +172,13 @@ const AboutUsPage = () => {
                                 <div className={styles.contactInfoBlock}>
                                     <PhoneIcon />
                                     <div className={styles.contactInfoContent}>
-                                        <span>+7 (3822) 30-99-22</span>
+                                        <span>{content.contactInfo.phone}</span>
                                     </div>
                                 </div>
                                 <div className={styles.contactInfoBlock}>
                                     <EmailIcon />
                                     <div className={styles.contactInfoContent}>
-                                        <span>info@kvartalika.ru</span>
+                                        <span>{content.contactInfo.email}</span>
                                     </div>
                                 </div>
                             </div>

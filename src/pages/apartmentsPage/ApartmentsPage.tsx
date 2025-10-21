@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import BreadcrumbNav from "../../components/common/BreadcrumbNav";
 import { Select } from "../../components/common/Select/Select";
 import styles from "./ApartmentsPage.module.css"
@@ -10,13 +10,14 @@ import { Checkbox } from "../../components/common/Checkbox/Checkbox";
 import Button from "../../components/common/Button";
 import { SortingVariant, type SortingType } from "../../components/common/SortingVariant/SortingVariant";
 
-import Fallback from "/fallback.png"
-
 import CloseIcon from "../../assets/icons/close.svg?react"
 import ApartmentCard from "../../components/common/ApartmentCard/ApartmentCard";
 import { Pagination } from "../../components/common/Pagination/Pagination";
+import { getApartmentsPageContent } from "../../services/api/pages.api.requests";
+import type { ApartmentsPageContent } from "../../services/api/pages.api.types";
 
 const ApartmentsPage = () => {
+    const [content, setContent] = useState<ApartmentsPageContent | null>(null);
 
     const [selectedComplex, setSelectedComplex] = useState<string | number | null>(null)
     const [priceRange, setPriceRange] = useState<{ min: number; max: number }>({ min: 3500000, max: 15000000 })
@@ -31,6 +32,33 @@ const ApartmentsPage = () => {
     const [sortByArea, setSortByArea] = useState<SortingType>("noSorting");
     const [sortByRoomCount, setSortByRoomCount] = useState<SortingType>("noSorting");
     const [currentPage, setCurrentPage] = useState(1);
+
+    useEffect(() => {
+        const fetchContent = async () => {
+            try {
+                const data = await getApartmentsPageContent();
+                setContent(data);
+                // Initialize filter states from default values
+                setSelectedComplex(data.defaultFilters.selectedComplex);
+                setPriceRange(data.defaultFilters.priceRange);
+                setSelectedCategory(data.defaultFilters.selectedCategory);
+                setRoomCount(data.defaultFilters.roomCount);
+                setBathroomCount(data.defaultFilters.bathroomCount);
+                setHasFinish(data.defaultFilters.hasFinish);
+                setParks(data.defaultFilters.parks);
+                setSchools(data.defaultFilters.schools);
+                setShops(data.defaultFilters.shops);
+                // Initialize sorting from default values
+                setSortByCost(data.defaultSorting.sortByCost);
+                setSortByArea(data.defaultSorting.sortByArea);
+                setSortByRoomCount(data.defaultSorting.sortByRoomCount);
+            } catch (error) {
+                console.error("Failed to fetch apartments page content:", error);
+            }
+        };
+
+        fetchContent();
+    }, []);
 
     const clearFilters = () => {
         setSelectedComplex(null);
@@ -67,11 +95,7 @@ const ApartmentsPage = () => {
                         <div className={styles.inputBlock}>
                             <span className={styles.inputBlockLabel}>Жилой комплекс</span>
                             <Select
-                                options={[
-                                    { value: '1', label: 'ЖК «Нижний 51»' },
-                                    { value: '2', label: 'ЖК «Нижний 52»' },
-                                    { value: '3', label: 'ЖК «Нижний 53»' }
-                                ]}
+                                options={content?.complexOptions || []}
                                 value={selectedComplex}
                                 onChange={setSelectedComplex}
                                 placeholder="Выбрать ЖК"
@@ -95,11 +119,7 @@ const ApartmentsPage = () => {
                         <div className={styles.inputBlock}>
                             <span className={styles.inputBlockLabel}>Категории</span>
                             <Select
-                                options={[
-                                    { value: '1', label: 'Категория 1' },
-                                    { value: '2', label: 'Категория 2' },
-                                    { value: '3', label: 'Категория 3' }
-                                ]}
+                                options={content?.categoryOptions || []}
                                 value={selectedCategory}
                                 onChange={setSelectedCategory}
                                 placeholder="Выбрать категорию"
@@ -180,7 +200,7 @@ const ApartmentsPage = () => {
                 <div className={styles.apartmentVariantsTriangleOverlay}></div>
                 <div className={styles.apartmentVariantsBlurLeft}></div>
                 <div className={styles.sortingAndApartCount}>
-                    <span className={styles.sortingText}>Найдено: 120 квартир</span>
+                    <span className={styles.sortingText}>Найдено: {content?.totalApartments || 0} квартир</span>
                     <div className={styles.sortingContainer}>
                         <span className={styles.sortingText}>Сортировать по</span>
                         <div className={styles.sortingVariants}>
@@ -192,144 +212,24 @@ const ApartmentsPage = () => {
                 </div>
 
                 <div className={styles.apartmentsContainer}>
-                    <ApartmentCard
-                        roomCount={1}
-                        toiletCount={1}
-                        houseComplexTitle={"ЖК «Нижний 51»"}
-                        address={"Томск, переулок Нижний, дом 51"}
-                        area={55}
-                        houseComplexId={"1"}
-                        imageSrc={Fallback}
-                        flatId={"1"}
-                        purpleBlockText="Новинка"
-                    />
-
-                    <ApartmentCard
-                        roomCount={1}
-                        toiletCount={1}
-                        houseComplexTitle={"ЖК «Нижний 51»"}
-                        address={"Томск, переулок Нижний, дом 51"}
-                        area={55}
-                        houseComplexId={"1"}
-                        imageSrc={Fallback}
-                        flatId={"1"}
-                        purpleBlockText="Горячее предложение"
-                    />
-
-                    <ApartmentCard
-                        roomCount={1}
-                        toiletCount={1}
-                        houseComplexTitle={"ЖК «Нижний 51»"}
-                        address={"Томск, переулок Нижний, дом 51"}
-                        area={55}
-                        houseComplexId={"1"}
-                        imageSrc={Fallback}
-                        flatId={"1"}
-                    />
-
-                    <ApartmentCard
-                        roomCount={1}
-                        toiletCount={1}
-                        houseComplexTitle={"ЖК «Нижний 51»"}
-                        address={"Томск, переулок Нижний, дом 51"}
-                        area={55}
-                        houseComplexId={"1"}
-                        imageSrc={Fallback}
-                        flatId={"1"}
-                    />
-
-                    <ApartmentCard
-                        roomCount={1}
-                        toiletCount={1}
-                        houseComplexTitle={"ЖК «Нижний 51»"}
-                        address={"Томск, переулок Нижний, дом 51"}
-                        area={55}
-                        houseComplexId={"1"}
-                        imageSrc={Fallback}
-                        flatId={"1"}
-                    />
-
-                    <ApartmentCard
-                        roomCount={1}
-                        toiletCount={1}
-                        houseComplexTitle={"ЖК «Нижний 51»"}
-                        address={"Томск, переулок Нижний, дом 51"}
-                        area={55}
-                        houseComplexId={"1"}
-                        imageSrc={Fallback}
-                        flatId={"1"}
-                    />
-
-                    <ApartmentCard
-                        roomCount={1}
-                        toiletCount={1}
-                        houseComplexTitle={"ЖК «Нижний 51»"}
-                        address={"Томск, переулок Нижний, дом 51"}
-                        area={55}
-                        houseComplexId={"1"}
-                        imageSrc={Fallback}
-                        flatId={"1"}
-                    />
-
-                    <ApartmentCard
-                        roomCount={1}
-                        toiletCount={1}
-                        houseComplexTitle={"ЖК «Нижний 51»"}
-                        address={"Томск, переулок Нижний, дом 51"}
-                        area={55}
-                        houseComplexId={"1"}
-                        imageSrc={Fallback}
-                        flatId={"1"}
-                    />
-
-                    <ApartmentCard
-                        roomCount={1}
-                        toiletCount={1}
-                        houseComplexTitle={"ЖК «Нижний 51»"}
-                        address={"Томск, переулок Нижний, дом 51"}
-                        area={55}
-                        houseComplexId={"1"}
-                        imageSrc={Fallback}
-                        flatId={"1"}
-                    />
-
-                    <ApartmentCard
-                        roomCount={1}
-                        toiletCount={1}
-                        houseComplexTitle={"ЖК «Нижний 51»"}
-                        address={"Томск, переулок Нижний, дом 51"}
-                        area={55}
-                        houseComplexId={"1"}
-                        imageSrc={Fallback}
-                        flatId={"1"}
-                    />
-
-                    <ApartmentCard
-                        roomCount={1}
-                        toiletCount={1}
-                        houseComplexTitle={"ЖК «Нижний 51»"}
-                        address={"Томск, переулок Нижний, дом 51"}
-                        area={55}
-                        houseComplexId={"1"}
-                        imageSrc={Fallback}
-                        flatId={"1"}
-                    />
-
-                    <ApartmentCard
-                        roomCount={1}
-                        toiletCount={1}
-                        houseComplexTitle={"ЖК «Нижний 51»"}
-                        address={"Томск, переулок Нижний, дом 51"}
-                        area={55}
-                        houseComplexId={"1"}
-                        imageSrc={Fallback}
-                        flatId={"1"}
-                    />
+                    {content?.apartments.map((apartment) => (
+                        <ApartmentCard
+                            key={apartment.id}
+                            roomCount={apartment.roomCount}
+                            toiletCount={apartment.toiletCount}
+                            houseComplexTitle={apartment.houseComplexTitle}
+                            address={apartment.address}
+                            area={apartment.area}
+                            houseComplexId={apartment.houseComplexId}
+                            imageSrc={apartment.imageSrc}
+                            flatId={apartment.flatId}
+                        />
+                    ))}
                 </div>
 
                 <Pagination 
                     currentPage={currentPage}
-                    totalPages={20}
+                    totalPages={Math.ceil((content?.totalApartments || 1) / 12)}
                     onPageChange={setCurrentPage}
                 />
             </div>

@@ -1,13 +1,22 @@
 import styles from "./ApartmentComplexesPage.module.css"
+import { useEffect, useState } from "react"
 
-import FallbackImage from "/fallback.png"
 import apartmentComplexesImage1 from "/images/ApartmentComplexesPage1.jpg"
 import BreadcrumbNav from "../../components/common/BreadcrumbNav"
 import ApartmentComplexCard from "../../components/common/ApartmentComplexCard/ApartmentComplexCard";
+import { getApartmentComplexesPageContent } from "../../services/api/pages.api.requests"
+import type { ApartmentComplexesPageContent } from "../../services/api/pages.api.types"
 
-import image from "/images/HomePage2.jpg"
+const ApartmentComplexesPage: React.FC = () => {
+  const [content, setContent] = useState<ApartmentComplexesPageContent | null>(null);
 
-const ApartmentComplexesPage = () => {
+  useEffect(() => {
+    const loadContent = async () => {
+      const data = await getApartmentComplexesPageContent();
+      setContent(data);
+    };
+    loadContent();
+  }, []);
 
     return (
         <div className={styles.container}>
@@ -25,18 +34,18 @@ const ApartmentComplexesPage = () => {
                 </div>
 
                 <div className={styles.apartmentComplexesListContent}>
-                    <ApartmentComplexCard
-                        title={"ЖК «Нижний 51»"}
-                        address={"Томск, переулок Нижний, дом 51"}
-                        floorCount={10}
-                        description={
-                            "Экологичный формат жизни в развивающемся районе Томска\n" + 
-                            "Современный жилой комплекс комфорт-класса на стыке спокойствия и здорового образа жизни."
-                        }
-                        finishDate={"4 квартал 2025"}
-                        imageSrc={image}
-                        id={"1"}
-                    />
+                    {content?.complexes.map((complex) => (
+                        <ApartmentComplexCard
+                            key={complex.id}
+                            title={complex.title}
+                            address={complex.address}
+                            floorCount={complex.floorCount}
+                            description={complex.description}
+                            finishDate={complex.finishDate}
+                            imageSrc={complex.imageSrc}
+                            id={complex.id}
+                        />
+                    ))}
                 </div>
             </div>
         </div>
