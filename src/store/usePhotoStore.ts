@@ -2,7 +2,6 @@ import { create } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
 import {
   type FlatWithCategoryRequest,
-  getFile,
   type HomeRequest,
   type ResolvedFlat,
   type ResolvedHome,
@@ -33,8 +32,41 @@ interface PhotoState {
   processHome: (home: HomeRequest) => Promise<ResolvedHome>;
 }
 
-const DEFAULT_MAX_CACHE = 100;
-const DEFAULT_TTL = 1000 * 60 * 5;
+const DEFAULT_MAX_CACHE = 1000;
+const DEFAULT_TTL = 1000 * 60 * 60 * 24;
+
+// Hardcoded API files base as requested
+const API_FILES_BASE = "https://kvartalika.ru/api/files";
+
+function encodePathSegments(path: string): string {
+  return path
+    .split("/")
+    .filter(Boolean)
+    .map((seg) => encodeURIComponent(seg))
+    .join("/");
+}
+
+// Map incoming paths to the public URL served by the backend:
+// - Absolute (http/https) or blob URLs are returned unchanged
+// - Relative paths like "images/a.jpg" become "https://kvartalika.ru/api/files/images/a.jpg"
+// - Paths starting with "files/" or "/files/" are normalized to the same base
+// - Optionally normalizes "static/" inputs as well
+function resolvePublicUrl(path: string): string {
+  if (!path) return path;
+
+  // Already absolute or blob URL
+  if (/^(?:https?:)?\/\//i.test(path) || path.startsWith("blob:")) {
+    return path;
+  }
+
+  // Normalize leading slashes and optional prefixes
+  let normalized = path.replace(/^\/+/, ""); // remove leading "/"
+  normalized = normalized.replace(/^files\/+/, ""); // drop leading "files/"
+  normalized = normalized.replace(/^static\/+/, ""); // drop leading "static/" if provided
+
+  const encoded = encodePathSegments(normalized);
+  return `${API_FILES_BASE}/${encoded}`;
+}
 
 export const usePhotoStore = create<PhotoState>()(
   subscribeWithSelector((set, get) => ({
@@ -53,13 +85,10 @@ export const usePhotoStore = create<PhotoState>()(
         pan: "single",
       });
 
-      // const layout = await getLayoutById(Number(flat.flat.layoutId));
-
       return {
         flat: flat.flat,
         categories: flat.categories,
         imagesResolved: flatWithResolvedData.imagesResolved,
-        // layoutResolved: layout?.layoutImage ?? undefined,
         imagesCleanResolved:
           flatWithResolvedData.imagesCleanResolved ?? undefined,
         panResolved: flatWithResolvedData.panResolved ?? undefined,
@@ -92,7 +121,21 @@ export const usePhotoStore = create<PhotoState>()(
     loadPhoto: async (path) => {
       const { cache, loading } = get();
 
+      // TTL-based pruning
       get().prune();
+
+      if (!path) {
+        const now = Date.now();
+        set((state) => ({
+          cache: {
+            ...state.cache,
+            [path]: { url: null, lastAccess: now, createdAt: now },
+          },
+          error: { ...state.error, [path]: "Invalid path" },
+          loading: { ...state.loading, [path]: false },
+        }));
+        return null;
+      }
 
       if (cache[path] && cache[path].url === null) {
         return null;
@@ -102,6 +145,7 @@ export const usePhotoStore = create<PhotoState>()(
         get().touchEntry(path);
         return cache[path].url;
       }
+
       if (loading[path]) {
         return new Promise<string | null>((resolve) => {
           const unsubCache = usePhotoStore.subscribe(
@@ -134,17 +178,16 @@ export const usePhotoStore = create<PhotoState>()(
       }));
 
       try {
-        const blob = await getFile([path]);
-        if (!blob) throw new Error("No blob returned");
-        const objectURL = URL.createObjectURL(blob);
+        const publicUrl = resolvePublicUrl(path);
 
         set((state) => {
+          const now = Date.now();
           const newCache = {
             ...state.cache,
             [path]: {
-              url: objectURL,
-              lastAccess: Date.now(),
-              createdAt: Date.now(),
+              url: publicUrl,
+              lastAccess: now,
+              createdAt: now,
             },
           };
 
@@ -155,10 +198,6 @@ export const usePhotoStore = create<PhotoState>()(
               .sort((a, b) => a.lastAccess - b.lastAccess);
             const toRemove = sorted.slice(0, keys.length - state.maxCacheSize);
             toRemove.forEach((r) => {
-              const url = newCache[r.key].url;
-              if (url) {
-                URL.revokeObjectURL(url);
-              }
               delete newCache[r.key];
             });
           }
@@ -169,7 +208,7 @@ export const usePhotoStore = create<PhotoState>()(
           };
         });
 
-        return objectURL;
+        return publicUrl;
       } catch {
         const now = Date.now();
         set((state) => ({
@@ -177,7 +216,7 @@ export const usePhotoStore = create<PhotoState>()(
             ...state.cache,
             [path]: { url: null, lastAccess: now, createdAt: now },
           },
-          error: { ...state.error, [path]: "Failed to load" },
+          error: { ...state.error, [path]: "Failed to resolve URL" },
           loading: { ...state.loading, [path]: false },
         }));
         return null;
@@ -195,11 +234,6 @@ export const usePhotoStore = create<PhotoState>()(
     },
 
     clearPhoto: (path) => {
-      const { cache } = get();
-      const entry = cache[path];
-      if (entry && entry.url) {
-        URL.revokeObjectURL(entry.url);
-      }
       set((state) => {
         const newCache = { ...state.cache };
         delete newCache[path];
@@ -216,12 +250,6 @@ export const usePhotoStore = create<PhotoState>()(
     },
 
     clearAll: () => {
-      const { cache } = get();
-      Object.values(cache).forEach((entry) => {
-        if (entry.url) {
-          URL.revokeObjectURL(entry.url);
-        }
-      });
       set({ cache: {}, loading: {}, error: {} });
     },
 
@@ -231,9 +259,6 @@ export const usePhotoStore = create<PhotoState>()(
       const newCache = { ...cache };
       Object.entries(cache).forEach(([key, entry]) => {
         if (now - entry.lastAccess > ttl) {
-          if (entry.url) {
-            URL.revokeObjectURL(entry.url);
-          }
           delete newCache[key];
         }
       });

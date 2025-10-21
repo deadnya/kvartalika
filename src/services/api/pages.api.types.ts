@@ -1,10 +1,10 @@
 export interface ApartmentComplexCardProps {
-  title: string;
+  name: string;
   address: string;
-  floorCount: number;
+  numberOfFloors: number;
   description: string;
-  finishDate: string;
-  imageSrc: string;
+  yearBuilt: string;
+  images: string[];
   id: string;
 }
 
@@ -54,16 +54,28 @@ export interface ProjectInfo {
   params: ProjectParams[];
 }
 
+export interface FlatVariantDto {
+  flatId: number;
+  id: number;
+  area: number;
+  price: number;
+  floor: number;
+  status: "AVAILABLE" | "RESERVED" | "SOLD";
+  hasDecoration: boolean;
+}
+
 export interface ApartmentDto {
   id: string;
-  roomCount: number;
-  toiletCount: number;
+  numberOfRooms: number;
+  numberOfBathrooms: number;
   houseComplexTitle: string;
   address: string;
-  area: number;
-  houseComplexId: string;
+  areaMin: number;
+  areaMax: number;
+  homeId: string;
   flatId: string;
-  imageSrc: string;
+  images: string[];
+  variants: [];
 }
 
 export interface PaymentMethodInfo {
@@ -197,43 +209,28 @@ export interface ApartmentComplexPageContent {
   complexTitle: string;
   complexLocation: string;
   complexDescription: string;
-  viewButtonText: string;
 
-  locationTitle: string;
   locationMotto: string;
   goodThings: GoodThing[];
   locationMapLatitude: number;
   locationMapLongitude: number;
 
-  availableApartmentsTitle: string;
   availableApartments: ApartmentDto[];
 
-  transportAvailabilityTitle: string;
   transportAvailabilityMotto: string;
   transportItems: TransportAvailabilityItem[];
   transportImage: string;
 
-  buildingHistoryTitle: string;
   buildingHistory: BuildingHistoryItem[];
 
-  amenitiesTitle: string;
   amenitiesDescription: string;
   amenities: AmenityItem[];
   amenitiesImages: string[];
 
-  technologiesTitle: string;
   technologiesDescription: string;
   technologies: TechnologyItem[];
   technologiesImage: string;
 
-  catchItTitle: string;
   catchItOfferTitle: string;
   catchItOfferDescription: string;
-
-  contactInfo: {
-    address: string;
-    workingHours: string;
-    phone: string;
-    email: string;
-  };
 }

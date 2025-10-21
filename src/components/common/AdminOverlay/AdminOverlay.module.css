@@ -1,0 +1,56 @@
+.adminOverlay {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 999;
+}
+
+.adminPanel {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 200px;
+}
+
+.adminLabel {
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.9;
+}
+
+.buttonGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.adminButton {
+  background: white;
+  color: #667eea;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.adminButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: #f8f9ff;
+}
+
+.adminButton:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}

@@ -15,50 +15,90 @@ import ApartmentCard from "../../components/common/ApartmentCard/ApartmentCard";
 import { Pagination } from "../../components/common/Pagination/Pagination";
 import { getApartmentsPageContent } from "../../services/api/pages.api.requests";
 import type { ApartmentsPageContent } from "../../services/api/pages.api.types";
+import { useSearchParams } from "react-router-dom";
 
 const ApartmentsPage = () => {
+    const [searchParams, setSearchParams] = useSearchParams();
     const [content, setContent] = useState<ApartmentsPageContent | null>(null);
 
-    const [selectedComplex, setSelectedComplex] = useState<string | number | null>(null)
-    const [priceRange, setPriceRange] = useState<{ min: number; max: number }>({ min: 3500000, max: 15000000 })
-    const [selectedCategory, setSelectedCategory] = useState<string | number | null>(null)
-    const [roomCount, setRoomCount] = useState<string | number | (string | number)[] | null>(null)
-    const [bathroomCount, setBathroomCount] = useState<string | number | (string | number)[] | null>(null)
-    const [hasFinish, setHasFinish] = useState<boolean>(false)
-    const [parks, setParks] = useState<boolean>(false)
-    const [schools, setSchools] = useState<boolean>(false)
-    const [shops, setShops] = useState<boolean>(false);
-    const [sortByCost, setSortByCost] = useState<SortingType>("noSorting");
-    const [sortByArea, setSortByArea] = useState<SortingType>("noSorting");
-    const [sortByRoomCount, setSortByRoomCount] = useState<SortingType>("noSorting");
-    const [currentPage, setCurrentPage] = useState(1);
+    const [selectedComplex, setSelectedComplex] = useState<string | number | null>(() => {
+        const val = searchParams.get("complex");
+        return val || null;
+    })
+    const [priceRange, setPriceRange] = useState<{ min: number; max: number }>(() => ({
+        min: parseInt(searchParams.get("priceMin") || "3500000"),
+        max: parseInt(searchParams.get("priceMax") || "15000000"),
+    }))
+    const [selectedCategory, setSelectedCategory] = useState<string | number | null>(() => {
+        const val = searchParams.get("category");
+        return val || null;
+    })
+    const [roomCount, setRoomCount] = useState<string | number | (string | number)[] | null>(() => {
+        const val = searchParams.get("rooms");
+        return val ? (val.includes(",") ? val.split(",") : val) : null;
+    })
+    const [bathroomCount, setBathroomCount] = useState<string | number | (string | number)[] | null>(() => {
+        const val = searchParams.get("bathrooms");
+        return val ? (val.includes(",") ? val.split(",") : val) : null;
+    })
+    const [hasFinish, setHasFinish] = useState<boolean>(() => searchParams.get("finish") === "true")
+    const [parks, setParks] = useState<boolean>(() => searchParams.get("parks") === "true")
+    const [schools, setSchools] = useState<boolean>(() => searchParams.get("schools") === "true")
+    const [shops, setShops] = useState<boolean>(() => searchParams.get("shops") === "true");
+    const [sortByCost, setSortByCost] = useState<SortingType>(() => (searchParams.get("sortCost") as SortingType) || "noSorting");
+    const [sortByArea, setSortByArea] = useState<SortingType>(() => (searchParams.get("sortArea") as SortingType) || "noSorting");
+    const [sortByRoomCount, setSortByRoomCount] = useState<SortingType>(() => (searchParams.get("sortRooms") as SortingType) || "noSorting");
+    const [currentPage, setCurrentPage] = useState<number>(() => parseInt(searchParams.get("page") || "1"));
 
     useEffect(() => {
         const fetchContent = async () => {
             try {
                 const data = await getApartmentsPageContent();
                 setContent(data);
-                // Initialize filter states from default values
-                setSelectedComplex(data.defaultFilters.selectedComplex);
-                setPriceRange(data.defaultFilters.priceRange);
-                setSelectedCategory(data.defaultFilters.selectedCategory);
-                setRoomCount(data.defaultFilters.roomCount);
-                setBathroomCount(data.defaultFilters.bathroomCount);
-                setHasFinish(data.defaultFilters.hasFinish);
-                setParks(data.defaultFilters.parks);
-                setSchools(data.defaultFilters.schools);
-                setShops(data.defaultFilters.shops);
-                // Initialize sorting from default values
-                setSortByCost(data.defaultSorting.sortByCost);
-                setSortByArea(data.defaultSorting.sortByArea);
-                setSortByRoomCount(data.defaultSorting.sortByRoomCount);
+                
+                if (searchParams.toString() === "") {
+                    setSelectedComplex(data.defaultFilters.selectedComplex);
+                    setPriceRange(data.defaultFilters.priceRange);
+                    setSelectedCategory(data.defaultFilters.selectedCategory);
+                    setRoomCount(data.defaultFilters.roomCount);
+                    setBathroomCount(data.defaultFilters.bathroomCount);
+                    setHasFinish(data.defaultFilters.hasFinish);
+                    setParks(data.defaultFilters.parks);
+                    setSchools(data.defaultFilters.schools);
+                    setShops(data.defaultFilters.shops);
+                    setSortByCost(data.defaultSorting.sortByCost);
+                    setSortByArea(data.defaultSorting.sortByArea);
+                    setSortByRoomCount(data.defaultSorting.sortByRoomCount);
+                }
             } catch (error) {
                 console.error("Failed to fetch apartments page content:", error);
             }
         };
 
         fetchContent();
-    }, []);
+    }, [searchParams]);
+
+    useEffect(() => {
+        const params = new URLSearchParams();
+        
+        if (currentPage > 1) params.set("page", currentPage.toString());
+        if (sortByCost !== "noSorting") params.set("sortCost", sortByCost);
+        if (sortByArea !== "noSorting") params.set("sortArea", sortByArea);
+        if (sortByRoomCount !== "noSorting") params.set("sortRooms", sortByRoomCount);
+        
+        if (selectedComplex !== null) params.set("complex", selectedComplex.toString());
+        if (selectedCategory !== null) params.set("category", selectedCategory.toString());
+        if (priceRange.min !== 3500000) params.set("priceMin", priceRange.min.toString());
+        if (priceRange.max !== 15000000) params.set("priceMax", priceRange.max.toString());
+        if (roomCount !== null) params.set("rooms", roomCount.toString());
+        if (bathroomCount !== null) params.set("bathrooms", bathroomCount.toString());
+        if (hasFinish) params.set("finish", "true");
+        if (parks) params.set("parks", "true");
+        if (schools) params.set("schools", "true");
+        if (shops) params.set("shops", "true");
+        
+        setSearchParams(params, { replace: true });
+    }, [currentPage, sortByCost, sortByArea, sortByRoomCount, selectedComplex, selectedCategory, priceRange, roomCount, bathroomCount, hasFinish, parks, schools, shops]);
 
     const clearFilters = () => {
         setSelectedComplex(null);
@@ -185,6 +225,7 @@ const ApartmentsPage = () => {
                 <div className={styles.buttonsContainer}>
                     <Button
                         includeArrow
+                        onClick={() => setCurrentPage(1)}
                     >Смотреть 20 предложений</Button>
                     <div
                         className={styles.clearFiltersContainer}
@@ -212,16 +253,17 @@ const ApartmentsPage = () => {
                 </div>
 
                 <div className={styles.apartmentsContainer}>
-                    {content?.apartments.map((apartment) => (
+                    {content?.apartments.slice(0, 12).map((apartment) => (
                         <ApartmentCard
                             key={apartment.id}
-                            roomCount={apartment.roomCount}
-                            toiletCount={apartment.toiletCount}
+                            roomCount={apartment.numberOfRooms}
+                            toiletCount={apartment.numberOfBathrooms}
                             houseComplexTitle={apartment.houseComplexTitle}
                             address={apartment.address}
-                            area={apartment.area}
-                            houseComplexId={apartment.houseComplexId}
-                            imageSrc={apartment.imageSrc}
+                            areaMin={apartment.areaMin}
+                            areaMax={apartment.areaMax}
+                            houseComplexId={apartment.homeId}
+                            imageSrc={apartment.images[0] ?? ""}
                             flatId={apartment.flatId}
                         />
                     ))}

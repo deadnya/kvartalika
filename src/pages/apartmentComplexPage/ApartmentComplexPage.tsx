@@ -80,7 +80,7 @@ const ApartmentComplexPage = () => {
 
                 <div className={styles.locationTriangleOverlay}></div>
                 <div className={styles.location}>
-                    <h2 className={styles.locationTitle}>{content.locationTitle}</h2>
+                    <h2 className={styles.locationTitle}>Расположение</h2>
                     <div className={styles.locationContent}>
                         <div className={styles.locationLeftContainer}>
                             <p className={styles.locationMotto}>{content.locationMotto}</p>
@@ -110,7 +110,7 @@ const ApartmentComplexPage = () => {
 
                 <div className={styles.availableApartments}>
                     <div className={styles.availableApartmentsHeader}>
-                        <h2 className={styles.availableApartmentsTitle}>{content.availableApartmentsTitle}</h2>
+                        <h2 className={styles.availableApartmentsTitle}>Доступные квартиры</h2>
                         <Link
                             to="/"
                             className={styles.availableApartmentsViewAll}
@@ -136,7 +136,7 @@ const ApartmentComplexPage = () => {
                 </div>
 
                 <div className={styles.transportAvailability}>
-                    <h2 className={styles.transportAvailabilityHeader}>{content.transportAvailabilityTitle}</h2>
+                    <h2 className={styles.transportAvailabilityHeader}>Транспортная доступность</h2>
 
                     <div className={styles.transportAvailabilityContent}>
                         <div className={styles.transportAvailabilityLeftContainer}>
@@ -162,11 +162,11 @@ const ApartmentComplexPage = () => {
 
                 <BuildingHistory
                     items={content.buildingHistory}
-                    title={content.buildingHistoryTitle}
+                    title="История строительства"
                 />
 
                 <Conveniencies
-                    title={content.amenitiesTitle}
+                    title="Благоустройство"
                     list={{
                         description: content.amenitiesDescription,
                         items: content.amenities.map((amenity, index) => {
@@ -188,7 +188,7 @@ const ApartmentComplexPage = () => {
                 />
 
                 <div className={styles.technologies}>
-                    <h2 className={styles.technologiesHeader}>{content.technologiesTitle}</h2>
+                    <h2 className={styles.technologiesHeader}>Технологии и комфорт в каждой квартире</h2>
                     <div className={styles.technologiesContainer}>
                         <div className={styles.technologiesLeftContainer}>
                             <p>{content.technologiesDescription}</p>
@@ -212,7 +212,7 @@ const ApartmentComplexPage = () => {
                 </div>
 
                 <div className={styles.catchIt}>
-                    <h2 className={styles.catchItHeader}>{content.catchItTitle}</h2>
+                    <h2 className={styles.catchItHeader}>Выгода, которую стоит поймать!</h2>
 
                     <div className={styles.catchItOfferContainer}>
                         <SberbankIcon />

@@ -1,7 +1,7 @@
-//import { useAuthStore } from "../../store/auth.store.ts";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Button from "../../components/common/Button";
+import AdminOverlay from "../../components/common/AdminOverlay/AdminOverlay";
 import styles from "./HomePage.module.css"
 
 import MapIcon from "../../assets/icons/map.svg?react"
@@ -39,12 +39,11 @@ const HomePage = () => {
 
         fetchContent();
     }, []);
-    //const role = useAuthStore((state) => state.role);
-    //const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-    //{isAuthenticated && role && role !== "CLIENT" && (<div></div>)} adminka
 
     return (
-        <div className={styles.container}>
+        <>
+            <AdminOverlay />
+            <div className={styles.container}>
             <div className={styles.titleMainContainer}>
                 <div className={styles.titleImageContainer}>
                     <div className={styles.imageWrapper}>
@@ -116,12 +115,12 @@ const HomePage = () => {
                             <div className={styles.projectButtonsContainer}>
                                 <Button
                                     includeArrow={true}
-                                    onClick={() => {}} //navigate()
+                                    onClick={() => {navigate(`/apartments?complex=${project.id}`)}}
                                 >Смотреть квартиры</Button>
 
                                 <Button
                                     variant="outlined"
-                                    onClick={() => {navigate("/complex/1")}} //navigate()
+                                    onClick={() => {navigate(`/complex/${project.id}`)}}
                                 >Подробнее о ЖК</Button>
                             </div>
                         </div>
@@ -134,7 +133,7 @@ const HomePage = () => {
                 <div className={styles.hotDealsHeader}>
                     <span className={styles.hotDealsHeaderText}>Горячие предложения</span>
                     <Link
-                        to="/hotdeals"
+                        to="/apartments?category=2"
                         className={styles.viewMore}
                     >Смотреть все</Link>
                 </div>
@@ -142,14 +141,15 @@ const HomePage = () => {
                     {content.hotDeals.map((deal) => (
                         <ApartmentCard
                             key={deal.id}
-                            roomCount={deal.roomCount}
-                            toiletCount={deal.toiletCount}
+                            roomCount={deal.numberOfRooms}
+                            toiletCount={deal.numberOfBathrooms}
                             houseComplexTitle={deal.houseComplexTitle}
                             address={deal.address}
-                            area={deal.area}
-                            houseComplexId={deal.houseComplexId}
+                            areaMin={deal.areaMin}
+                            areaMax={deal.areaMax}
+                            houseComplexId={deal.homeId}
                             flatId={deal.flatId}
-                            imageSrc={deal.imageSrc}
+                            imageSrc={deal.images[0] ?? ""}
                         />
                     ))}
                 </div>
@@ -264,7 +264,8 @@ const HomePage = () => {
                     </div>
                 </div>
             </div>
-        </div>
+            </div>
+        </>
     );
 };
 

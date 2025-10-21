@@ -5,10 +5,10 @@ import apartmentComplexesImage1 from "/images/ApartmentComplexesPage1.jpg"
 import BreadcrumbNav from "../../components/common/BreadcrumbNav"
 import ApartmentComplexCard from "../../components/common/ApartmentComplexCard/ApartmentComplexCard";
 import { getApartmentComplexesPageContent } from "../../services/api/pages.api.requests"
-import type { ApartmentComplexesPageContent } from "../../services/api/pages.api.types"
+import type { ApartmentComplexCardProps } from "../../services/api/pages.api.types"
 
 const ApartmentComplexesPage: React.FC = () => {
-  const [content, setContent] = useState<ApartmentComplexesPageContent | null>(null);
+  const [content, setContent] = useState<ApartmentComplexCardProps[] | null>(null);
 
   useEffect(() => {
     const loadContent = async () => {
@@ -34,15 +34,15 @@ const ApartmentComplexesPage: React.FC = () => {
                 </div>
 
                 <div className={styles.apartmentComplexesListContent}>
-                    {content?.complexes.map((complex) => (
+                    {content?.map((complex) => (
                         <ApartmentComplexCard
                             key={complex.id}
-                            title={complex.title}
+                            title={complex.name}
                             address={complex.address}
-                            floorCount={complex.floorCount}
+                            floorCount={complex.numberOfFloors}
                             description={complex.description}
-                            finishDate={complex.finishDate}
-                            imageSrc={complex.imageSrc}
+                            finishDate={complex.yearBuilt}
+                            imageSrc={complex.images[0] ?? ""}
                             id={complex.id}
                         />
                     ))}

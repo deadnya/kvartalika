@@ -8,9 +8,7 @@ export const MOCK_APARTMENT_COMPLEX_PAGE_CONTENT: ApartmentComplexPageContent = 
   complexDescription:
     "Современный жилой комплекс комфорт-класса \"Нижний 51\".\n" +
     "Это проект для тех, кто ценит разумный баланс: тишину двора без машин, чистую экологию и все возможности для активного отдыха. Не просто квартира, а продуманное пространство для жизни вашей семьи.",
-  viewButtonText: "Записаться на просмотр",
 
-  locationTitle: "Расположение",
   locationMotto: "ЖК «Нижний 51» находится в активно развивающейся части Советского района, где новая инфраструктура создается для вашего комфорта.",
   goodThings: [
     {
@@ -27,55 +25,61 @@ export const MOCK_APARTMENT_COMPLEX_PAGE_CONTENT: ApartmentComplexPageContent = 
   locationMapLatitude: 56.48,
   locationMapLongitude: 84.95,
 
-  availableApartmentsTitle: "Доступные квартиры",
   availableApartments: [
     {
       id: "1",
-      roomCount: 2,
-      toiletCount: 2,
+      numberOfRooms: 2,
+      numberOfBathrooms: 2,
       houseComplexTitle: "ЖК «Нижний 51»",
       address: "Томск, переулок Нижний, дом 51",
-      area: 54,
-      houseComplexId: "1",
+      areaMin: 54,
+      areaMax: 54,
+      homeId: "1",
       flatId: "1",
-      imageSrc: "/fallback.png",
+      images: ["/fallback.png"],
+      variants: []
     },
     {
-      id: "2",
-      roomCount: 2,
-      toiletCount: 2,
+      id: "1",
+      numberOfRooms: 2,
+      numberOfBathrooms: 2,
       houseComplexTitle: "ЖК «Нижний 51»",
       address: "Томск, переулок Нижний, дом 51",
-      area: 54,
-      houseComplexId: "1",
+      areaMin: 54,
+      areaMax: 54,
+      homeId: "1",
       flatId: "1",
-      imageSrc: "/fallback.png",
+      images: ["/fallback.png"],
+      variants: []
     },
     {
-      id: "3",
-      roomCount: 2,
-      toiletCount: 2,
+      id: "1",
+      numberOfRooms: 2,
+      numberOfBathrooms: 2,
       houseComplexTitle: "ЖК «Нижний 51»",
       address: "Томск, переулок Нижний, дом 51",
-      area: 54,
-      houseComplexId: "1",
+      areaMin: 54,
+      areaMax: 54,
+      homeId: "1",
       flatId: "1",
-      imageSrc: "/fallback.png",
+      images: ["/fallback.png"],
+      variants: []
     },
     {
-      id: "4",
-      roomCount: 2,
-      toiletCount: 2,
+      id: "1",
+      numberOfRooms: 2,
+      numberOfBathrooms: 2,
       houseComplexTitle: "ЖК «Нижний 51»",
       address: "Томск, переулок Нижний, дом 51",
-      area: 54,
-      houseComplexId: "1",
+      areaMin: 54,
+      areaMax: 54,
+      homeId: "1",
       flatId: "1",
-      imageSrc: "/fallback.png",
+      images: ["/fallback.png"],
+      variants: []
     },
   ],
 
-  transportAvailabilityTitle: "Транспортная доступность",
   transportAvailabilityMotto: "ЖК «Нижний 51» — это разумный компромисс между тишиной и связью с городом.",
   transportItems: [
     {
@@ -96,7 +100,6 @@ export const MOCK_APARTMENT_COMPLEX_PAGE_CONTENT: ApartmentComplexPageContent = 
   ],
   transportImage: "/images/HomePage1.png",
 
-  buildingHistoryTitle: "История строительства",
   buildingHistory: [
     {
       id: "1",
@@ -112,7 +115,6 @@ export const MOCK_APARTMENT_COMPLEX_PAGE_CONTENT: ApartmentComplexPageContent = 
     },
   ],
 
-  amenitiesTitle: "Благоустройство",
   amenitiesDescription: "Мы создаем безопасную и комфортную среду для отдыха и общения.",
   amenities: [
     {
@@ -142,7 +144,6 @@ export const MOCK_APARTMENT_COMPLEX_PAGE_CONTENT: ApartmentComplexPageContent = 
   ],
   amenitiesImages: ["/images/HomePage1.png", "/images/HomePage3.png"],
 
-  technologiesTitle: "Технологии и комфорт в каждой квартире",
   technologiesDescription: "Мы предлагаем квартиры с продуманными планировками и современными решениями.",
   technologies: [
     {
@@ -166,14 +167,6 @@ export const MOCK_APARTMENT_COMPLEX_PAGE_CONTENT: ApartmentComplexPageContent = 
   ],
   technologiesImage: "/images/HomePage1.png",
 
-  catchItTitle: "Выгода, которую стоит поймать!",
   catchItOfferTitle: "Семейная ипотека от 4,6% годовых на весь срок",
   catchItOfferDescription: "Успейте воспользоваться выгодными условиями!",
-
-  contactInfo: {
-    address: "Томск, площадь Батенькова 2, подъезд 7, этаж 3, офис 310",
-    workingHours: "пн–пт: 9:00 –19:00\nсб: 10:00 –18:00",
-    phone: "+7 (3822) 30-99-22",
-    email: "info@kvartalika.ru",
-  },
 };

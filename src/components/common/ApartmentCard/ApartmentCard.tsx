@@ -31,7 +31,8 @@ interface ApartmentCardProps {
     toiletCount: number;
     houseComplexTitle: string;
     address: string;
-    area: number;
+    areaMin: number;
+    areaMax: number;
     houseComplexId: string | number;
     imageSrc: string;
     flatId: string | number;
@@ -44,7 +45,8 @@ const ApartmentCard: React.FC<ApartmentCardProps> = ({
     toiletCount,
     houseComplexTitle,
     address,
-    area,
+    areaMin,
+    areaMax,
     houseComplexId,
     imageSrc,
     flatId,
@@ -88,7 +90,7 @@ const ApartmentCard: React.FC<ApartmentCardProps> = ({
                     <div className={styles.apartmentBottomContainer}>
                         <div className={styles.apartmentExtraParams}>
                             <div className={styles.apartmentExtraParam}>
-                                <span>{`${area} м²`}</span>
+                                <span>{`${areaMin} - ${areaMax} м²`}</span>
                             </div>
                             <div className={styles.apartmentExtraParam}>
                                 <span>{getToiletCountText(toiletCount)}</span>

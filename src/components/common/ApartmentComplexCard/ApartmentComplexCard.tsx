@@ -53,6 +53,7 @@ const ApartmentComplexCard = ({
                     >Подробнее о проекте</Button>
                     <Button
                         includeArrow={true}
+                        onClick={() => {navigate(`/apartments?complex=${id}`)}}
                     >Смотреть квартиры</Button>
                 </div>
             </div>
