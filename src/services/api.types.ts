@@ -149,6 +149,66 @@ export interface HomeRequest {
   published?: boolean;
 }
 
+export interface ApartmentComplexRequest {
+  id?: number;
+  name?: string;
+  description?: string;
+  secondDescription?: string | null;
+  images?: string[];
+  address?: string;
+  latitude?: number;
+  longitude?: number;
+  yearBuilt?: number;
+  history?: Array<{
+    title?: string;
+    description?: string;
+    image: string;
+  }>;
+  features?: string[];
+  about?: string;
+  numberOfFloors?: number;
+  storesNearby?: boolean;
+  schoolsNearby?: boolean;
+  hospitalsNearby?: boolean;
+  hasYards?: boolean;
+  yardsImages?: string[];
+  published?: boolean;
+  model3D?: string | null;
+  pan?: string | null;
+  quartalOfFinish?: string | null;
+  locationDescription?: string | null;
+  transportAvailabilityMotto?: string | null;
+  transportItems?: Array<{
+    title?: string;
+    description?: string;
+  }> | null;
+  transportImage?: string | null;
+  amenitiesDescription?: string | null;
+  amenities?: Array<{
+    iconType: 'car' | 'map2' | 'building2' | 'disabled';
+    title?: string;
+    description?: string;
+  }> | null;
+  amenitiesImages?: string[];
+  technologiesDescription?: string | null;
+  technologies?: Array<{
+    title?: string;
+    description?: string | string[];
+  }> | null;
+  technologiesImage?: string | null;
+  catchItOfferTitle?: string | null;
+  catchItOfferDescription?: string | null;
+  goodThings?: Array<{
+    title?: string;
+    description?: string;
+  }> | null;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  metaKeywords?: string | null;
+  metaImage?: string | null;
+  slug?: string | null;
+}
+
 export interface LayoutRequest {
   id?: number;
   homeId?: number;

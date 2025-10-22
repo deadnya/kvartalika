@@ -24,25 +24,43 @@ import { DEFAULT_HOME_PAGE_CONTENT } from "../../services/api/pages.api.defaults
 
 const HomePage = () => {
     const navigate = useNavigate();
-    const [content, setContent] = useState<HomePageContent>(DEFAULT_HOME_PAGE_CONTENT);
+    const [content, setContent] = useState<HomePageContent | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+
+    const fetchContent = async () => {
+        try {
+            const data = await getHomePageContent();
+            setContent(data);
+        } catch (error) {
+            console.error("Error fetching home page content:", error);
+            setContent(DEFAULT_HOME_PAGE_CONTENT);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchContent = async () => {
-            try {
-                const data = await getHomePageContent();
-                setContent(data);
-            } catch (error) {
-                console.error("Error fetching home page content:", error);
-                setContent(DEFAULT_HOME_PAGE_CONTENT);
-            }
+        fetchContent();
+    }, []);
+
+    // Listen for custom event from HomePageEditor when data is saved
+    useEffect(() => {
+        const handleDataSaved = () => {
+            fetchContent();
         };
 
-        fetchContent();
+        window.addEventListener("homePageDataSaved", handleDataSaved);
+        return () => window.removeEventListener("homePageDataSaved", handleDataSaved);
     }, []);
 
     return (
         <>
             <AdminOverlay />
+            {isLoading ? (
+                <div className={styles.container}>
+                    <div style={{ textAlign: "center", padding: "40px" }}>Loading...</div>
+                </div>
+            ) : content ? (
             <div className={styles.container}>
             <div className={styles.titleMainContainer}>
                 <div className={styles.titleImageContainer}>
@@ -138,18 +156,17 @@ const HomePage = () => {
                     >Смотреть все</Link>
                 </div>
                 <div className={styles.hotDealsContent}>
-                    {content.hotDeals.map((deal) => (
+                    {content.hotDeals.filter((deal) => deal.variants && deal.variants.length > 0).slice(0, 4).map((deal) => (
                         <ApartmentCard
                             key={deal.id}
                             roomCount={deal.numberOfRooms}
                             toiletCount={deal.numberOfBathrooms}
                             houseComplexTitle={deal.houseComplexTitle}
                             address={deal.address}
-                            areaMin={deal.areaMin}
-                            areaMax={deal.areaMax}
+                            variants={deal.variants}
                             houseComplexId={deal.homeId}
-                            flatId={deal.flatId}
-                            imageSrc={deal.images[0] ?? ""}
+                            flatId={deal.id}
+                            imageSrc={deal.images?.[0] || ""}
                         />
                     ))}
                 </div>
@@ -208,10 +225,10 @@ const HomePage = () => {
                                 <div className={styles.contactInfoBlock}>
                                     <MapIcon />
                                     <div className={styles.contactInfoContent}>
-                                        <span>{content.contactInfo.address}</span>
+                                        <span>{content.contactInfo?.address ?? "Томск, площадь Батенькова 2, подъезд 7, этаж 3, офис 310"}</span>
                                         <span>
                                             Режим работы:<br/>
-                                            {content.contactInfo.workingHours}
+                                            {content.contactInfo?.workingHours ?? "пн–пт: 9:00 –19:00\nсб: 10:00 –18:00"}
                                         </span>
                                     </div>
                                 </div>
@@ -220,13 +237,13 @@ const HomePage = () => {
                                 <div className={styles.contactInfoBlock}>
                                     <PhoneIcon />
                                     <div className={styles.contactInfoContent}>
-                                        <span>{content.contactInfo.phone}</span>
+                                        <span>{content.contactInfo?.phone ?? "+7 (3822) 30-99-22"}</span>
                                     </div>
                                 </div>
                                 <div className={styles.contactInfoBlock}>
                                     <EmailIcon />
                                     <div className={styles.contactInfoContent}>
-                                        <span>{content.contactInfo.email}</span>
+                                        <span>{content.contactInfo?.email ?? "info@kvartalika.ru"}</span>
                                     </div>
                                 </div>
                             </div>
@@ -265,6 +282,11 @@ const HomePage = () => {
                 </div>
             </div>
             </div>
+            ) : (
+                <div className={styles.container}>
+                    <div style={{ textAlign: "center", padding: "40px" }}>Failed to load content</div>
+                </div>
+            )}
         </>
     );
 };

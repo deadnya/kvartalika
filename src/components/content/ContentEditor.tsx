@@ -1,6 +1,5 @@
 import { type FC, type FormEvent, useState, useEffect, useMemo } from "react";
 import type {
-  HomeRequest,
   CategoryRequest,
   FlatWithCategoryRequest,
   Category,
@@ -10,6 +9,7 @@ import type {
   UpdateFlatVariantRequest,
   VariantRequest,
 } from "../../services";
+import type { ApartmentComplexPageContent } from "../../services/api/pages.api.types";
 import ArrayField from "./ArrayField.tsx";
 import type { BidForm } from "../../store/ui.store.ts";
 import { useDeferredNumber } from "../../hooks/useDeferredNumber.ts";
@@ -19,18 +19,18 @@ import {
   updateVariant,
 } from "../../services/content.service.ts";
 
-export type ContentType = "flat" | "home" | "category" | "bid" | "layout";
+export type ContentType = "flat" | "category" | "bid" | "layout" | "apartmentComplex";
 
 interface ContentEditorUnifiedProps {
   contentType: ContentType;
   initialFlat?: FlatWithCategoryRequest;
-  initialHome?: HomeRequest;
   initialCategory?: Category;
   initialBid?: BidForm;
   initialLayout?: LayoutRequest;
+  initialApartmentComplex?: ApartmentComplexPageContent;
   allCategories?: Category[];
   onSave: (
-    payload: FlatWithCategoryRequest | HomeRequest | CategoryRequest | BidForm,
+    payload: FlatWithCategoryRequest | CategoryRequest | BidForm | ApartmentComplexPageContent,
   ) => Promise<void> | void;
   onDelete?: () => Promise<void> | void;
   onCancel: () => void;
@@ -40,10 +40,10 @@ interface ContentEditorUnifiedProps {
 const ContentEditor: FC<ContentEditorUnifiedProps> = ({
   contentType,
   initialFlat,
-  initialHome,
   initialCategory,
   initialBid,
   initialLayout,
+  initialApartmentComplex,
   allCategories = [],
   onSave,
   onDelete,
@@ -55,9 +55,6 @@ const ContentEditor: FC<ContentEditorUnifiedProps> = ({
       flat: {},
       categories: [],
     },
-  );
-  const [homePayload, setHomePayload] = useState<HomeRequest>(
-    initialHome || {},
   );
   const [categoryPayload, setCategoryPayload] = useState<CategoryRequest>(
     initialCategory
@@ -77,6 +74,63 @@ const ContentEditor: FC<ContentEditorUnifiedProps> = ({
     initialLayout || {},
   );
 
+  const [apartmentComplexPayload, setApartmentComplexPayload] = useState<ApartmentComplexPageContent>(() => {
+    if (initialApartmentComplex) {
+      return {
+        ...initialApartmentComplex,
+        images: initialApartmentComplex.images || [],
+        goodThings: initialApartmentComplex.goodThings || [],
+        transportItems: initialApartmentComplex.transportItems || [],
+        history: initialApartmentComplex.history || [],
+        amenities: initialApartmentComplex.amenities || [],
+        amenitiesImages: initialApartmentComplex.amenitiesImages || [],
+        technologies: initialApartmentComplex.technologies || [],
+      };
+    }
+    return {
+      id: 0,
+      name: "",
+      description: "",
+      secondDescription: null,
+      images: [],
+      address: "",
+      latitude: 0,
+      longitude: 0,
+      yearBuilt: new Date().getFullYear(),
+      history: [],
+      features: [],
+      about: "",
+      numberOfFloors: 0,
+      storesNearby: false,
+      schoolsNearby: false,
+      hospitalsNearby: false,
+      hasYards: false,
+      yardsImages: [],
+      published: false,
+      model3D: null,
+      pan: null,
+      quartalOfFinish: null,
+      locationDescription: null,
+      transportAvailabilityMotto: "",
+      transportItems: [],
+      transportImage: "",
+      amenitiesDescription: "",
+      amenities: [],
+      amenitiesImages: [],
+      technologiesDescription: "",
+      technologies: [],
+      technologiesImage: "",
+      catchItOfferTitle: "",
+      catchItOfferDescription: "",
+      goodThings: [],
+      metaTitle: null,
+      metaDescription: null,
+      metaKeywords: null,
+      metaImage: null,
+      slug: null,
+    };
+  });
+
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -91,10 +145,6 @@ const ContentEditor: FC<ContentEditorUnifiedProps> = ({
   useEffect(() => {
     if (initialFlat) setFlatPayload(initialFlat);
   }, [initialFlat]);
-
-  useEffect(() => {
-    if (initialHome) setHomePayload(initialHome);
-  }, [initialHome]);
 
   useEffect(() => {
     if (initialCategory) {
@@ -113,6 +163,10 @@ const ContentEditor: FC<ContentEditorUnifiedProps> = ({
   useEffect(() => {
     if (initialLayout) setLayoutPayload(initialLayout);
   }, [initialLayout]);
+
+  useEffect(() => {
+    if (initialApartmentComplex) setApartmentComplexPayload(initialApartmentComplex);
+  }, [initialApartmentComplex]);
 
   // Load variants when editing a flat
   useEffect(() => {
@@ -382,10 +436,6 @@ const ContentEditor: FC<ContentEditorUnifiedProps> = ({
           
           await onSave(flatPayloadWithEmptyVariants);
         }
-      } else if (contentType === "home") {
-        if (!homePayload.name)
-          throw new Error("Название комплекса обязательно");
-        await onSave(homePayload);
       } else if (contentType === "category") {
         if (!categoryPayload.name)
           throw new Error("Название категории обязательно");
@@ -397,6 +447,12 @@ const ContentEditor: FC<ContentEditorUnifiedProps> = ({
         if ((layoutPayload.layoutImage?.length ?? 0) === 0)
           throw new Error("Ссылка на изображение обязательна");
         await onSave(layoutPayload);
+      } else if (contentType === "apartmentComplex") {
+        if (!apartmentComplexPayload.name)
+          throw new Error("Название комплекса обязательно");
+        
+        // Send payload as-is - transformation happens in pages.api.requests.ts
+        await onSave(apartmentComplexPayload);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Неизвестная ошибка");
@@ -992,360 +1048,6 @@ const ContentEditor: FC<ContentEditorUnifiedProps> = ({
     );
   };
 
-  const renderHomeForm = () => {
-    const h = homePayload;
-    return (
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {h.id !== undefined && (
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              ID
-            </label>
-            <input
-              type="text"
-              value={h.id}
-              disabled
-              className="w-full border rounded px-3 py-2 bg-gray-100"
-            />
-          </div>
-        )}
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Название
-            </label>
-            <input
-              type="text"
-              value={h.name || ""}
-              onChange={(e) =>
-                setHomePayload((p) => ({
-                  ...p,
-                  name: e.target.value,
-                }))
-              }
-              className="w-full border rounded px-3 py-2"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Адрес
-            </label>
-            <input
-              type="text"
-              value={h.address || ""}
-              onChange={(e) =>
-                setHomePayload((p) => ({
-                  ...p,
-                  address: e.target.value,
-                }))
-              }
-              className="w-full border rounded px-3 py-2"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Год постройки
-            </label>
-            <input
-              type="number"
-              value={h.yearBuilt ?? ""}
-              onChange={(e) =>
-                setHomePayload((p) => ({
-                  ...p,
-                  yearBuilt: Number(e.target.value),
-                }))
-              }
-              className="w-full border rounded px-3 py-2"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Количество этажей
-            </label>
-            <input
-              type="number"
-              value={h.numberOfFloors ?? ""}
-              onChange={(e) =>
-                setHomePayload((p) => ({
-                  ...p,
-                  numberOfFloors: Number(e.target.value),
-                }))
-              }
-              className="w-full border rounded px-3 py-2"
-            />
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Описание под названием
-          </label>
-          <textarea
-            value={h.description || ""}
-            onChange={(e) =>
-              setHomePayload((p) => ({
-                ...p,
-                description: e.target.value,
-              }))
-            }
-            className="w-full border rounded px-3 py-2 h-24"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            О комплексе
-          </label>
-          <textarea
-            value={h.about || ""}
-            onChange={(e) =>
-              setHomePayload((p) => ({
-                ...p,
-                about: e.target.value,
-              }))
-            }
-            className="w-full border rounded px-3 py-2 h-20"
-          />
-        </div>
-
-        <ArrayField
-          label="Особенности"
-          values={h.features}
-          placeholder="Например: удобное местоположение"
-          onChange={(arr) =>
-            setHomePayload((p) => ({
-              ...p,
-              features: arr,
-            }))
-          }
-        />
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            3D модель
-          </label>
-          <input
-            type="text"
-            value={h.model3D || ""}
-            onChange={(e) =>
-              setHomePayload((p) => ({
-                ...p,
-                model3D: e.target.value,
-              }))
-            }
-            className="w-full border rounded px-3 py-2"
-            placeholder={"Ссылка на 3d модель"}
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Круговая панорама
-          </label>
-          <input
-            type="text"
-            value={h.pan || ""}
-            onChange={(e) =>
-              setHomePayload((p) => ({
-                ...p,
-                pan: e.target.value,
-              }))
-            }
-            className="w-full border rounded px-3 py-2"
-            placeholder={"Ссылка на круговую панораму"}
-          />
-        </div>
-
-        <ArrayField
-          label="Изображения"
-          values={h.images}
-          placeholder="Ссылка на изображение"
-          onChange={(arr) => setHomePayload((p) => ({ ...p, images: arr }))}
-        />
-
-        <ArrayField
-          label="История (тексты)"
-          values={h.history}
-          placeholder="Событие"
-          onChange={(arr) => setHomePayload((p) => ({ ...p, history: arr }))}
-        />
-
-        <ArrayField
-          label="Изображения Истории"
-          values={h.historyImages}
-          placeholder="Ссылка на изображение"
-          onChange={(arr) =>
-            setHomePayload((p) => ({
-              ...p,
-              historyImages: arr,
-            }))
-          }
-        />
-
-        <div className="flex flex-wrap gap-4">
-          <div className="flex items-center gap-2">
-            <input
-              id="hasYards"
-              type="checkbox"
-              checked={!!h.hasYards}
-              onChange={(e) =>
-                setHomePayload((p) => ({
-                  ...p,
-                  hasYards: e.target.checked,
-                }))
-              }
-              className="mr-1"
-            />
-            <label htmlFor="hasYards">Есть дворы</label>
-          </div>
-          <div className="flex items-center gap-2">
-            <input
-              id="storesNearby"
-              type="checkbox"
-              checked={!!h.storesNearby}
-              onChange={(e) =>
-                setHomePayload((p) => ({
-                  ...p,
-                  storesNearby: e.target.checked,
-                }))
-              }
-              className="mr-1"
-            />
-            <label htmlFor="storesNearby">Магазины рядом</label>
-          </div>
-          <div className="flex items-center gap-2">
-            <input
-              id="schoolsNearby"
-              type="checkbox"
-              checked={!!h.schoolsNearby}
-              onChange={(e) =>
-                setHomePayload((p) => ({
-                  ...p,
-                  schoolsNearby: e.target.checked,
-                }))
-              }
-              className="mr-1"
-            />
-            <label htmlFor="schoolsNearby">Школы рядом</label>
-          </div>
-          <div className="flex items-center gap-2">
-            <input
-              id="hospitalsNearby"
-              type="checkbox"
-              checked={!!h.hospitalsNearby}
-              onChange={(e) =>
-                setHomePayload((p) => ({
-                  ...p,
-                  hospitalsNearby: e.target.checked,
-                }))
-              }
-              className="mr-1"
-            />
-            <label htmlFor="hospitalsNearby">Больницы рядом</label>
-          </div>
-        </div>
-
-        <ArrayField
-          label="Изображения дворов"
-          values={h.yardsImages}
-          placeholder="Ссылка на изобрежение двора"
-          onChange={(arr) =>
-            setHomePayload((p) => ({
-              ...p,
-              yardsImages: arr,
-            }))
-          }
-        />
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Широта
-            </label>
-            <input
-              type="number"
-              step="any"
-              value={h.latitude ?? ""}
-              onChange={(e) =>
-                setHomePayload((p) => ({
-                  ...p,
-                  latitude: Number(e.target.value),
-                }))
-              }
-              className="w-full border rounded px-3 py-2"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Долгота
-            </label>
-            <input
-              type="number"
-              step="any"
-              value={h.longitude ?? ""}
-              onChange={(e) =>
-                setHomePayload((p) => ({
-                  ...p,
-                  longitude: Number(e.target.value),
-                }))
-              }
-              className="w-full border rounded px-3 py-2"
-            />
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <input
-            id="publishedHome"
-            type="checkbox"
-            checked={!!h.published}
-            onChange={(e) =>
-              setHomePayload((p) => ({
-                ...p,
-                published: e.target.checked,
-              }))
-            }
-            className="mr-1"
-          />
-          <label htmlFor="publishedHome">Опубликовать</label>
-        </div>
-
-        <div className="flex justify-between items-center pt-4 border-t">
-          <div>
-            {isEditing && onDelete && (
-              <button
-                type="button"
-                onClick={() => void onDelete()}
-                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-              >
-                Удалить
-              </button>
-            )}
-          </div>
-          <div className="flex gap-3">
-            <button
-              type="button"
-              onClick={onCancel}
-              className="px-4 py-2 border rounded"
-            >
-              Отмена
-            </button>
-            <button
-              type="submit"
-              disabled={saving}
-              className="px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700 disabled:opacity-50"
-            >
-              {saving ? "Сохранение..." : "Сохранить"}
-            </button>
-          </div>
-        </div>
-      </form>
-    );
-  };
-
   const renderCategoryForm = () => (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
@@ -1622,17 +1324,981 @@ const ContentEditor: FC<ContentEditorUnifiedProps> = ({
     </form>
   );
 
+  const renderApartmentComplexForm = () => (
+    <form onSubmit={handleSubmit} className="space-y-6">
+      {/* General Info */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold border-b pb-2">Основная информация</h3>
+        
+        <div>
+          <label className="block text-sm font-medium mb-1">Название комплекса *</label>
+          <input
+            type="text"
+            value={apartmentComplexPayload.name}
+            onChange={(e) =>
+              setApartmentComplexPayload((p) => ({
+                ...p,
+                name: e.target.value,
+              }))
+            }
+            className="w-full border rounded px-3 py-2"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-1">Адрес комплекса *</label>
+          <input
+            type="text"
+            value={apartmentComplexPayload.address}
+            onChange={(e) =>
+              setApartmentComplexPayload((p) => ({
+                ...p,
+                address: e.target.value,
+              }))
+            }
+            className="w-full border rounded px-3 py-2"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-1">Основное описание</label>
+          <textarea
+            value={apartmentComplexPayload.description}
+            onChange={(e) =>
+              setApartmentComplexPayload((p) => ({
+                ...p,
+                description: e.target.value,
+              }))
+            }
+            className="w-full border rounded px-3 py-2 min-h-24"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-1">Дополнительное описание</label>
+          <textarea
+            value={apartmentComplexPayload.secondDescription || ""}
+            onChange={(e) =>
+              setApartmentComplexPayload((p) => ({
+                ...p,
+                secondDescription: e.target.value || null,
+              }))
+            }
+            className="w-full border rounded px-3 py-2 min-h-24"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-1">О комплексе</label>
+          <textarea
+            value={apartmentComplexPayload.about}
+            onChange={(e) =>
+              setApartmentComplexPayload((p) => ({
+                ...p,
+                about: e.target.value,
+              }))
+            }
+            className="w-full border rounded px-3 py-2 min-h-24"
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">Год постройки</label>
+            <input
+              type="number"
+              value={apartmentComplexPayload.yearBuilt}
+              onChange={(e) =>
+                setApartmentComplexPayload((p) => ({
+                  ...p,
+                  yearBuilt: Number(e.target.value),
+                }))
+              }
+              className="w-full border rounded px-3 py-2"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Количество этажей</label>
+            <input
+              type="number"
+              value={apartmentComplexPayload.numberOfFloors}
+              onChange={(e) =>
+                setApartmentComplexPayload((p) => ({
+                  ...p,
+                  numberOfFloors: Number(e.target.value),
+                }))
+              }
+              className="w-full border rounded px-3 py-2"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-1">Квартал завершения</label>
+          <input
+            type="text"
+            value={apartmentComplexPayload.quartalOfFinish || ""}
+            onChange={(e) =>
+              setApartmentComplexPayload((p) => ({
+                ...p,
+                quartalOfFinish: e.target.value || null,
+              }))
+            }
+            className="w-full border rounded px-3 py-2"
+            placeholder="Например: 2 квартал 2024"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-1">Ссылка на 3D модель</label>
+          <input
+            type="text"
+            value={apartmentComplexPayload.model3D || ""}
+            onChange={(e) =>
+              setApartmentComplexPayload((p) => ({
+                ...p,
+                model3D: e.target.value || null,
+              }))
+            }
+            className="w-full border rounded px-3 py-2"
+            placeholder="https://..."
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-1">Ссылка на панораму</label>
+          <input
+            type="text"
+            value={apartmentComplexPayload.pan || ""}
+            onChange={(e) =>
+              setApartmentComplexPayload((p) => ({
+                ...p,
+                pan: e.target.value || null,
+              }))
+            }
+            className="w-full border rounded px-3 py-2"
+            placeholder="https://..."
+          />
+        </div>
+
+        <ArrayField
+          label="Особенности"
+          values={apartmentComplexPayload.features}
+          placeholder="Например: удобное местоположение"
+          onChange={(arr) =>
+            setApartmentComplexPayload((p) => ({
+              ...p,
+              features: arr,
+            }))
+          }
+        />
+
+        <ArrayField
+          label="Изображения"
+          values={apartmentComplexPayload.images}
+          placeholder="/images/..."
+          onChange={(arr) =>
+            setApartmentComplexPayload((p) => ({
+              ...p,
+              images: arr,
+            }))
+          }
+        />
+
+        <ArrayField
+          label="Изображения дворов"
+          values={apartmentComplexPayload.yardsImages}
+          placeholder="/images/..."
+          onChange={(arr) =>
+            setApartmentComplexPayload((p) => ({
+              ...p,
+              yardsImages: arr,
+            }))
+          }
+        />
+
+        <div className="flex flex-wrap gap-4">
+          <div className="flex items-center gap-2">
+            <input
+              id="storesNearby"
+              type="checkbox"
+              checked={apartmentComplexPayload.storesNearby}
+              onChange={(e) =>
+                setApartmentComplexPayload((p) => ({
+                  ...p,
+                  storesNearby: e.target.checked,
+                }))
+              }
+              className="mr-1"
+            />
+            <label htmlFor="storesNearby">Магазины рядом</label>
+          </div>
+          <div className="flex items-center gap-2">
+            <input
+              id="schoolsNearby"
+              type="checkbox"
+              checked={apartmentComplexPayload.schoolsNearby}
+              onChange={(e) =>
+                setApartmentComplexPayload((p) => ({
+                  ...p,
+                  schoolsNearby: e.target.checked,
+                }))
+              }
+              className="mr-1"
+            />
+            <label htmlFor="schoolsNearby">Школы рядом</label>
+          </div>
+          <div className="flex items-center gap-2">
+            <input
+              id="hospitalsNearby"
+              type="checkbox"
+              checked={apartmentComplexPayload.hospitalsNearby}
+              onChange={(e) =>
+                setApartmentComplexPayload((p) => ({
+                  ...p,
+                  hospitalsNearby: e.target.checked,
+                }))
+              }
+              className="mr-1"
+            />
+            <label htmlFor="hospitalsNearby">Больницы рядом</label>
+          </div>
+          <div className="flex items-center gap-2">
+            <input
+              id="hasYards"
+              type="checkbox"
+              checked={apartmentComplexPayload.hasYards}
+              onChange={(e) =>
+                setApartmentComplexPayload((p) => ({
+                  ...p,
+                  hasYards: e.target.checked,
+                }))
+              }
+              className="mr-1"
+            />
+            <label htmlFor="hasYards">Есть дворы</label>
+          </div>
+          <div className="flex items-center gap-2">
+            <input
+              id="published"
+              type="checkbox"
+              checked={apartmentComplexPayload.published}
+              onChange={(e) =>
+                setApartmentComplexPayload((p) => ({
+                  ...p,
+                  published: e.target.checked,
+                }))
+              }
+              className="mr-1"
+            />
+            <label htmlFor="published">Опубликовать</label>
+          </div>
+        </div>
+      </div>
+
+      {/* Location Section */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold border-b pb-2">Расположение</h3>
+        
+        <div>
+          <label className="block text-sm font-medium mb-1">Описание расположения</label>
+          <textarea
+            value={apartmentComplexPayload.locationDescription || ""}
+            onChange={(e) =>
+              setApartmentComplexPayload((p) => ({
+                ...p,
+                locationDescription: e.target.value || null,
+              }))
+            }
+            className="w-full border rounded px-3 py-2 min-h-16"
+          />
+        </div>
+        
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">Широта</label>
+            <input
+              type="number"
+              step="0.001"
+              value={apartmentComplexPayload.latitude}
+              onChange={(e) =>
+                setApartmentComplexPayload((p) => ({
+                  ...p,
+                  latitude: parseFloat(e.target.value) || 0,
+                }))
+              }
+              className="w-full border rounded px-3 py-2"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Долгота</label>
+            <input
+              type="number"
+              step="0.001"
+              value={apartmentComplexPayload.longitude}
+              onChange={(e) =>
+                setApartmentComplexPayload((p) => ({
+                  ...p,
+                  longitude: parseFloat(e.target.value) || 0,
+                }))
+              }
+              className="w-full border rounded px-3 py-2"
+            />
+          </div>
+        </div>
+
+        {/* Good Things - Max 2 items */}
+        <div>
+          <label className="block text-sm font-medium mb-2">
+            Преимущества расположения (макс. 2 элемента)
+          </label>
+          <div className="space-y-3">
+            {apartmentComplexPayload.goodThings && apartmentComplexPayload.goodThings.map((thing, index) => (
+              <div key={thing.id} className="border rounded p-3 space-y-2">
+                <div>
+                  <label className="block text-xs font-medium mb-1">Название</label>
+                  <input
+                    type="text"
+                    value={thing.title}
+                    onChange={(e) => {
+                      const updated = [...(apartmentComplexPayload.goodThings || [])];
+                      updated[index] = { ...thing, title: e.target.value };
+                      setApartmentComplexPayload((p) => ({
+                        ...p,
+                        goodThings: updated,
+                      }));
+                    }}
+                    className="w-full border rounded px-2 py-1 text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium mb-1">Описание</label>
+                  <textarea
+                    value={thing.description}
+                    onChange={(e) => {
+                      const updated = [...(apartmentComplexPayload.goodThings || [])];
+                      updated[index] = { ...thing, description: e.target.value };
+                      setApartmentComplexPayload((p) => ({
+                        ...p,
+                        goodThings: updated,
+                      }));
+                    }}
+                    className="w-full border rounded px-2 py-1 text-sm min-h-12"
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setApartmentComplexPayload((p) => ({
+                      ...p,
+                      goodThings: (p.goodThings || []).filter((_, i) => i !== index),
+                    }));
+                  }}
+                  className="text-red-500 text-sm hover:text-red-700"
+                >
+                  Удалить
+                </button>
+              </div>
+            ))}
+            {(apartmentComplexPayload.goodThings?.length ?? 0) < 2 && (
+              <button
+                type="button"
+                onClick={() => {
+                  setApartmentComplexPayload((p) => ({
+                    ...p,
+                    goodThings: [
+                      ...(p.goodThings || []),
+                      { id: Date.now().toString(), title: "", description: "" },
+                    ],
+                  }));
+                }}
+                className="px-3 py-2 border rounded text-sm bg-blue-50 hover:bg-blue-100"
+              >
+                + Добавить преимущество
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Transport Section */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold border-b pb-2">Транспорт</h3>
+        
+        <div>
+          <label className="block text-sm font-medium mb-1">Девиз о транспорте</label>
+          <textarea
+            value={apartmentComplexPayload.transportAvailabilityMotto || ""}
+            onChange={(e) =>
+              setApartmentComplexPayload((p) => ({
+                ...p,
+                transportAvailabilityMotto: e.target.value,
+              }))
+            }
+            className="w-full border rounded px-3 py-2 min-h-16"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-1">Изображение транспорта</label>
+          <input
+            type="text"
+            value={apartmentComplexPayload.transportImage || ""}
+            onChange={(e) =>
+              setApartmentComplexPayload((p) => ({
+                ...p,
+                transportImage: e.target.value,
+              }))
+            }
+            className="w-full border rounded px-3 py-2"
+            placeholder="/images/..."
+          />
+        </div>
+
+        {/* Transport Items - Max 3 items */}
+        <div>
+          <label className="block text-sm font-medium mb-2">
+            Информация о транспорте (макс. 3 элемента)
+          </label>
+          <div className="space-y-3">
+            {apartmentComplexPayload.transportItems && apartmentComplexPayload.transportItems.map((item, index) => (
+              <div key={item.id} className="border rounded p-3 space-y-2">
+                <div>
+                  <label className="block text-xs font-medium mb-1">Название</label>
+                  <input
+                    type="text"
+                    value={item.title}
+                    onChange={(e) => {
+                      const updated = [...(apartmentComplexPayload.transportItems || [])];
+                      updated[index] = { ...item, title: e.target.value };
+                      setApartmentComplexPayload((p) => ({
+                        ...p,
+                        transportItems: updated,
+                      }));
+                    }}
+                    className="w-full border rounded px-2 py-1 text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium mb-1">Описание</label>
+                  <textarea
+                    value={item.description}
+                    onChange={(e) => {
+                      const updated = [...(apartmentComplexPayload.transportItems || [])];
+                      updated[index] = { ...item, description: e.target.value };
+                      setApartmentComplexPayload((p) => ({
+                        ...p,
+                        transportItems: updated,
+                      }));
+                    }}
+                    className="w-full border rounded px-2 py-1 text-sm min-h-12"
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setApartmentComplexPayload((p) => ({
+                      ...p,
+                      transportItems: (p.transportItems || []).filter((_, i) => i !== index),
+                    }));
+                  }}
+                  className="text-red-500 text-sm hover:text-red-700"
+                >
+                  Удалить
+                </button>
+              </div>
+            ))}
+            {(apartmentComplexPayload.transportItems?.length ?? 0) < 3 && (
+              <button
+                type="button"
+                onClick={() => {
+                  setApartmentComplexPayload((p) => ({
+                    ...p,
+                    transportItems: [
+                      ...(p.transportItems || []),
+                      { id: Date.now().toString(), title: "", description: "" },
+                    ],
+                  }));
+                }}
+                className="px-3 py-2 border rounded text-sm bg-blue-50 hover:bg-blue-100"
+              >
+                + Добавить информацию о транспорте
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Building History */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold border-b pb-2">История строительства</h3>
+        
+        <div className="space-y-3">
+          {apartmentComplexPayload.history && apartmentComplexPayload.history.map((item, index) => (
+            <div key={item.id} className="border rounded p-3 space-y-2">
+              <div>
+                <label className="block text-xs font-medium mb-1">Название этапа</label>
+                <input
+                  type="text"
+                  value={item.title}
+                  onChange={(e) => {
+                    const updated = [...(apartmentComplexPayload.history || [])];
+                    updated[index] = { ...item, title: e.target.value };
+                    setApartmentComplexPayload((p) => ({
+                      ...p,
+                      history: updated,
+                    }));
+                  }}
+                  className="w-full border rounded px-2 py-1 text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium mb-1">Описание</label>
+                <textarea
+                  value={item.description}
+                  onChange={(e) => {
+                    const updated = [...(apartmentComplexPayload.history || [])];
+                    updated[index] = { ...item, description: e.target.value };
+                    setApartmentComplexPayload((p) => ({
+                      ...p,
+                      history: updated,
+                    }));
+                  }}
+                  className="w-full border rounded px-2 py-1 text-sm min-h-12"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium mb-1">Изображение</label>
+                <input
+                  type="text"
+                  value={item.image}
+                  onChange={(e) => {
+                    const updated = [...(apartmentComplexPayload.history || [])];
+                    updated[index] = { ...item, image: e.target.value };
+                    setApartmentComplexPayload((p) => ({
+                      ...p,
+                      history: updated,
+                    }));
+                  }}
+                  className="w-full border rounded px-2 py-1 text-sm"
+                  placeholder="/images/..."
+                />
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setApartmentComplexPayload((p) => ({
+                    ...p,
+                    history: (p.history || []).filter((_, i) => i !== index),
+                  }));
+                }}
+                className="text-red-500 text-sm hover:text-red-700"
+              >
+                Удалить
+              </button>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={() => {
+              setApartmentComplexPayload((p) => ({
+                ...p,
+                history: [
+                  ...(p.history || []),
+                  { id: Date.now().toString(), title: "", description: "", image: "" },
+                ],
+              }));
+            }}
+            className="px-3 py-2 border rounded text-sm bg-blue-50 hover:bg-blue-100"
+          >
+            + Добавить этап строительства
+          </button>
+        </div>
+      </div>
+
+      {/* Amenities */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold border-b pb-2">Удобства (макс. 4 элемента)</h3>
+        
+        <div>
+          <label className="block text-sm font-medium mb-1">Описание удобств</label>
+          <textarea
+            value={apartmentComplexPayload.amenitiesDescription || ""}
+            onChange={(e) =>
+              setApartmentComplexPayload((p) => ({
+                ...p,
+                amenitiesDescription: e.target.value,
+              }))
+            }
+            className="w-full border rounded px-3 py-2 min-h-16"
+          />
+        </div>
+
+        <div className="space-y-3">
+          {apartmentComplexPayload.amenities && apartmentComplexPayload.amenities.map((amenity, index) => (
+            <div key={amenity.id} className="border rounded p-3 space-y-2">
+              <div>
+                <label className="block text-xs font-medium mb-1">Название</label>
+                <input
+                  type="text"
+                  value={amenity.title}
+                  onChange={(e) => {
+                    const updated = [...(apartmentComplexPayload.amenities || [])];
+                    updated[index] = { ...amenity, title: e.target.value };
+                    setApartmentComplexPayload((p) => ({
+                      ...p,
+                      amenities: updated,
+                    }));
+                  }}
+                  className="w-full border rounded px-2 py-1 text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium mb-1">Описание</label>
+                <textarea
+                  value={amenity.description}
+                  onChange={(e) => {
+                    const updated = [...(apartmentComplexPayload.amenities || [])];
+                    updated[index] = { ...amenity, description: e.target.value };
+                    setApartmentComplexPayload((p) => ({
+                      ...p,
+                      amenities: updated,
+                    }));
+                  }}
+                  className="w-full border rounded px-2 py-1 text-sm min-h-12"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium mb-1">Тип иконки</label>
+                <select
+                  value={amenity.iconType}
+                  onChange={(e) => {
+                    const updated = [...(apartmentComplexPayload.amenities || [])];
+                    updated[index] = { ...amenity, iconType: e.target.value as 'car' | 'map2' | 'building2' | 'disabled' };
+                    setApartmentComplexPayload((p) => ({
+                      ...p,
+                      amenities: updated,
+                    }));
+                  }}
+                  className="w-full border rounded px-2 py-1 text-sm"
+                >
+                  <option value="car">Автомобиль</option>
+                  <option value="map2">Карта</option>
+                  <option value="building2">Здание</option>
+                  <option value="disabled">Инвалидность</option>
+                </select>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setApartmentComplexPayload((p) => ({
+                    ...p,
+                    amenities: (p.amenities || []).filter((_, i) => i !== index),
+                  }));
+                }}
+                className="text-red-500 text-sm hover:text-red-700"
+              >
+                Удалить
+              </button>
+            </div>
+          ))}
+          {(apartmentComplexPayload.amenities?.length ?? 0) < 4 && (
+            <button
+              type="button"
+              onClick={() => {
+                setApartmentComplexPayload((p) => ({
+                  ...p,
+                  amenities: [
+                    ...(p.amenities || []),
+                    { id: Date.now().toString(), iconType: 'car' as const, title: "", description: "" },
+                  ],
+                }));
+              }}
+              className="px-3 py-2 border rounded text-sm bg-blue-50 hover:bg-blue-100"
+            >
+              + Добавить удобство
+            </button>
+          )}
+        </div>
+
+        <ArrayField
+          label="Изображения удобств"
+          values={apartmentComplexPayload.amenitiesImages}
+          placeholder="/images/..."
+          onChange={(arr) =>
+            setApartmentComplexPayload((p) => ({
+              ...p,
+              amenitiesImages: arr,
+            }))
+          }
+        />
+      </div>
+
+      {/* Technologies */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold border-b pb-2">Технологии (макс. 3 элемента)</h3>
+        
+        <div>
+          <label className="block text-sm font-medium mb-1">Описание технологий</label>
+          <textarea
+            value={apartmentComplexPayload.technologiesDescription || ""}
+            onChange={(e) =>
+              setApartmentComplexPayload((p) => ({
+                ...p,
+                technologiesDescription: e.target.value,
+              }))
+            }
+            className="w-full border rounded px-3 py-2 min-h-16"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-1">Изображение технологий</label>
+          <input
+            type="text"
+            value={apartmentComplexPayload.technologiesImage || ""}
+            onChange={(e) =>
+              setApartmentComplexPayload((p) => ({
+                ...p,
+                technologiesImage: e.target.value,
+              }))
+            }
+            className="w-full border rounded px-3 py-2"
+            placeholder="/images/..."
+          />
+        </div>
+
+        <div className="space-y-3">
+          {apartmentComplexPayload.technologies && apartmentComplexPayload.technologies.map((tech, index) => (
+            <div key={tech.id} className="border rounded p-3 space-y-2">
+              <div>
+                <label className="block text-xs font-medium mb-1">Название</label>
+                <input
+                  type="text"
+                  value={tech.title}
+                  onChange={(e) => {
+                    const updated = [...(apartmentComplexPayload.technologies || [])];
+                    updated[index] = { ...tech, title: e.target.value };
+                    setApartmentComplexPayload((p) => ({
+                      ...p,
+                      technologies: updated,
+                    }));
+                  }}
+                  className="w-full border rounded px-2 py-1 text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium mb-1">Описание</label>
+                <textarea
+                  value={Array.isArray(tech.description) ? tech.description.join('\n') : tech.description || ""}
+                  onChange={(e) => {
+                    const updated = [...(apartmentComplexPayload.technologies || [])];
+                    updated[index] = { ...tech, description: e.target.value };
+                    setApartmentComplexPayload((p) => ({
+                      ...p,
+                      technologies: updated,
+                    }));
+                  }}
+                  className="w-full border rounded px-2 py-1 text-sm min-h-12"
+                />
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setApartmentComplexPayload((p) => ({
+                    ...p,
+                    technologies: (p.technologies || []).filter((_, i) => i !== index),
+                  }));
+                }}
+                className="text-red-500 text-sm hover:text-red-700"
+              >
+                Удалить
+              </button>
+            </div>
+          ))}
+          {(apartmentComplexPayload.technologies?.length ?? 0) < 3 && (
+            <button
+              type="button"
+              onClick={() => {
+                setApartmentComplexPayload((p) => ({
+                  ...p,
+                  technologies: [
+                    ...(p.technologies || []),
+                    { id: Date.now().toString(), title: "", description: "" },
+                  ],
+                }));
+              }}
+              className="px-3 py-2 border rounded text-sm bg-blue-50 hover:bg-blue-100"
+            >
+              + Добавить технологию
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Special Offer */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold border-b pb-2">Специальное предложение</h3>
+        
+        <div>
+          <label className="block text-sm font-medium mb-1">Заголовок предложения</label>
+          <input
+            type="text"
+            value={apartmentComplexPayload.catchItOfferTitle || ""}
+            onChange={(e) =>
+              setApartmentComplexPayload((p) => ({
+                ...p,
+                catchItOfferTitle: e.target.value || null,
+              }))
+            }
+            className="w-full border rounded px-3 py-2"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-1">Описание предложения</label>
+          <textarea
+            value={apartmentComplexPayload.catchItOfferDescription || ""}
+            onChange={(e) =>
+              setApartmentComplexPayload((p) => ({
+                ...p,
+                catchItOfferDescription: e.target.value || null,
+              }))
+            }
+            className="w-full border rounded px-3 py-2 min-h-16"
+          />
+        </div>
+      </div>
+
+      {/* SEO / Meta Information */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold border-b pb-2">SEO и мета информация</h3>
+        
+        <div>
+          <label className="block text-sm font-medium mb-1">Meta Title</label>
+          <input
+            type="text"
+            value={apartmentComplexPayload.metaTitle || ""}
+            onChange={(e) =>
+              setApartmentComplexPayload((p) => ({
+                ...p,
+                metaTitle: e.target.value || null,
+              }))
+            }
+            className="w-full border rounded px-3 py-2"
+            placeholder="Заголовок страницы для SEO"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-1">Meta Description</label>
+          <textarea
+            value={apartmentComplexPayload.metaDescription || ""}
+            onChange={(e) =>
+              setApartmentComplexPayload((p) => ({
+                ...p,
+                metaDescription: e.target.value || null,
+              }))
+            }
+            className="w-full border rounded px-3 py-2 min-h-16"
+            placeholder="Описание для поисковых систем"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-1">Meta Keywords</label>
+          <textarea
+            value={apartmentComplexPayload.metaKeywords || ""}
+            onChange={(e) =>
+              setApartmentComplexPayload((p) => ({
+                ...p,
+                metaKeywords: e.target.value || null,
+              }))
+            }
+            className="w-full border rounded px-3 py-2 min-h-12"
+            placeholder="Ключевые слова, разделенные запятыми"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-1">Meta Image (OG Image)</label>
+          <input
+            type="text"
+            value={apartmentComplexPayload.metaImage || ""}
+            onChange={(e) =>
+              setApartmentComplexPayload((p) => ({
+                ...p,
+                metaImage: e.target.value || null,
+              }))
+            }
+            className="w-full border rounded px-3 py-2"
+            placeholder="https://..."
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-1">URL Slug</label>
+          <input
+            type="text"
+            value={apartmentComplexPayload.slug || ""}
+            onChange={(e) =>
+              setApartmentComplexPayload((p) => ({
+                ...p,
+                slug: e.target.value || null,
+              }))
+            }
+            className="w-full border rounded px-3 py-2"
+            placeholder="apartment-complex-url"
+          />
+        </div>
+      </div>
+
+      {/* Submit Buttons */}
+      <div className="flex justify-between items-center pt-4 border-t">
+        <div>
+          {isEditing && onDelete && (
+            <button
+              type="button"
+              onClick={() => void onDelete()}
+              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+            >
+              Удалить
+            </button>
+          )}
+        </div>
+        <div className="flex gap-3">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="px-4 py-2 border rounded"
+          >
+            Отмена
+          </button>
+          <button
+            type="submit"
+            disabled={saving}
+            className="px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700 disabled:opacity-50"
+          >
+            {saving ? "Сохранение..." : "Сохранить"}
+          </button>
+        </div>
+      </div>
+    </form>
+  );
+
   const title = useMemo(() => {
     if (contentType === "flat")
       return isEditing ? "Редактировать квартиру" : "Создать квартиру";
-    if (contentType === "home")
-      return isEditing ? "Редактировать комплекс" : "Создать комплекс";
     if (contentType === "category")
       return isEditing ? "Редактировать категорию" : "Создать категорию";
     if (contentType === "bid")
       return isEditing ? "Редактировать заявку" : "Создать заявку?";
     if (contentType === "layout")
       return isEditing ? "Редактировать планировку" : "Создать планировку";
+    if (contentType === "apartmentComplex")
+      return isEditing ? "Редактировать жилой комплекс" : "Создать жилой комплекс";
   }, [contentType, isEditing]);
 
   return (
@@ -1655,10 +2321,10 @@ const ContentEditor: FC<ContentEditorUnifiedProps> = ({
         )}
 
         {contentType === "flat" && renderFlatForm()}
-        {contentType === "home" && renderHomeForm()}
         {contentType === "category" && renderCategoryForm()}
         {contentType === "bid" && renderBidForm()}
         {contentType === "layout" && renderLayoutForm()}
+        {contentType === "apartmentComplex" && renderApartmentComplexForm()}
         
         {/* Variant Form Modal */}
         {showVariantForm && (

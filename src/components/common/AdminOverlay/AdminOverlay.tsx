@@ -2,12 +2,14 @@ import { useState } from "react";
 import { useAuthStore } from "../../../store/auth.store";
 import HomePageEditor from "../HomePageEditor/HomePageEditor";
 import AboutUsPageEditor from "../AboutUsPageEditor/AboutUsPageEditor";
+import FooterEditor from "../FooterEditor/FooterEditor";
 import styles from "./AdminOverlay.module.css";
 
 const AdminOverlay = () => {
   const { role, isAuthenticated } = useAuthStore();
   const [isHomePageModalOpen, setIsHomePageModalOpen] = useState(false);
   const [isAboutUsModalOpen, setIsAboutUsModalOpen] = useState(false);
+  const [isFooterModalOpen, setIsFooterModalOpen] = useState(false);
 
   if (!isAuthenticated || !role || role === "CLIENT") {
     return null;
@@ -33,6 +35,13 @@ const AdminOverlay = () => {
             >
               Edit About Us
             </button>
+            <button
+              onClick={() => setIsFooterModalOpen(true)}
+              className={styles.adminButton}
+              title="Edit footer content"
+            >
+              Edit Footer
+            </button>
           </div>
         </div>
       </div>
@@ -43,6 +52,10 @@ const AdminOverlay = () => {
 
       {isAboutUsModalOpen && (
         <AboutUsPageEditor onClose={() => setIsAboutUsModalOpen(false)} />
+      )}
+
+      {isFooterModalOpen && (
+        <FooterEditor onClose={() => setIsFooterModalOpen(false)} />
       )}
     </>
   );

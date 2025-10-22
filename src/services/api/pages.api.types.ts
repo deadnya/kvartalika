@@ -45,6 +45,11 @@ export interface ProjectParams {
   value: string;
 }
 
+export interface AparmentComplexDto {
+  id: string;
+  name: string;
+}
+
 export interface ProjectInfo {
   id: string;
   title: string;
@@ -75,7 +80,16 @@ export interface ApartmentDto {
   homeId: string;
   flatId: string;
   images: string[];
-  variants: [];
+  variants: FlatVariantDto[];
+}
+
+export interface ApartmentDtoResponse {
+  flat: ApartmentDto
+}
+
+export interface ApartmentDtoResponseWithVariants {
+  flat: ApartmentDto
+  variants: FlatVariantDto
 }
 
 export interface PaymentMethodInfo {
@@ -92,7 +106,7 @@ export interface PromotionInfo {
   imageSrc: string;
 }
 
-export interface HomePageContent {
+export interface HomePageContentRequest {
   heroTitle: {
     partOne: string;
     partTwo: string;
@@ -103,18 +117,28 @@ export interface HomePageContent {
   
   projects: ProjectInfo[];
   
-  hotDeals: ApartmentDto[];
+  hotDealFlatIds: number[];
   
   paymentMethods: PaymentMethodInfo[];
   
   promotions: PromotionInfo[];
+
+  // SEO
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  metaKeywords?: string | null;
+  metaImage?: string | null;
   
-  contactInfo: {
+  contactInfo?: {
     address: string;
     workingHours: string;
     phone: string;
     email: string;
   };
+}
+
+export interface HomePageContent extends HomePageContentRequest {
+  hotDeals: ApartmentDto[];
 }
 
 export interface Principle {
@@ -187,7 +211,7 @@ export interface BuildingHistoryItem {
   id: string;
   title: string;
   description: string;
-  imageSrc: string;
+  image: string;
 }
 
 export interface AmenityItem {
@@ -204,33 +228,54 @@ export interface TechnologyItem {
 }
 
 export interface ApartmentComplexPageContent {
-  galleryImages: string[];
-
-  complexTitle: string;
-  complexLocation: string;
-  complexDescription: string;
-
-  locationMotto: string;
-  goodThings: GoodThing[];
-  locationMapLatitude: number;
-  locationMapLongitude: number;
-
-  availableApartments: ApartmentDto[];
-
-  transportAvailabilityMotto: string;
-  transportItems: TransportAvailabilityItem[];
-  transportImage: string;
-
-  buildingHistory: BuildingHistoryItem[];
-
-  amenitiesDescription: string;
-  amenities: AmenityItem[];
+  id: number;
+  name: string;
+  description: string;
+  secondDescription: string | null;
+  images: string[];
+  address: string;
+  latitude: number;
+  longitude: number;
+  yearBuilt: number;
+  history: BuildingHistoryItem[];
+  features: string[];
+  about: string;
+  numberOfFloors: number;
+  storesNearby: boolean;
+  schoolsNearby: boolean;
+  hospitalsNearby: boolean;
+  hasYards: boolean;
+  yardsImages: string[];
+  published: boolean;
+  model3D: string | null;
+  pan: string | null;
+  quartalOfFinish: string | null;
+  locationDescription: string | null;
+  transportAvailabilityMotto: string | null;
+  transportItems: TransportAvailabilityItem[] | null;
+  transportImage: string | null;
+  amenitiesDescription: string | null;
+  amenities: AmenityItem[] | null;
   amenitiesImages: string[];
+  technologiesDescription: string | null;
+  technologies: TechnologyItem[] | null;
+  technologiesImage: string | null;
+  catchItOfferTitle: string | null;
+  catchItOfferDescription: string | null;
+  goodThings: GoodThing[] | null;
+  metaTitle: string | null;
+  metaDescription: string | null;
+  metaKeywords: string | null;
+  metaImage: string | null;
+  slug: string | null;
+}
 
-  technologiesDescription: string;
-  technologies: TechnologyItem[];
-  technologiesImage: string;
-
-  catchItOfferTitle: string;
-  catchItOfferDescription: string;
+export interface FooterDto {
+  phone: string,
+  email: string,
+  footerDescription: string,
+  title: string,
+  address: string,
+  description: string,
+  privacy: string
 }

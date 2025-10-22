@@ -1,12 +1,12 @@
 import { lazy, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import styles from "./ApartmentComplexPage.module.css"
 import { BigImageGallery } from "../../components/common/BigImageGallery/BigImageGallery.tsx";
-import { getApartmentComplexPageContent } from "../../services/api/pages.api.requests";
-import type { ApartmentComplexPageContent } from "../../services/api/pages.api.types";
+import { getApartmentComplexPageContent, getApartmentsForComplex } from "../../services/api/pages.api.requests";
+import type { ApartmentComplexPageContent, ApartmentDto, ApartmentDtoResponse } from "../../services/api/pages.api.types";
 import { DEFAULT_APARTMENT_COMPLEX_PAGE_CONTENT } from "../../services/api/pages.api.defaults";
 
 import HomePage1 from "/images/HomePage1.png"
-import HomePage3 from "/images/HomePage3.png"
 import BreadcrumbNav from "../../components/common/BreadcrumbNav/BreadcrumbNav.tsx";
 
 import MapIcon from "../../assets/icons/map.svg?react"
@@ -18,20 +18,20 @@ import DisabledIcon from "../../assets/icons/disabled.svg?react"
 import SberbankIcon from "../../assets/icons/sberbank.svg?react"
 import Button from "../../components/common/Button/Button.tsx";
 import { Link } from "react-router-dom";
-import ApartmentCard from "../../components/common/ApartmentCard/ApartmentCard.tsx";
 import BuildingHistory from "../../components/common/BuildingHistory/BuildingHistory.tsx";
 import Conveniencies from "../../components/common/Conveniencies/Conveniencies.tsx";
 import { Input } from "../../components/common/Input/Input.tsx";
 import FindApartmentModal from "../../components/common/FindApartmentModal/FindApartmentModal.tsx";
+import ApartmentCard from "../../components/common/ApartmentCard/ApartmentCard.tsx";
+import type { Apartment } from "../../types/index.ts";
 
 const YandexMap = lazy(() => import("../../components/YandexMap.tsx"));
 
 const ApartmentComplexPage = () => {
+    const { homeId } = useParams<{ homeId: string }>();
     const [content, setContent] = useState<ApartmentComplexPageContent>(DEFAULT_APARTMENT_COMPLEX_PAGE_CONTENT);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const handleModalOpen = () => {
-        setIsModalOpen(true);
-    };
+    const [apartments, setApartments] = useState<ApartmentDtoResponse[]>([])
 
     const handleModalClose = () => {
         setIsModalOpen(false);
@@ -39,35 +39,39 @@ const ApartmentComplexPage = () => {
 
     useEffect(() => {
         const loadContent = async () => {
-            const data = await getApartmentComplexPageContent("1");
+            if (!homeId) return;
+            const data = await getApartmentComplexPageContent(homeId);
+            const aparts = await getApartmentsForComplex(homeId)
+            console.log(data)
+            setApartments(aparts)
             setContent(data);
         };
         loadContent();
-    }, []);
+    }, [homeId]);
 
     return (
         <>
             <div className={styles.container}>
                 <div className={styles.topGalleryContainer}>
-                    <BigImageGallery imageSrcs={content.galleryImages}/>
+                    <BigImageGallery imageSrcs={content.images}/>
                     <div className={styles.topImageTriangleOverlay}></div>
                 </div>
 
                 <BreadcrumbNav items={[
                     { label: "Жилые комплексы", path: "/complexes" },
-                    { label: content.complexTitle }
+                    { label: content.name }
                 ]} />
 
                 <div className={styles.generalInfo}>
                     <div className={styles.generalInfoTopContainer}>
-                        <h1 className={styles.complexTitle}>{content.complexTitle}</h1>
+                        <h1 className={styles.complexTitle}>{content.name}</h1>
                         <div className={styles.locationContainer}>
                             <MapIcon />
-                            <span className={styles.complexLocationText}>{content.complexLocation}</span>
+                            <span className={styles.complexLocationText}>{content.address}</span>
                         </div>
                     </div>
                     <div className={styles.generalInfoBottomContainer}>
-                        <p className={styles.complexDescription}>{content.complexDescription}</p>
+                        <p className={styles.complexDescription}>{content.description}</p>
                         
                         <div>
                             <Button
@@ -83,9 +87,9 @@ const ApartmentComplexPage = () => {
                     <h2 className={styles.locationTitle}>Расположение</h2>
                     <div className={styles.locationContent}>
                         <div className={styles.locationLeftContainer}>
-                            <p className={styles.locationMotto}>{content.locationMotto}</p>
+                            <p className={styles.locationMotto}>{content.about}</p>
                             <div className={styles.goodThings}>
-                                {content.goodThings.map((goodThing) => (
+                                {content.goodThings && content.goodThings.map((goodThing) => (
                                     <div key={goodThing.id} className={styles.goodThing}>
                                         <div className={styles.goodThing2}>
                                             <CheckmarkIcon />
@@ -100,8 +104,8 @@ const ApartmentComplexPage = () => {
                         </div>
                         <div className={styles.locationMapContainer}>
                             <YandexMap
-                                latitude={content.locationMapLatitude}
-                                longitude={content.locationMapLongitude}
+                                latitude={content.latitude}
+                                longitude={content.longitude}
                                 description={""}
                             />
                         </div>
@@ -118,17 +122,17 @@ const ApartmentComplexPage = () => {
                     </div>
 
                     <div className={styles.availableApartmentsContent}>
-                        {content.availableApartments.slice(0, 4).map(apartment => (
+                        {apartments.slice(0, 4).map((apartment) => (
                             <ApartmentCard
-                                key={apartment.id}
-                                roomCount={apartment.roomCount}
-                                toiletCount={apartment.toiletCount}
-                                houseComplexTitle={apartment.houseComplexTitle}
-                                address={apartment.address}
-                                area={apartment.area}
-                                houseComplexId={apartment.houseComplexId}
-                                imageSrc={apartment.imageSrc}
-                                flatId={apartment.flatId}
+                                key={apartment.flat.id}
+                                roomCount={apartment.flat.numberOfRooms}
+                                toiletCount={apartment.flat.numberOfBathrooms}
+                                houseComplexTitle={apartment.flat.houseComplexTitle}
+                                address={apartment.flat.address}
+                                variants={apartment.flat.variants}
+                                houseComplexId={apartment.flat.homeId}
+                                flatId={apartment.flat.id}
+                                imageSrc={apartment.flat.images?.[0] || ""}
                                 includeComplexButton={false}
                             />
                         ))}
@@ -142,12 +146,12 @@ const ApartmentComplexPage = () => {
                         <div className={styles.transportAvailabilityLeftContainer}>
                             <p className={styles.transportAvailabilityTopText}>{content.transportAvailabilityMotto}</p>
                             <div className={styles.transportAvailabilityList}>
-                                {content.transportItems.map(item => (
-                                    <div className={styles.transportAvailabilityItem}>
+                                {content.transportItems && content.transportItems.map(item => (
+                                    <div key={item.id} className={styles.transportAvailabilityItem}>
                                         <div className={styles.transportAvailabilityItem2}>
                                             <CheckmarkIcon />
                                             <div className={styles.goodThingText}>
-                                                <h4 className={styles.goodThingTitle}>{item.title}t</h4>
+                                                <h4 className={styles.goodThingTitle}>{item.title}</h4>
                                                 <p className={styles.goodThingDescription}>{item.description}</p>
                                             </div>
                                         </div>
@@ -156,20 +160,23 @@ const ApartmentComplexPage = () => {
                             </div>
                         </div>
 
-                        <img className={styles.transportAvailabilityImage} src={content.transportImage}></img>
+                        <img className={styles.transportAvailabilityImage} src={content.transportImage || ""}></img>
                     </div>
                 </div>
 
                 <BuildingHistory
-                    items={content.buildingHistory}
+                    items={(content.history || []).map(item => ({
+                        ...item,
+                        imageSrc: item.image || ""
+                    }))}
                     title="История строительства"
                 />
 
                 <Conveniencies
                     title="Благоустройство"
                     list={{
-                        description: content.amenitiesDescription,
-                        items: content.amenities.map((amenity, index) => {
+                        description: content.amenitiesDescription || "",
+                        items: (content.amenities && content.amenities.map((amenity, index) => {
                             const iconMap: Record<number, any> = {
                                 0: CarIcon,
                                 1: Map2Icon,
@@ -182,9 +189,9 @@ const ApartmentComplexPage = () => {
                                 ...amenity,
                                 Icon: icon
                             };
-                        })
+                        })) || []
                     }}
-                    images={content.amenitiesImages}
+                    images={content.amenitiesImages || []}
                 />
 
                 <div className={styles.technologies}>
@@ -193,8 +200,8 @@ const ApartmentComplexPage = () => {
                         <div className={styles.technologiesLeftContainer}>
                             <p>{content.technologiesDescription}</p>
                             <div className={styles.technologiesList}>
-                                {content.technologies.map(tech => (
-                                    <div className={styles.technologiesItem}>
+                                {content.technologies && content.technologies.map(tech => (
+                                    <div key={tech.id} className={styles.technologiesItem}>
                                         <div className={styles.technologiesItem2}>
                                             <CheckmarkIcon />
                                             <div className={styles.technologiesItemText}>
@@ -227,7 +234,7 @@ const ApartmentComplexPage = () => {
                     <div className={styles.sendRequestForm}>
                         <div className={styles.sendRequestHeader}>
                             <p className={styles.sendRequestHeaderTopText}>
-                                {content.complexTitle} — это шанс приобрести современное жильё в перспективном районе по привлекательной цене
+                                {content.name} — это шанс приобрести современное жильё в перспективном районе по привлекательной цене
                             </p>
                             <p className={styles.sendRequestHeaderBottomText}>
                                 Сделайте шаг к новой жизни в Томске, забронируйте квартиру<br/>

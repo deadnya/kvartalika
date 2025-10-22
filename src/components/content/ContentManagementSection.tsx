@@ -2,24 +2,26 @@ import { useState, useMemo, useCallback, useEffect } from "react";
 import { type BidForm } from "../../store/ui.store.ts";
 import type {
   FlatWithCategoryRequest,
-  HomeRequest,
   Category,
+  CategoryRequest,
   LayoutRequest,
 } from "../../services";
+import type { ApartmentComplexPageContent } from "../../services/api/pages.api.types";
+import { putApartmentComplex, postApartmentComplex } from "../../services/api/pages.api.requests";
 import ContentEditor, { type ContentType } from "./ContentEditor.tsx";
 import { useDebounce } from "../../hooks/useDebounce.ts";
 import { useContentStore } from "../../store/content.store.ts";
 import { useFlatsStore } from "../../store/flats.store.ts";
 import { useContentManagerStore } from "../../store/contentManager.store.ts";
 
-const TABS: Array<ContentType> = ["flat", "home", "category", "bid", "layout"];
-type PayLoadType = FlatWithCategoryRequest | HomeRequest | Category | BidForm;
+const TABS: Array<ContentType> = ["flat", "apartmentComplex", "category", "bid", "layout"];
+type PayLoadType = FlatWithCategoryRequest | ApartmentComplexPageContent | CategoryRequest | BidForm;
 
 const GUIDE: Record<string, string> = {
   flats:
     "Квартиры: создавайте, редактируйте и удаляйте квартиры. Используйте поиск для фильтрации по адресу или ID.",
-  homes:
-    "Комплексы: управляйте жилыми комплексами, сопоставляйте квартиры с комплексами.",
+  apartmentComplexes:
+    "Жилые комплексы: создавайте и редактируйте информацию о жилых комплексах с полной поддержкой истории строительства, удобств и технологий.",
   categories:
     "Категории: держите классификацию актуальной. Назначайте категории на объекты.",
   bids: "Заявки: просматривайте входящие заявки, отмечайте как просмотренные и редактируйте.",
@@ -31,19 +33,15 @@ const ContentManagementSection = () => {
   const {
     ui,
     selectedFlat,
-    selectedHome,
     selectedCategory,
     selectedLayout,
     saveFlat,
-    saveHome,
     saveLayout,
     saveCategory,
     editFlat,
-    editHome,
     editLayout,
     editCategory,
     removeFlat,
-    removeHome,
     removeLayout,
     removeCategory,
     setActiveTab,
@@ -73,12 +71,15 @@ const ContentManagementSection = () => {
     isLoadingBids,
   } = useContentManagerStore();
 
+  // Apartment Complex State - we reuse homes since they're the same endpoint
+  const [selectedApartmentComplex, setSelectedApartmentComplex] = useState<ApartmentComplexPageContent | null>(null);
+
   const [filter, setFilter] = useState("");
   const debouncedFilter = useDebounce(filter, 250);
 
   const activeContentType: ContentType = useMemo(() => {
     if (ui.activeTab === "flats") return "flat";
-    if (ui.activeTab === "homes") return "home";
+    if (ui.activeTab === "apartmentComplexes") return "apartmentComplex";
     if (ui.activeTab === "categories") return "category";
     if (ui.activeTab === "bids") return "bid";
     if (ui.activeTab === "layouts") return "layout";
@@ -90,7 +91,7 @@ const ContentManagementSection = () => {
       void getBids();
     } else if (ui.activeTab === "flats") {
       void loadFlats(true);
-    } else if (ui.activeTab === "homes") {
+    } else if (ui.activeTab === "apartmentComplexes") {
       void loadHomes(true);
     } else if (ui.activeTab === "categories") {
       void loadCategories(true);
@@ -114,7 +115,7 @@ const ContentManagementSection = () => {
   const switchTab = useCallback(
     (type: ContentType) => {
       if (type === "flat") setActiveTab("flats");
-      if (type === "home") setActiveTab("homes");
+      if (type === "apartmentComplex") setActiveTab("apartmentComplexes");
       if (type === "category") setActiveTab("categories");
       if (type === "bid") setActiveTab("bids");
       if (type === "layout") setActiveTab("layouts");
@@ -135,7 +136,7 @@ const ContentManagementSection = () => {
   const openEdit = useCallback(
     (type: ContentType, payload: PayLoadType) => {
       if (type === "flat") editFlat(payload as FlatWithCategoryRequest);
-      if (type === "home") editHome(payload as HomeRequest);
+      if (type === "apartmentComplex") setSelectedApartmentComplex(payload as ApartmentComplexPageContent);
       if (type === "category") editCategory(payload as Category);
       if (type === "bid") editBid(payload as BidForm);
       if (type === "layout") editLayout(payload as LayoutRequest);
@@ -145,7 +146,6 @@ const ContentManagementSection = () => {
     },
     [
       editFlat,
-      editHome,
       editCategory,
       editBid,
       editLayout,
@@ -160,7 +160,16 @@ const ContentManagementSection = () => {
       console.log("SAVINGGGG");
       if (activeContentType === "flat")
         await saveFlat(payload as FlatWithCategoryRequest);
-      if (activeContentType === "home") await saveHome(payload as HomeRequest);
+      if (activeContentType === "apartmentComplex") {
+        const complex = payload as ApartmentComplexPageContent;
+        if (selectedApartmentComplex?.id) {
+          // Edit existing
+          await putApartmentComplex(String(selectedApartmentComplex.id), complex);
+        } else {
+          // Create new - use a placeholder ID for the request
+          await postApartmentComplex("0", complex);
+        }
+      }
       if (activeContentType === "category")
         await saveCategory(payload as Category);
       if (activeContentType === "bid") await saveBid(payload as BidForm);
@@ -172,18 +181,21 @@ const ContentManagementSection = () => {
       refreshCurrent,
       activeContentType,
       saveFlat,
-      saveHome,
       saveLayout,
       saveCategory,
       saveBid,
+      selectedApartmentComplex,
     ],
   );
 
   const handleDelete = useCallback(async () => {
     if (activeContentType === "flat" && selectedFlat?.flat.id)
       await removeFlat(selectedFlat.flat.id);
-    if (activeContentType === "home" && selectedHome?.id)
-      await removeHome(selectedHome.id);
+    if (activeContentType === "apartmentComplex" && selectedApartmentComplex?.id) {
+      // TODO: Call API to delete apartment complex
+      // For now, just close the form and refresh
+      console.log("Delete apartment complex:", selectedApartmentComplex.id);
+    }
     if (activeContentType === "category" && selectedCategory?.id)
       await removeCategory(selectedCategory.id);
     if (activeContentType === "bid" && selectedBid?.id)
@@ -196,12 +208,11 @@ const ContentManagementSection = () => {
     refreshCurrent,
     activeContentType,
     selectedFlat,
-    selectedHome,
+    selectedApartmentComplex,
     selectedCategory,
     selectedBid,
     selectedLayout,
     removeFlat,
-    removeHome,
     removeCategory,
     removeBid,
     removeLayout,
@@ -228,10 +239,10 @@ const ContentManagementSection = () => {
         label:
           `${f.flat.id} ${f.flat.address || ""} ${f.flat.homeId || ""}`.trim(),
       }));
-    } else if (activeContentType === "home") {
+    } else if (activeContentType === "apartmentComplex") {
       base = homes.map((h) => ({
-        type: "home" as const,
-        payload: h,
+        type: "apartmentComplex" as const,
+        payload: h as unknown as ApartmentComplexPageContent,
         label: `${h.id} ${h.address || ""}`.trim(),
       }));
     } else if (activeContentType === "category") {
@@ -270,7 +281,7 @@ const ContentManagementSection = () => {
             onClick={() => switchTab(t)}
             className={`px-3 py-1 rounded ${
               (t === "flat" && ui.activeTab === "flats") ||
-              (t === "home" && ui.activeTab === "homes") ||
+              (t === "apartmentComplex" && ui.activeTab === "apartmentComplexes") ||
               (t === "category" && ui.activeTab === "categories") ||
               (t === "bid" && ui.activeTab === "bids") ||
               (t === "layout" && ui.activeTab === "layouts")
@@ -281,8 +292,8 @@ const ContentManagementSection = () => {
           >
             {t === "flat"
               ? "Квартиры"
-              : t === "home"
-                ? "Комплексы"
+              : t === "apartmentComplex"
+                ? "Жилые комплексы"
                 : t === "category"
                   ? "Категории"
                   : t === "layout"
@@ -299,11 +310,11 @@ const ContentManagementSection = () => {
             Новая квартира
           </button>
           <button
-            onClick={() => openNew("home")}
+            onClick={() => openNew("apartmentComplex")}
             className="px-3 py-1 bg-green-600 text-white rounded text-sm"
             type="button"
           >
-            Новый комплекс
+            Новый ЖК
           </button>
           <button
             onClick={() => openNew("category")}
@@ -335,7 +346,7 @@ const ContentManagementSection = () => {
             <h3 className="font-semibold">
               {ui.activeTab === "bids" && "Список заявок"}
               {ui.activeTab === "flats" && "Список квартир"}
-              {ui.activeTab === "homes" && "Список комплексов"}
+              {ui.activeTab === "apartmentComplexes" && "Список жилых комплексов"}
               {ui.activeTab === "categories" && "Список категорий"}
               {ui.activeTab === "layouts" && "Список планировок"}
             </h3>
@@ -349,9 +360,9 @@ const ContentManagementSection = () => {
                 {loading.flats ? "Загрузка..." : `${flats.length} квартир`}
               </div>
             )}
-            {ui.activeTab === "homes" && (
+            {ui.activeTab === "apartmentComplexes" && (
               <div className="text-sm text-gray-500">
-                {loading.homes ? "Загрузка..." : `${homes.length} ЖК`}
+                {loading.flats ? "Загрузка..." : `${homes.length} ЖК`}
               </div>
             )}
             {ui.activeTab === "categories" && (
@@ -383,7 +394,7 @@ const ContentManagementSection = () => {
               className="px-3 py-2 bg-gray-200 rounded"
               disabled={
                 (ui.activeTab === "flats" && loading.flats) ||
-                (ui.activeTab === "homes" && loading.homes) ||
+                (ui.activeTab === "apartmentComplexes" && loading.flats) ||
                 (ui.activeTab === "categories" && loading.categories) ||
                 (ui.activeTab === "bids" && isLoadingBids) ||
                 (ui.activeTab === "layouts" && loading.layouts)
@@ -466,8 +477,8 @@ const ContentManagementSection = () => {
               >
                 {ui.activeTab === "flats"
                   ? "Новая квартира"
-                  : ui.activeTab === "homes"
-                    ? "Новый комплекс"
+                  : ui.activeTab === "apartmentComplexes"
+                    ? "Новый ЖК"
                     : ui.activeTab === "categories"
                       ? "Новая категория"
                       : ui.activeTab === "layouts"
@@ -496,8 +507,8 @@ const ContentManagementSection = () => {
           initialFlat={
             activeContentType === "flat" ? selectedFlat || undefined : undefined
           }
-          initialHome={
-            activeContentType === "home" ? selectedHome || undefined : undefined
+          initialApartmentComplex={
+            activeContentType === "apartmentComplex" ? selectedApartmentComplex || undefined : undefined
           }
           initialCategory={
             activeContentType === "category"

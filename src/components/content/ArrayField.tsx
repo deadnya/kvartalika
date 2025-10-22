@@ -2,15 +2,17 @@ import type {FC} from "react";
 
 const ArrayField: FC<{
   label: string;
-  values?: string[];
+  values?: string[] | null;
   placeholder?: string;
   onChange: (newArray: string[]) => void;
 }> = ({label, values = [], onChange, placeholder}) => {
+  const safeValues = values || [];
+  
   const handleUpdate = (idx: number, v: string) => {
-    onChange(values.map((it, i) => (i === idx ? v : it)));
+    onChange(safeValues.map((it, i) => (i === idx ? v : it)));
   };
-  const handleAdd = () => onChange([...values, '']);
-  const handleRemove = (idx: number) => onChange(values.filter((_, i) => i !== idx));
+  const handleAdd = () => onChange([...safeValues, '']);
+  const handleRemove = (idx: number) => onChange(safeValues.filter((_, i) => i !== idx));
 
   return (
     <div className="mb-4">
@@ -24,7 +26,7 @@ const ArrayField: FC<{
           + Добавить
         </button>
       </div>
-      {values.map((v, i) => (
+      {safeValues.map((v, i) => (
         <div
           key={i}
           className="flex gap-2 mb-2"
@@ -45,7 +47,7 @@ const ArrayField: FC<{
           </button>
         </div>
       ))}
-      {values.length === 0 && (
+      {safeValues.length === 0 && (
         <div className="text-sm text-gray-500">Пока ничего не добавлено</div>
       )}
     </div>

@@ -25,6 +25,8 @@ export const MOCK_HOME_PAGE_CONTENT: HomePageContent = {
     },
   ],
   
+  hotDealFlatIds: [1, 2, 3, 4],
+
   hotDeals: [
     {
       id: "1",
@@ -40,7 +42,7 @@ export const MOCK_HOME_PAGE_CONTENT: HomePageContent = {
       variants: []
     },
     {
-      id: "1",
+      id: "2",
       numberOfRooms: 2,
       numberOfBathrooms: 2,
       houseComplexTitle: "ЖК «Нижний 51»",
@@ -48,12 +50,12 @@ export const MOCK_HOME_PAGE_CONTENT: HomePageContent = {
       areaMin: 54,
       areaMax: 54,
       homeId: "1",
-      flatId: "1",
+      flatId: "2",
       images: ["/fallback.png"],
       variants: []
     },
     {
-      id: "1",
+      id: "3",
       numberOfRooms: 2,
       numberOfBathrooms: 2,
       houseComplexTitle: "ЖК «Нижний 51»",
@@ -61,12 +63,12 @@ export const MOCK_HOME_PAGE_CONTENT: HomePageContent = {
       areaMin: 54,
       areaMax: 54,
       homeId: "1",
-      flatId: "1",
+      flatId: "3",
       images: ["/fallback.png"],
       variants: []
     },
     {
-      id: "1",
+      id: "4",
       numberOfRooms: 2,
       numberOfBathrooms: 2,
       houseComplexTitle: "ЖК «Нижний 51»",
@@ -74,7 +76,7 @@ export const MOCK_HOME_PAGE_CONTENT: HomePageContent = {
       areaMin: 54,
       areaMax: 54,
       homeId: "1",
-      flatId: "1",
+      flatId: "4",
       images: ["/fallback.png"],
       variants: []
     },

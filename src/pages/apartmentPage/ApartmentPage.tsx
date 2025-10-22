@@ -4,12 +4,15 @@ import { Gallery } from "../../components/common/Gallery/Gallery";
 
 import CheckIcon from "../../assets/icons/check.svg?react"
 import { Toggle } from "../../components/common/Toggle/Toggle";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../../components/common/Button";
 import { ApartmentVariantCard } from "../../components/common/ApartmentVariantCard/ApartmentVariantCard";
 import FindApartmentModal from "../../components/common/FindApartmentModal/FindApartmentModal";
+import { useParams } from "react-router-dom";
+import { getApartment } from "../../services/api/pages.api.requests";
 
 const ApartmentPage = () => {
+    const { apartmentId } = useParams<{ apartmentId: string }>();
     const [isEnabled, setIsEnabled] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const handleModalOpen = () => {
@@ -19,6 +22,10 @@ const ApartmentPage = () => {
     const handleModalClose = () => {
         setIsModalOpen(false);
     };
+
+    useEffect( () => {
+        apartmentId != undefined ? getApartment(apartmentId) : ""
+    }, [])
 
     return (
         <>

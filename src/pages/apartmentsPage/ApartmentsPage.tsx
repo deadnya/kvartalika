@@ -13,13 +13,15 @@ import { SortingVariant, type SortingType } from "../../components/common/Sortin
 import CloseIcon from "../../assets/icons/close.svg?react"
 import ApartmentCard from "../../components/common/ApartmentCard/ApartmentCard";
 import { Pagination } from "../../components/common/Pagination/Pagination";
-import { getApartmentsPageContent } from "../../services/api/pages.api.requests";
-import type { ApartmentsPageContent } from "../../services/api/pages.api.types";
+import { getApartmentsPageContent, searchApartments, type SearchApartmentsRequest } from "../../services/api/pages.api.requests";
+import type { ApartmentsPageContent, ApartmentDto } from "../../services/api/pages.api.types";
 import { useSearchParams } from "react-router-dom";
 
 const ApartmentsPage = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const [content, setContent] = useState<ApartmentsPageContent | null>(null);
+    const [apartments, setApartments] = useState<ApartmentDto[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     const [selectedComplex, setSelectedComplex] = useState<string | number | null>(() => {
         const val = searchParams.get("complex");
@@ -55,28 +57,109 @@ const ApartmentsPage = () => {
             try {
                 const data = await getApartmentsPageContent();
                 setContent(data);
-                
-                if (searchParams.toString() === "") {
-                    setSelectedComplex(data.defaultFilters.selectedComplex);
-                    setPriceRange(data.defaultFilters.priceRange);
-                    setSelectedCategory(data.defaultFilters.selectedCategory);
-                    setRoomCount(data.defaultFilters.roomCount);
-                    setBathroomCount(data.defaultFilters.bathroomCount);
-                    setHasFinish(data.defaultFilters.hasFinish);
-                    setParks(data.defaultFilters.parks);
-                    setSchools(data.defaultFilters.schools);
-                    setShops(data.defaultFilters.shops);
-                    setSortByCost(data.defaultSorting.sortByCost);
-                    setSortByArea(data.defaultSorting.sortByArea);
-                    setSortByRoomCount(data.defaultSorting.sortByRoomCount);
-                }
             } catch (error) {
                 console.error("Failed to fetch apartments page content:", error);
             }
         };
 
         fetchContent();
-    }, [searchParams]);
+    }, []);
+
+    // Search apartments based on filters
+    useEffect(() => {
+        const performSearch = async () => {
+            setIsLoading(true);
+            try {
+                // Determine sort field and order
+                let sortBy: 'price' | 'rooms' | 'area' | 'location' | string = 'price';
+                let sortOrder: 'asc' | 'desc' = 'asc';
+
+                if (sortByCost !== "noSorting") {
+                    sortBy = 'price';
+                    sortOrder = sortByCost === 'sortingAsc' ? 'asc' : 'desc';
+                } else if (sortByArea !== "noSorting") {
+                    sortBy = 'area';
+                    sortOrder = sortByArea === 'sortingAsc' ? 'asc' : 'desc';
+                } else if (sortByRoomCount !== "noSorting") {
+                    sortBy = 'rooms';
+                    sortOrder = sortByRoomCount === 'sortingAsc' ? 'asc' : 'desc';
+                }
+
+                const searchRequest: Partial<SearchApartmentsRequest> = {
+                    sortBy,
+                    sortOrder
+                };
+
+                // Only include fields if they are selected/changed from defaults
+                if (priceRange.min !== 3500000 || priceRange.max !== 15000000) {
+                    searchRequest.minPrice = priceRange.min;
+                    searchRequest.maxPrice = priceRange.max;
+                }
+
+                if (roomCount) {
+                    searchRequest.rooms = Array.isArray(roomCount) ? parseInt(roomCount[0] as string) : parseInt(roomCount as string);
+                }
+
+                if (bathroomCount) {
+                    searchRequest.bathrooms = Array.isArray(bathroomCount) ? parseInt(bathroomCount[0] as string) : parseInt(bathroomCount as string);
+                }
+
+                if (hasFinish) {
+                    searchRequest.isDecorated = true;
+                }
+
+                if (selectedComplex) {
+                    searchRequest.homeId = parseInt(selectedComplex as string);
+                }
+
+                if (parks) {
+                    searchRequest.hasParks = true;
+                }
+
+                if (schools) {
+                    searchRequest.hasSchools = true;
+                }
+
+                if (shops) {
+                    searchRequest.hasStores = true;
+                }
+
+                if (selectedCategory) {
+                    searchRequest.categoriesId = [parseInt(selectedCategory as string)];
+                }
+
+                const results = await searchApartments(searchRequest as SearchApartmentsRequest);
+                
+                // Apply local sorting for better control
+                let sortedResults = [...results];
+                if (sortBy === 'price') {
+                    sortedResults.sort((a, b) => {
+                        const priceA = a.variants?.[0]?.price ?? 0;
+                        const priceB = b.variants?.[0]?.price ?? 0;
+                        return sortOrder === 'asc' ? priceA - priceB : priceB - priceA;
+                    });
+                } else if (sortBy === 'area') {
+                    sortedResults.sort((a, b) => {
+                        return sortOrder === 'asc' ? a.areaMin - b.areaMin : b.areaMin - a.areaMin;
+                    });
+                } else if (sortBy === 'rooms') {
+                    sortedResults.sort((a, b) => {
+                        return sortOrder === 'asc' ? a.numberOfRooms - b.numberOfRooms : b.numberOfRooms - a.numberOfRooms;
+                    });
+                }
+
+                setApartments(sortedResults);
+                setCurrentPage(1);
+            } catch (error) {
+                console.error("Failed to search apartments:", error);
+                setApartments([]);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        performSearch();
+    }, [selectedComplex, priceRange, selectedCategory, roomCount, bathroomCount, hasFinish, parks, schools, shops, sortByCost, sortByArea, sortByRoomCount]);
 
     useEffect(() => {
         const params = new URLSearchParams();
@@ -114,6 +197,10 @@ const ApartmentsPage = () => {
         setSortByArea("noSorting");
         setSortByRoomCount("noSorting");
     };
+
+    const itemsPerPage = 12;
+    const paginatedApartments = apartments.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    const totalPages = Math.ceil(apartments.length / itemsPerPage);
     
     return (
         <div className={styles.container}>
@@ -226,7 +313,7 @@ const ApartmentsPage = () => {
                     <Button
                         includeArrow
                         onClick={() => setCurrentPage(1)}
-                    >Смотреть 20 предложений</Button>
+                    >Смотреть {apartments.length} предложений</Button>
                     <div
                         className={styles.clearFiltersContainer}
                         onClick={clearFilters}
@@ -241,7 +328,7 @@ const ApartmentsPage = () => {
                 <div className={styles.apartmentVariantsTriangleOverlay}></div>
                 <div className={styles.apartmentVariantsBlurLeft}></div>
                 <div className={styles.sortingAndApartCount}>
-                    <span className={styles.sortingText}>Найдено: {content?.totalApartments || 0} квартир</span>
+                    <span className={styles.sortingText}>Найдено: {apartments.length} квартир</span>
                     <div className={styles.sortingContainer}>
                         <span className={styles.sortingText}>Сортировать по</span>
                         <div className={styles.sortingVariants}>
@@ -253,25 +340,31 @@ const ApartmentsPage = () => {
                 </div>
 
                 <div className={styles.apartmentsContainer}>
-                    {content?.apartments.slice(0, 12).map((apartment) => (
-                        <ApartmentCard
-                            key={apartment.id}
-                            roomCount={apartment.numberOfRooms}
-                            toiletCount={apartment.numberOfBathrooms}
-                            houseComplexTitle={apartment.houseComplexTitle}
-                            address={apartment.address}
-                            areaMin={apartment.areaMin}
-                            areaMax={apartment.areaMax}
-                            houseComplexId={apartment.homeId}
-                            imageSrc={apartment.images[0] ?? ""}
-                            flatId={apartment.flatId}
-                        />
-                    ))}
+                    {isLoading ? (
+                        <div style={{ textAlign: "center", padding: "40px" }}>Loading...</div>
+                    ) : paginatedApartments.length > 0 ? (
+                        paginatedApartments.map((apartment) => (
+                            <ApartmentCard
+                                key={apartment.id}
+                                roomCount={apartment.numberOfRooms}
+                                toiletCount={apartment.numberOfBathrooms}
+                                houseComplexTitle={apartment.houseComplexTitle}
+                                address={apartment.address}
+                                areaMin={apartment.areaMin}
+                                areaMax={apartment.areaMax}
+                                houseComplexId={apartment.homeId}
+                                imageSrc={apartment.images?.[0] || ""}
+                                flatId={apartment.id}
+                            />
+                        ))
+                    ) : (
+                        <div style={{ textAlign: "center", padding: "40px" }}>No apartments found</div>
+                    )}
                 </div>
 
                 <Pagination 
                     currentPage={currentPage}
-                    totalPages={Math.ceil((content?.totalApartments || 1) / 12)}
+                    totalPages={totalPages}
                     onPageChange={setCurrentPage}
                 />
             </div>

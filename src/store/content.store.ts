@@ -4,7 +4,6 @@ import type {
   Category,
   CategoryRequest,
   FlatWithCategoryRequest,
-  HomeRequest,
   Layout,
   LayoutRequest,
   Photo,
@@ -16,12 +15,9 @@ import {
   createFlat,
   updateFlat,
   deleteFlat,
-  createHome,
-  updateHome,
   createLayout,
   updateLayout,
   deleteLayout,
-  deleteHome,
   deletePhoto,
   updatePhoto,
   bulkDeletePhotos,
@@ -33,26 +29,22 @@ import { useContentManagerStore } from "./contentManager.store.ts";
 export interface ContentState {
   categories: Category[];
   flats: FlatWithCategoryRequest[];
-  homes: HomeRequest[];
   photos: Photo[];
   layouts: Layout[];
 
   selectedCategory: Category | null;
   selectedFlat: FlatWithCategoryRequest | null;
-  selectedHome: HomeRequest | null;
   selectedPhoto: Photo | null;
   selectedLayout: LayoutRequest | null;
 
   categoryForm: Partial<CategoryRequest>;
   flatForm: Partial<FlatWithCategoryRequest>;
-  homeForm: Partial<HomeRequest>;
   bidForm: Partial<BidRequest>;
   layoutForm: Partial<LayoutRequest>;
 
   loading: {
     categories: boolean;
     flats: boolean;
-    homes: boolean;
     photos: boolean;
     uploading: boolean;
     saving: boolean;
@@ -65,7 +57,7 @@ export interface ContentState {
   };
 
   ui: {
-    activeTab: "flats" | "homes" | "categories" | "photos" | "bids" | "layouts";
+    activeTab: "flats" | "apartmentComplexes" | "categories" | "photos" | "bids" | "layouts";
     showForm: boolean;
     editMode: boolean;
     selectedPhotoIds: number[];
@@ -74,7 +66,6 @@ export interface ContentState {
 
   stats: {
     totalFlats: number;
-    totalHomes: number;
     totalCategories: number;
     totalPhotos: number;
     lastUpdated: number | null;
@@ -91,10 +82,6 @@ export interface ContentActions {
   removeFlat: (id: number) => Promise<boolean>;
   editFlat: (flat: FlatWithCategoryRequest) => void;
 
-  saveHome: (data: HomeRequest) => Promise<boolean>;
-  removeHome: (id: number) => Promise<boolean>;
-  editHome: (home: HomeRequest) => void;
-
   saveLayout: (data: LayoutRequest) => Promise<boolean>;
   removeLayout: (id: number) => Promise<boolean>;
   editLayout: (layout: LayoutRequest) => void;
@@ -109,7 +96,6 @@ export interface ContentActions {
 
   setCategoryForm: (form: Partial<CategoryRequest>) => void;
   setFlatForm: (form: Partial<FlatWithCategoryRequest>) => void;
-  setHomeForm: (form: Partial<HomeRequest>) => void;
   setBidForm: (form: Partial<BidForm>) => void;
   resetForms: () => void;
 
@@ -144,13 +130,6 @@ const initialFlatForm: Partial<FlatWithCategoryRequest> = {
   },
 };
 
-const initialHomeForm: Partial<HomeRequest> = {
-  name: "",
-  description: "",
-  address: "",
-  yearBuilt: new Date().getFullYear(),
-};
-
 const initialLayoutForm: Partial<LayoutRequest> = {
   id: 0,
   layoutImage: "",
@@ -172,7 +151,6 @@ export const useContentStore = create<ContentState & ContentActions>(
 
     categoryForm: initialCategoryForm,
     flatForm: initialFlatForm,
-    homeForm: initialHomeForm,
     layoutForm: initialLayoutForm,
     bidForm: initialBidForm,
 
@@ -311,64 +289,6 @@ export const useContentStore = create<ContentState & ContentActions>(
       set({
         selectedFlat: flat,
         flatForm: { ...flat },
-        ui: { ...get().ui, showForm: true, editMode: true },
-      });
-    },
-
-    saveHome: async (data) => {
-      set({ loading: { ...get().loading, saving: true } });
-      try {
-        const { selectedHome } = get();
-        if (selectedHome?.id) {
-          await updateHome(selectedHome.id, data);
-        } else {
-          await createHome(data);
-        }
-        await useFlatsStore.getState().loadHomes();
-        get().resetForms();
-        get().setShowForm(false);
-        set({ loading: { ...get().loading, saving: false } });
-        return true;
-      } catch (error) {
-        set({
-          loading: { ...get().loading, saving: false },
-          errors: {
-            ...get().errors,
-            saveHome: error instanceof Error ? error.message : "fail",
-          },
-        });
-        return false;
-      }
-    },
-
-    removeHome: async (id) => {
-      set({ loading: { ...get().loading, deleting: true } });
-      try {
-        await deleteHome(id);
-        await useFlatsStore.getState().loadHomes();
-        set({ loading: { ...get().loading, deleting: false } });
-        return true;
-      } catch (error) {
-        set({
-          loading: { ...get().loading, deleting: false },
-          errors: {
-            ...get().errors,
-            removeHome: error instanceof Error ? error.message : "fail",
-          },
-        });
-        return false;
-      }
-    },
-
-    editHome: (home) => {
-      set({
-        selectedHome: home,
-        homeForm: {
-          name: home.name,
-          description: home.description,
-          address: home.address,
-          yearBuilt: home.yearBuilt,
-        },
         ui: { ...get().ui, showForm: true, editMode: true },
       });
     },
@@ -532,8 +452,6 @@ export const useContentStore = create<ContentState & ContentActions>(
       set((state) => ({ categoryForm: { ...state.categoryForm, ...form } })),
     setFlatForm: (form) =>
       set((state) => ({ flatForm: { ...state.flatForm, ...form } })),
-    setHomeForm: (form) =>
-      set((state) => ({ homeForm: { ...state.homeForm, ...form } })),
     setBidForm: (form) =>
       set((state) => ({ bidForm: { ...state.bidForm, ...form } })),
 
@@ -542,12 +460,10 @@ export const useContentStore = create<ContentState & ContentActions>(
       set({
         categoryForm: initialCategoryForm,
         flatForm: initialFlatForm,
-        homeForm: initialHomeForm,
         layoutForm: initialLayoutForm,
         bidForm: initialBidForm,
         selectedCategory: null,
         selectedFlat: null,
-        selectedHome: null,
         selectedPhoto: null,
       });
     },
@@ -587,11 +503,10 @@ export const useContentStore = create<ContentState & ContentActions>(
     clearErrors: () => set({ errors: {} }),
 
     updateStats: () => {
-      const { flats, homes, categories, photos } = get();
+      const { flats, categories, photos } = get();
       set({
         stats: {
           totalFlats: flats.length,
-          totalHomes: homes.length,
           totalCategories: categories.length,
           totalPhotos: photos.length,
           lastUpdated: Date.now(),

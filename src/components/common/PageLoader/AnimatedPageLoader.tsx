@@ -4,19 +4,21 @@ import PageLoader from "./PageLoader.tsx";
 interface AnimatedPageLoaderProps {
   isLoading: boolean;
   children: React.ReactNode;
+  isContentReady?: boolean;
 }
 
-const AnimatedPageLoader = ({ isLoading, children }: AnimatedPageLoaderProps) => {
+const AnimatedPageLoader = ({ isLoading, children, isContentReady = true }: AnimatedPageLoaderProps) => {
   const [showLoader, setShowLoader] = useState(true);
   const [showContent, setShowContent] = useState(false);
 
   useEffect(() => {
-    if (!isLoading) {
+    // Only show content when loading is done AND content is actually ready
+    if (!isLoading && isContentReady) {
       setShowContent(true);
     } else {
       setShowContent(false);
     }
-  }, [isLoading]);
+  }, [isLoading, isContentReady]);
 
   const handleExitComplete = () => {
     setShowLoader(false);
@@ -27,7 +29,7 @@ const AnimatedPageLoader = ({ isLoading, children }: AnimatedPageLoaderProps) =>
       {showContent && children}
       {showLoader && (
         <PageLoader 
-          isLoading={isLoading} 
+          isLoading={isLoading || !isContentReady} 
           onExitComplete={handleExitComplete}
         />
       )}

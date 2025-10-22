@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
-import { useEffect, lazy, Suspense } from "react";
+import { useEffect, lazy, Suspense, useState } from "react";
 
 import Header from "./components/common/Header";
 import Footer from "./components/common/Footer";
@@ -53,6 +53,21 @@ const InnerApp = () => {
 
   const { role, isAuthenticated } = useAuthStore();
   const location = useLocation();
+  const [isDocumentReady, setIsDocumentReady] = useState(false);
+
+  // Track when document is fully ready (images loaded, DOM painted)
+  useEffect(() => {
+    const checkDocumentReady = () => {
+      if (document.readyState === "complete") {
+        setIsDocumentReady(true);
+      }
+    };
+
+    document.addEventListener("readystatechange", checkDocumentReady);
+    checkDocumentReady(); // Check immediately in case already loaded
+
+    return () => document.removeEventListener("readystatechange", checkDocumentReady);
+  }, []);
 
   useEffect(() => {
     const loadData = async () => {
@@ -70,10 +85,6 @@ const InnerApp = () => {
 
     loadData().then(async () => {
       await loadAllData(true);
-      
-      // Add a delay to let images actually load and render
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
       setLoading("global", false);
     });
   }, [
@@ -93,7 +104,10 @@ const InnerApp = () => {
 
   return (
     <>
-      <AnimatedPageLoader isLoading={shouldShowLoader ?? false}>
+      <AnimatedPageLoader 
+        isLoading={shouldShowLoader ?? false}
+        isContentReady={isDocumentReady}
+      >
         <ScrollToTop />
         <ScrollToAnchor />
         <div className="min-h-screen flex flex-col bg-surface-50">
