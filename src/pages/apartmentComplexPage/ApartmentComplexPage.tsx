@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import styles from "./ApartmentComplexPage.module.css"
 import { BigImageGallery } from "../../components/common/BigImageGallery/BigImageGallery.tsx";
 import { getApartmentComplexPageContent, getApartmentsForComplex } from "../../services/api/pages.api.requests";
-import type { ApartmentComplexPageContent, ApartmentDto, ApartmentDtoResponse } from "../../services/api/pages.api.types";
+import type { ApartmentComplexPageContent, ApartmentDtoResponse } from "../../services/api/pages.api.types";
 import { DEFAULT_APARTMENT_COMPLEX_PAGE_CONTENT } from "../../services/api/pages.api.defaults";
 
 import HomePage1 from "/images/HomePage1.png"
@@ -23,7 +23,6 @@ import Conveniencies from "../../components/common/Conveniencies/Conveniencies.t
 import { Input } from "../../components/common/Input/Input.tsx";
 import FindApartmentModal from "../../components/common/FindApartmentModal/FindApartmentModal.tsx";
 import ApartmentCard from "../../components/common/ApartmentCard/ApartmentCard.tsx";
-import type { Apartment } from "../../types/index.ts";
 
 const YandexMap = lazy(() => import("../../components/YandexMap.tsx"));
 
@@ -127,10 +126,10 @@ const ApartmentComplexPage = () => {
                                 key={apartment.flat.id}
                                 roomCount={apartment.flat.numberOfRooms}
                                 toiletCount={apartment.flat.numberOfBathrooms}
-                                houseComplexTitle={apartment.flat.houseComplexTitle}
+                                houseComplexTitle={apartment.flat.houseComplexTitle || ""}
                                 address={apartment.flat.address}
                                 variants={apartment.flat.variants}
-                                houseComplexId={apartment.flat.homeId}
+                                houseComplexId={apartment.flat.homeId || ""}
                                 flatId={apartment.flat.id}
                                 imageSrc={apartment.flat.images?.[0] || ""}
                                 includeComplexButton={false}

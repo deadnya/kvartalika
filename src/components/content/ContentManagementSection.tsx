@@ -190,7 +190,7 @@ const ContentManagementSection = () => {
 
   const handleDelete = useCallback(async () => {
     if (activeContentType === "flat" && selectedFlat?.flat.id)
-      await removeFlat(selectedFlat.flat.id);
+      await removeFlat(Number(selectedFlat.flat.id));
     if (activeContentType === "apartmentComplex" && selectedApartmentComplex?.id) {
       // TODO: Call API to delete apartment complex
       // For now, just close the form and refresh

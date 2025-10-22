@@ -18,7 +18,6 @@ export const RangeSelect = ({
     maxValue = 100,
     step = 1,
     onRangeChange,
-    placeholder = "Диапазон",
     className = "",
     min = 0,
     max = 1000000,

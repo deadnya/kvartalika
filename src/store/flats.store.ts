@@ -343,7 +343,7 @@ export const useFlatsStore = create<flatsState & flatsActions>()(
           const { flats } = get();
 
           const published = flats.filter(
-            (item) => publishChecker(item) && item.flat.homeId === homeId,
+            (item) => publishChecker(item) && item.flat.homeId === String(homeId),
           );
           const resolved = await Promise.all(
             published.map(usePhotoStore.getState().processFlat),

@@ -13,6 +13,7 @@ const DEFAULT_FOOTER: FooterDto = {
   address: "Томск, площадь Батенькова 2, подъезд 7, этаж 3, офис 310",
   description: "Отдел продаж",
   privacy: "Политика конфиденциальности",
+  workingHours: "Пн-Вс: 09:00 - 21:00",
 };
 
 const Footer = () => {

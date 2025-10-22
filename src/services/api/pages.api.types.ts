@@ -92,6 +92,10 @@ export interface ApartmentDto {
   metaImage: string | null;
   slug: string | null;
   variants: FlatVariantDto[];
+  houseComplexTitle?: string;
+  areaMin?: number;
+  areaMax?: number;
+  flatId?: string;
 }
 
 export interface CategoryDto {
