@@ -102,27 +102,33 @@ export interface FlatVariantDto {
 }
 
 export interface FlatRequest {
-  id?: number;
+  id?: string | number;
   name?: string;
   description?: string;
   images?: string[];
-  layoutId?: string;
   address?: string;
-  price?: number;
-  latitude?: number;
-  longitude?: number;
+  latitude?: number | null;
+  longitude?: number | null;
   features?: string[];
   numberOfRooms?: number;
-  area?: number;
-  about?: string;
-  floor?: number;
-  homeId?: number;
+  about?: string | null;
+  homeId?: string | null;
   numberOfBathrooms?: number;
-  numberForSale?: number;
+  numberForSale?: string | null;
   published?: boolean;
   imagesClean?: string[];
-  pan?: string;
+  pan?: string | null;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  metaKeywords?: string | null;
+  metaImage?: string | null;
+  slug?: string | null;
+  layoutId?: string | null;
   variants?: VariantRequest[];
+  // Legacy fields - for backward compatibility
+  price?: number;
+  area?: number;
+  floor?: number;
 }
 
 export interface HomeRequest {

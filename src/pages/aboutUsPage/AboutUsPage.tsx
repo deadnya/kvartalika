@@ -19,12 +19,15 @@ import { Input } from '../../components/common/Input/Input'
 import Button from '../../components/common/Button/Button'
 import BreadcrumbNav from '../../components/common/BreadcrumbNav'
 import { getAboutUsPageContent } from '../../services/api/pages.api.requests'
+import { getFooterData } from '../../services/api/pages.api.requests'
 import type { AboutUsPageContent } from '../../services/api/pages.api.types'
+import type { FooterDto } from '../../services/api/pages.api.types'
 import { DEFAULT_ABOUT_US_PAGE_CONTENT } from '../../services/api/pages.api.defaults'
 import AdminOverlay from '../../components/common/AdminOverlay/AdminOverlay'
 
 const AboutUsPage = () => {
     const [content, setContent] = useState<AboutUsPageContent>(DEFAULT_ABOUT_US_PAGE_CONTENT)
+    const [footerData, setFooterData] = useState<FooterDto | null>(null)
 
     useEffect(() => {
         const fetchContent = async () => {
@@ -37,7 +40,17 @@ const AboutUsPage = () => {
             }
         }
 
+        const fetchFooterData = async () => {
+            try {
+                const response = await getFooterData()
+                setFooterData(response.data)
+            } catch (error) {
+                console.error("Error fetching footer data:", error)
+            }
+        }
+
         fetchContent()
+        fetchFooterData()
     }, [])
 
     useEffect(() => {
@@ -56,6 +69,25 @@ const AboutUsPage = () => {
         window.addEventListener("aboutUsPageDataSaved", handleAboutUsDataSaved)
         return () => {
             window.removeEventListener("aboutUsPageDataSaved", handleAboutUsDataSaved)
+        }
+    }, [])
+
+    useEffect(() => {
+        const handleFooterDataSaved = () => {
+            const fetchFooterData = async () => {
+                try {
+                    const response = await getFooterData()
+                    setFooterData(response.data)
+                } catch (error) {
+                    console.error("Error fetching footer data:", error)
+                }
+            }
+            fetchFooterData()
+        }
+
+        window.addEventListener("footerDataSaved", handleFooterDataSaved)
+        return () => {
+            window.removeEventListener("footerDataSaved", handleFooterDataSaved)
         }
     }, [])
     return (
@@ -185,7 +217,7 @@ const AboutUsPage = () => {
                                             <span>{content.contactInfo?.address ?? "Томск, площадь Батенькова 2, подъезд 7, этаж 3, офис 310"}</span>
                                             <span>
                                                 Режим работы:<br/>
-                                                {content.contactInfo?.workingHours ?? "пн–пт: 9:00 –19:00\nсб: 10:00 –18:00"}
+                                                {footerData?.workingHours ?? content.contactInfo?.workingHours ?? "пн–пт: 9:00 –19:00\nсб: 10:00 –18:00"}
                                             </span>
                                         </div>
                                     </div>

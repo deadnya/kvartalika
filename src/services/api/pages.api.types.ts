@@ -70,26 +70,39 @@ export interface FlatVariantDto {
 }
 
 export interface ApartmentDto {
-  id: string;
-  numberOfRooms: number;
-  numberOfBathrooms: number;
-  houseComplexTitle: string;
-  address: string;
-  areaMin: number;
-  areaMax: number;
-  homeId: string;
-  flatId: string;
+  id: string | number;
+  name: string;
+  description: string;
   images: string[];
+  address: string;
+  latitude: number | null;
+  longitude: number | null;
+  features: string[];
+  numberOfRooms: number;
+  about: string | null;
+  homeId: string | null;
+  numberOfBathrooms: number;
+  numberForSale: string | null;
+  published: boolean;
+  imagesClean: string[];
+  pan: string | null;
+  metaTitle: string | null;
+  metaDescription: string | null;
+  metaKeywords: string | null;
+  metaImage: string | null;
+  slug: string | null;
   variants: FlatVariantDto[];
 }
 
-export interface ApartmentDtoResponse {
-  flat: ApartmentDto
+export interface CategoryDto {
+  id: number;
+  name: string;
+  isOnMainPage: boolean;
 }
 
-export interface ApartmentDtoResponseWithVariants {
-  flat: ApartmentDto
-  variants: FlatVariantDto
+export interface ApartmentDtoResponse {
+  flat: ApartmentDto;
+  categories: CategoryDto[];
 }
 
 export interface PaymentMethodInfo {
@@ -277,5 +290,6 @@ export interface FooterDto {
   title: string,
   address: string,
   description: string,
-  privacy: string
+  privacy: string,
+  workingHours: string
 }

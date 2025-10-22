@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../../store/auth.store";
 import HomePageEditor from "../HomePageEditor/HomePageEditor";
 import AboutUsPageEditor from "../AboutUsPageEditor/AboutUsPageEditor";
@@ -6,6 +7,7 @@ import FooterEditor from "../FooterEditor/FooterEditor";
 import styles from "./AdminOverlay.module.css";
 
 const AdminOverlay = () => {
+  const navigate = useNavigate();
   const { role, isAuthenticated } = useAuthStore();
   const [isHomePageModalOpen, setIsHomePageModalOpen] = useState(false);
   const [isAboutUsModalOpen, setIsAboutUsModalOpen] = useState(false);
@@ -41,6 +43,20 @@ const AdminOverlay = () => {
               title="Edit footer content"
             >
               Edit Footer
+            </button>
+            <button
+              onClick={() => navigate("/content")}
+              className={styles.adminButton}
+              title="Navigate to content management"
+            >
+              Content
+            </button>
+            <button
+              onClick={() => navigate("/admin")}
+              className={styles.adminButton}
+              title="Navigate to admin panel"
+            >
+              Admin
             </button>
           </div>
         </div>

@@ -58,7 +58,7 @@ const UnifiedFileManager: FC<UnifiedFileManagerProps> = ({
   setPendingFile,
   handleUploadClick,
 }) => {
-  const baseUrl = import.meta.env.VITE_API_BASE_URL + "/files";
+  const baseUrl = "http://localhost" + import.meta.env.VITE_API_BASE_URL + "/files";
 
   const getFileUrl = (currentDirectory: string[], fileName: string) => {
     if (fileName.includes("/")) {

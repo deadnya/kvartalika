@@ -16,6 +16,7 @@ const DEFAULT_FOOTER: FooterDto = {
   address: "Томск, площадь Батенькова 2, подъезд 7, этаж 3, офис 310",
   description: "Отдел продаж",
   privacy: "Политика конфиденциальности",
+  workingHours: "A"
 };
 
 const FooterEditor = ({ onClose }: FooterEditorProps) => {
@@ -162,6 +163,18 @@ const FooterEditor = ({ onClose }: FooterEditorProps) => {
                 value={footerData.email}
                 onChange={(e) => handleInputChange("email", e.target.value)}
                 className={styles.input}
+              />
+            </label>
+          </div>
+
+          <div className={styles.section}>
+            <label className={styles.label}>
+              Working Hours
+              <textarea
+                value={footerData.workingHours}
+                onChange={(e) => handleInputChange("workingHours", e.target.value)}
+                className={styles.textarea}
+                rows={3}
               />
             </label>
           </div>

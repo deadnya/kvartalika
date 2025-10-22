@@ -13,15 +13,16 @@ import { SortingVariant, type SortingType } from "../../components/common/Sortin
 import CloseIcon from "../../assets/icons/close.svg?react"
 import ApartmentCard from "../../components/common/ApartmentCard/ApartmentCard";
 import { Pagination } from "../../components/common/Pagination/Pagination";
-import { getApartmentsPageContent, searchApartments, type SearchApartmentsRequest } from "../../services/api/pages.api.requests";
-import type { ApartmentsPageContent, ApartmentDto } from "../../services/api/pages.api.types";
+import { getApartmentsPageContent, searchApartments, getCategories, getApartmentComplexes, type SearchApartmentsRequest } from "../../services/api/pages.api.requests";
+import type { ApartmentDto } from "../../services/api/pages.api.types";
 import { useSearchParams } from "react-router-dom";
 
 const ApartmentsPage = () => {
     const [searchParams, setSearchParams] = useSearchParams();
-    const [content, setContent] = useState<ApartmentsPageContent | null>(null);
     const [apartments, setApartments] = useState<ApartmentDto[]>([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [complexOptions, setComplexOptions] = useState<any[]>([]);
+    const [categoryOptions, setCategoryOptions] = useState<any[]>([]);
 
     const [selectedComplex, setSelectedComplex] = useState<string | number | null>(() => {
         const val = searchParams.get("complex");
@@ -55,8 +56,21 @@ const ApartmentsPage = () => {
     useEffect(() => {
         const fetchContent = async () => {
             try {
-                const data = await getApartmentsPageContent();
-                setContent(data);
+                await getApartmentsPageContent();
+                
+                const complexes = await getApartmentComplexes();
+                const complexOptions = complexes.map((complex) => ({
+                    value: complex.id,
+                    label: complex.name,
+                }));
+                setComplexOptions(complexOptions);
+                
+                const categories = await getCategories();
+                const categoryOptions = categories.map((category) => ({
+                    value: category.id,
+                    label: category.name,
+                }));
+                setCategoryOptions(categoryOptions);
             } catch (error) {
                 console.error("Failed to fetch apartments page content:", error);
             }
@@ -140,7 +154,9 @@ const ApartmentsPage = () => {
                     });
                 } else if (sortBy === 'area') {
                     sortedResults.sort((a, b) => {
-                        return sortOrder === 'asc' ? a.areaMin - b.areaMin : b.areaMin - a.areaMin;
+                        const areaA = a.variants?.[0]?.area ?? 0;
+                        const areaB = b.variants?.[0]?.area ?? 0;
+                        return sortOrder === 'asc' ? areaA - areaB : areaB - areaA;
                     });
                 } else if (sortBy === 'rooms') {
                     sortedResults.sort((a, b) => {
@@ -201,6 +217,15 @@ const ApartmentsPage = () => {
     const itemsPerPage = 12;
     const paginatedApartments = apartments.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
     const totalPages = Math.ceil(apartments.length / itemsPerPage);
+
+    const getAreaRange = (variants?: any[]) => {
+        if (!variants || variants.length === 0) return { min: 0, max: 0 };
+        const areas = variants.map(v => v.area);
+        return {
+            min: Math.min(...areas),
+            max: Math.max(...areas)
+        };
+    };
     
     return (
         <div className={styles.container}>
@@ -222,7 +247,7 @@ const ApartmentsPage = () => {
                         <div className={styles.inputBlock}>
                             <span className={styles.inputBlockLabel}>Жилой комплекс</span>
                             <Select
-                                options={content?.complexOptions || []}
+                                options={complexOptions || []}
                                 value={selectedComplex}
                                 onChange={setSelectedComplex}
                                 placeholder="Выбрать ЖК"
@@ -246,7 +271,7 @@ const ApartmentsPage = () => {
                         <div className={styles.inputBlock}>
                             <span className={styles.inputBlockLabel}>Категории</span>
                             <Select
-                                options={content?.categoryOptions || []}
+                                options={categoryOptions || []}
                                 value={selectedCategory}
                                 onChange={setSelectedCategory}
                                 placeholder="Выбрать категорию"
@@ -343,20 +368,23 @@ const ApartmentsPage = () => {
                     {isLoading ? (
                         <div style={{ textAlign: "center", padding: "40px" }}>Loading...</div>
                     ) : paginatedApartments.length > 0 ? (
-                        paginatedApartments.map((apartment) => (
-                            <ApartmentCard
-                                key={apartment.id}
-                                roomCount={apartment.numberOfRooms}
-                                toiletCount={apartment.numberOfBathrooms}
-                                houseComplexTitle={apartment.houseComplexTitle}
-                                address={apartment.address}
-                                areaMin={apartment.areaMin}
-                                areaMax={apartment.areaMax}
-                                houseComplexId={apartment.homeId}
-                                imageSrc={apartment.images?.[0] || ""}
-                                flatId={apartment.id}
-                            />
-                        ))
+                        paginatedApartments.map((apartment) => {
+                            const areaRange = getAreaRange(apartment.variants);
+                            return (
+                                <ApartmentCard
+                                    key={apartment.id}
+                                    roomCount={apartment.numberOfRooms}
+                                    toiletCount={apartment.numberOfBathrooms}
+                                    houseComplexTitle={apartment.name}
+                                    address={apartment.address}
+                                    areaMin={areaRange.min}
+                                    areaMax={areaRange.max}
+                                    houseComplexId={apartment.homeId || apartment.id}
+                                    imageSrc={apartment.images?.[0] || ""}
+                                    flatId={apartment.id}
+                                />
+                            );
+                        })
                     ) : (
                         <div style={{ textAlign: "center", padding: "40px" }}>No apartments found</div>
                     )}

@@ -19,12 +19,15 @@ import PaymentIcon3 from "../../assets/icons/homePagePayment3.svg?react"
 import PaymentIcon4 from "../../assets/icons/homePagePayment4.svg?react"
 import Promotion from "../../components/common/Promotion/Promotion";
 import { getHomePageContent } from "../../services/api/pages.api.requests";
+import { getFooterData } from "../../services/api/pages.api.requests";
 import type { HomePageContent, ProjectInfo } from "../../services/api/pages.api.types";
+import type { FooterDto } from "../../services/api/pages.api.types";
 import { DEFAULT_HOME_PAGE_CONTENT } from "../../services/api/pages.api.defaults";
 
 const HomePage = () => {
     const navigate = useNavigate();
     const [content, setContent] = useState<HomePageContent | null>(null);
+    const [footerData, setFooterData] = useState<FooterDto | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
     const fetchContent = async () => {
@@ -39,8 +42,18 @@ const HomePage = () => {
         }
     };
 
+    const fetchFooterData = async () => {
+        try {
+            const response = await getFooterData();
+            setFooterData(response.data);
+        } catch (error) {
+            console.error("Error fetching footer data:", error);
+        }
+    };
+
     useEffect(() => {
         fetchContent();
+        fetchFooterData();
     }, []);
 
     // Listen for custom event from HomePageEditor when data is saved
@@ -51,6 +64,16 @@ const HomePage = () => {
 
         window.addEventListener("homePageDataSaved", handleDataSaved);
         return () => window.removeEventListener("homePageDataSaved", handleDataSaved);
+    }, []);
+
+    // Listen for custom event from FooterEditor when data is saved
+    useEffect(() => {
+        const handleFooterDataSaved = () => {
+            fetchFooterData();
+        };
+
+        window.addEventListener("footerDataSaved", handleFooterDataSaved);
+        return () => window.removeEventListener("footerDataSaved", handleFooterDataSaved);
     }, []);
 
     return (
@@ -157,17 +180,19 @@ const HomePage = () => {
                 </div>
                 <div className={styles.hotDealsContent}>
                     {content.hotDeals.filter((deal) => deal.variants && deal.variants.length > 0).slice(0, 4).map((deal) => (
-                        <ApartmentCard
-                            key={deal.id}
-                            roomCount={deal.numberOfRooms}
-                            toiletCount={deal.numberOfBathrooms}
-                            houseComplexTitle={deal.houseComplexTitle}
-                            address={deal.address}
-                            variants={deal.variants}
-                            houseComplexId={deal.homeId}
-                            flatId={deal.id}
-                            imageSrc={deal.images?.[0] || ""}
-                        />
+                        deal.homeId && (
+                            <ApartmentCard
+                                key={deal.id}
+                                roomCount={deal.numberOfRooms}
+                                toiletCount={deal.numberOfBathrooms}
+                                houseComplexTitle=""
+                                address={deal.address}
+                                variants={deal.variants}
+                                houseComplexId={deal.homeId}
+                                flatId={deal.id}
+                                imageSrc={deal.images?.[0] || ""}
+                            />
+                        )
                     ))}
                 </div>
             </div>
@@ -228,7 +253,7 @@ const HomePage = () => {
                                         <span>{content.contactInfo?.address ?? "Томск, площадь Батенькова 2, подъезд 7, этаж 3, офис 310"}</span>
                                         <span>
                                             Режим работы:<br/>
-                                            {content.contactInfo?.workingHours ?? "пн–пт: 9:00 –19:00\nсб: 10:00 –18:00"}
+                                            {footerData?.workingHours ?? content.contactInfo?.workingHours ?? "пн–пт: 9:00 –19:00\nсб: 10:00 –18:00"}
                                         </span>
                                     </div>
                                 </div>

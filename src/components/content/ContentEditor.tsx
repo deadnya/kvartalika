@@ -200,7 +200,7 @@ const ContentEditor: FC<ContentEditorUnifiedProps> = ({
 
     try {
       const createData: CreateFlatVariantRequest = {
-        flatId: flatPayload.flat.id,
+        flatId: Number(flatPayload.flat.id),
         area: variantFormData.area,
         price: variantFormData.price,
         floor: variantFormData.floor,
@@ -261,7 +261,7 @@ const ContentEditor: FC<ContentEditorUnifiedProps> = ({
     } else {
       setEditingVariant(null);
       setVariantFormData({
-        flatId: flatPayload.flat.id,
+        flatId: Number(flatPayload.flat.id),
         status: "AVAILABLE" as const,
         hasDecoration: false,
       });
@@ -692,12 +692,12 @@ const ContentEditor: FC<ContentEditorUnifiedProps> = ({
               Количество для продажи
             </label>
             <input
-              type="number"
+              type="text"
               value={f.numberForSale ?? ""}
               onChange={(e) =>
                 setFlatPayload((p) => ({
                   ...p,
-                  flat: { ...p.flat, numberForSale: Number(e.target.value) },
+                  flat: { ...p.flat, numberForSale: e.target.value || null },
                 }))
               }
               className="w-full border rounded px-3 py-2"
@@ -708,12 +708,12 @@ const ContentEditor: FC<ContentEditorUnifiedProps> = ({
               ID ЖК
             </label>
             <input
-              type="number"
+              type="text"
               value={f.homeId ?? ""}
               onChange={(e) =>
                 setFlatPayload((p) => ({
                   ...p,
-                  flat: { ...p.flat, homeId: Number(e.target.value) },
+                  flat: { ...p.flat, homeId: e.target.value || null },
                 }))
               }
               className="w-full border rounded px-3 py-2"
@@ -990,6 +990,90 @@ const ContentEditor: FC<ContentEditorUnifiedProps> = ({
               )}
             </>
           )}
+        </div>
+
+        {/* SEO / Meta Information */}
+        <div className="space-y-4 border-t pt-4">
+          <h3 className="text-lg font-semibold">SEO / Мета информация</h3>
+          
+          <div>
+            <label className="block text-sm font-medium mb-1">Meta Title</label>
+            <input
+              type="text"
+              value={f.metaTitle || ""}
+              onChange={(e) =>
+                setFlatPayload((p) => ({
+                  ...p,
+                  flat: { ...p.flat, metaTitle: e.target.value || null },
+                }))
+              }
+              className="w-full border rounded px-3 py-2"
+              placeholder="Заголовок для поисковых систем"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">Meta Description</label>
+            <textarea
+              value={f.metaDescription || ""}
+              onChange={(e) =>
+                setFlatPayload((p) => ({
+                  ...p,
+                  flat: { ...p.flat, metaDescription: e.target.value || null },
+                }))
+              }
+              className="w-full border rounded px-3 py-2 h-20"
+              placeholder="Описание для поисковых систем"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">Meta Keywords</label>
+            <input
+              type="text"
+              value={f.metaKeywords || ""}
+              onChange={(e) =>
+                setFlatPayload((p) => ({
+                  ...p,
+                  flat: { ...p.flat, metaKeywords: e.target.value || null },
+                }))
+              }
+              className="w-full border rounded px-3 py-2"
+              placeholder="Ключевые слова (через запятую)"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">Meta Image</label>
+            <input
+              type="text"
+              value={f.metaImage || ""}
+              onChange={(e) =>
+                setFlatPayload((p) => ({
+                  ...p,
+                  flat: { ...p.flat, metaImage: e.target.value || null },
+                }))
+              }
+              className="w-full border rounded px-3 py-2"
+              placeholder="/images/..."
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">URL Slug</label>
+            <input
+              type="text"
+              value={f.slug || ""}
+              onChange={(e) =>
+                setFlatPayload((p) => ({
+                  ...p,
+                  flat: { ...p.flat, slug: e.target.value || null },
+                }))
+              }
+              className="w-full border rounded px-3 py-2"
+              placeholder="url-slug"
+            />
+          </div>
         </div>
 
         <div>

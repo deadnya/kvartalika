@@ -121,11 +121,8 @@ const initialFlatForm: Partial<FlatWithCategoryRequest> = {
   flat: {
     name: "",
     description: "",
-    price: 0,
-    area: 0,
     numberOfRooms: 1,
-    floor: 1,
-    homeId: 0,
+    homeId: null,
     variants: [],
   },
 };
@@ -245,7 +242,7 @@ export const useContentStore = create<ContentState & ContentActions>(
       try {
         const { selectedFlat } = get();
         if (selectedFlat?.flat?.id) {
-          await updateFlat(selectedFlat.flat.id, data);
+          await updateFlat(Number(selectedFlat.flat.id), data);
         } else {
           await createFlat(data);
         }
