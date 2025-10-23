@@ -210,6 +210,11 @@ export interface AboutUsPageContent {
     phone: string;
     email: string;
   };
+
+  metaTitle: string
+  metaDescription: string
+  metaKeywords: string
+  metaImage: string
 }
 
 export interface GoodThing {

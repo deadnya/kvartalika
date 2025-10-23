@@ -1,5 +1,6 @@
 import { lazy, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { setMetaTags, resetMetaTags } from "../../utils/metaTagsManager";
 import styles from "./ApartmentComplexPage.module.css"
 import { BigImageGallery } from "../../components/common/BigImageGallery/BigImageGallery.tsx";
 import { getApartmentComplexPageContent, getApartmentsForComplex } from "../../services/api/pages.api.requests";
@@ -47,6 +48,20 @@ const ApartmentComplexPage = () => {
         };
         loadContent();
     }, [homeId]);
+
+    // Set meta tags when content is loaded
+    useEffect(() => {
+        if (content && content.id !== DEFAULT_APARTMENT_COMPLEX_PAGE_CONTENT.id) {
+            setMetaTags({
+                metaTitle: content.metaTitle,
+                metaDescription: content.metaDescription,
+                metaKeywords: content.metaKeywords,
+                metaImage: content.metaImage,
+            });
+        } else {
+            resetMetaTags();
+        }
+    }, [content]);
 
     return (
         <>

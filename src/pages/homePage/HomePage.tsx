@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Button from "../../components/common/Button";
 import AdminOverlay from "../../components/common/AdminOverlay/AdminOverlay";
+import { setMetaTags, resetMetaTags } from "../../utils/metaTagsManager";
 import styles from "./HomePage.module.css"
 
 import MapIcon from "../../assets/icons/map.svg?react"
@@ -55,6 +56,20 @@ const HomePage = () => {
         fetchContent();
         fetchFooterData();
     }, []);
+
+    // Set meta tags when content is loaded
+    useEffect(() => {
+        if (content) {
+            setMetaTags({
+                metaTitle: content.metaTitle,
+                metaDescription: content.metaDescription,
+                metaKeywords: content.metaKeywords,
+                metaImage: content.metaImage,
+            });
+        } else {
+            resetMetaTags();
+        }
+    }, [content]);
 
     // Listen for custom event from HomePageEditor when data is saved
     useEffect(() => {

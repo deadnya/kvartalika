@@ -1,4 +1,5 @@
 import BreadcrumbNav from "../../components/common/BreadcrumbNav";
+import { setMetaTags, resetMetaTags } from "../../utils/metaTagsManager";
 import styles from "./ApartmentPage.module.css"
 import { Gallery } from "../../components/common/Gallery/Gallery";
 
@@ -57,6 +58,21 @@ const ApartmentPage = () => {
 
         fetchApartmentData();
     }, [apartmentId]);
+
+    // Set meta tags when apartment data is loaded
+    useEffect(() => {
+        if (apartmentData && apartmentData.flat) {
+            const flat = apartmentData.flat;
+            setMetaTags({
+                metaTitle: flat.metaTitle,
+                metaDescription: flat.metaDescription,
+                metaKeywords: flat.metaKeywords,
+                metaImage: flat.metaImage,
+            });
+        } else {
+            resetMetaTags();
+        }
+    }, [apartmentData]);
 
     if (isLoading) {
         return <div>Loading...</div>;

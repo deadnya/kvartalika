@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
+import { setMetaTags } from '../../utils/metaTagsManager'
 import styles from "./AboutUsPage.module.css"
 
 import image01 from "/images/01.png"
@@ -52,6 +53,16 @@ const AboutUsPage = () => {
         fetchContent()
         fetchFooterData()
     }, [])
+
+    // Set meta tags when content is loaded
+    useEffect(() => {
+        setMetaTags({
+            metaTitle: content.metaTitle,
+            metaDescription: content.metaDescription,
+            metaKeywords: content.metaKeywords,
+            metaImage: content.metaImage,
+        });
+    }, [content]);
 
     useEffect(() => {
         const handleAboutUsDataSaved = () => {
