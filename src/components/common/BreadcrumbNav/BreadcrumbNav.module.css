@@ -11,6 +11,7 @@
 
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     gap: 8px;
 }
 
@@ -37,4 +38,18 @@
     display: flex;
     flex-direction: row;
     gap: 8px;
+}
+
+@media (max-width: 1366px) {
+    .breadcrumbNav {
+        padding-left: 59px;
+        padding-right: 59px;
+    }
+}
+
+@media (max-width: 1023px) {
+    .breadcrumbNav {
+        padding-left: 16px;
+        padding-right: 0;
+    }
 }

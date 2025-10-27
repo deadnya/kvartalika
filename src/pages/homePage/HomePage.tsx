@@ -11,6 +11,7 @@ import PhoneIcon from "../../assets/icons/phone.svg?react"
 import EmailIcon from "../../assets/icons/email.svg?react"
 
 import ApartmentCard from "../../components/common/ApartmentCard/ApartmentCard";
+import Carousel from "../../components/common/Carousel/Carousel";
 import PaymentMethod from "../../components/common/PaymentMethod/PaymentMethod";
 import { Input } from "../../components/common/Input/Input";
 
@@ -193,7 +194,7 @@ const HomePage = () => {
                         className={styles.viewMore}
                     >Смотреть все</Link>
                 </div>
-                <div className={styles.hotDealsContent}>
+                <div className={styles.hotDealsContentDesktop}>
                     {content.hotDeals.filter((deal) => deal.variants && deal.variants.length > 0).slice(0, 4).map((deal) => (
                         deal.homeId && (
                             <ApartmentCard
@@ -209,6 +210,25 @@ const HomePage = () => {
                             />
                         )
                     ))}
+                </div>
+                <div className={styles.hotDealsContentMobile}>
+                    <Carousel
+                        items={content.hotDeals.filter((deal) => deal.variants && deal.variants.length > 0).slice(0, 4).map((deal) => (
+                            deal.homeId && (
+                                <ApartmentCard
+                                    key={deal.id}
+                                    roomCount={deal.numberOfRooms}
+                                    toiletCount={deal.numberOfBathrooms}
+                                    houseComplexTitle=""
+                                    address={deal.address}
+                                    variants={deal.variants}
+                                    houseComplexId={deal.homeId}
+                                    flatId={deal.id}
+                                    imageSrc={deal.images?.[0] || ""}
+                                />
+                            )
+                        ))}
+                    />
                 </div>
             </div>
 

@@ -1,6 +1,7 @@
 .container {
     margin-top: 80px;
     font-family: var(--font-family-open-sans);
+    overflow: hidden;
 }
 
 .topGalleryContainer {
@@ -9,12 +10,12 @@
 
 .topImageTriangleOverlay {
     position: absolute;
-    top: 0;
+    bottom: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 50px;
     background-color: #fafbfc;
-    clip-path: polygon(0% 90%, 0% 100%, 100% 100%);
+    clip-path: polygon(0% 100%, 0% 0%, 100% 100%);
     pointer-events: none;
     z-index: 10;
 }
@@ -98,12 +99,13 @@
 }
 
 .locationTriangleOverlay {
-    position: relative;
+    position: absolute;
     width: 100%;
     height: 50px;
-    background-color: #FAFBFC;
-    clip-path: polygon(0% 90%, 0% 100%, 100% 100%);
+    background-color: var(--color-background);
+    clip-path: polygon(100% 0%, 0% 0%, 0% 100%);
     pointer-events: none;
+    z-index: 1000;
 }
 
 .location::before {
@@ -246,7 +248,7 @@
     padding-left: 208px;
     gap: 32px;
     position: relative;
-    z-index: 20;
+    z-index: 1;
 }
 
 .availableApartments::before {
@@ -308,6 +310,20 @@
     display: flex;
     flex-direction: row;
     gap: 24px;
+}
+
+.availableApartmentsContentDesktop {
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+    position: relative;
+    z-index: 2;
+}
+
+.availableApartmentsContentMobile {
+    display: none;
+    position: relative;
+    z-index: 2;
 }
 
 .transportAvailability {
@@ -742,4 +758,530 @@
 .formLink:hover {
     opacity: 0.5;
     cursor: pointer;
+}
+
+@media (max-width: 1366px) {
+    .generalInfo {
+        padding-right: 59px;
+        padding-left: 59px;
+    }
+
+    .complexTitle {
+        font-size: 62px;
+        line-height: 82px;
+    }
+
+    .complexLocationText {
+        font-size: 18px;
+        line-height: 24px;
+    }
+
+    .complexDescription {
+        font-size: 18px;
+        line-height: 28px;
+    }
+
+    .location {
+        padding-right: 59px;
+        padding-left: 59px;
+        padding-top: 80px;
+        padding-bottom: 80px;
+    }
+
+    .location::before {
+        display: none;
+    }
+
+    .locationTitle {
+        font-size: 24px;
+        line-height: 32px;
+    }
+
+    .locationLeftContainer {
+        width: auto;
+    }
+
+    .locationMapContainer {
+        width: 600px;
+        height: 400px;
+    }
+
+    .availableApartments {
+        padding-right: 59px;
+        padding-left: 59px;
+        padding-bottom: 80px;
+    }
+
+    .availableApartments::before {
+        display: none;
+    }
+
+    .availableApartmentsTitle {
+        font-size: 24px;
+        line-height: 32px;
+    }
+
+    .availableApartmentsContent {
+        gap: 16px;
+    }
+
+    .transportAvailability {
+        padding-right: 59px;
+        padding-left: 59px;
+        padding-bottom: 80px;
+    }
+
+    .transportAvailability::before {
+        display: none;
+    }
+
+    .transportAvailabilityHeader {
+        font-size: 24px;
+        line-height: 32px;
+    }
+
+    .transportAvailabilityLeftContainer {
+        width: auto;
+    }
+
+    .transportAvailabilityImage {
+        width: 600px;
+        height: 400px;
+    }
+
+    .technologies {
+        padding-right: 59px;
+        padding-left: 59px;
+        padding-bottom: 80px;
+    }
+
+    .technologies::before {
+        display: none;
+    }
+
+    .technologiesHeader {
+        font-size: 24px;
+        line-height: 32px;
+    }
+
+    .technologiesLeftContainer {
+        width: auto;
+    }
+
+    .technologiesImage {
+        width: 600px;
+        height: 400px;
+    }
+
+    .catchIt {
+        padding-top: 60px;
+        padding-bottom: 100px;
+    }
+
+    .catchItHeader {
+        font-size: 24px;
+        line-height: 32px;
+    }
+
+    .catchItOfferContainer {
+        width: auto;
+        height: auto;
+        padding: 32px;
+    }
+
+    .catchItOfferTitle {
+        font-size: 20px;
+        line-height: 100%;
+    }
+
+    .sendRequestContainer {
+        height: 500px;
+    }
+
+    .sendRequestForm {
+        width: auto;
+        margin: 0px 59px;
+        padding: 24px 32px 32px 32px;
+    }
+
+    .sendRequestHeaderTopText {
+        font-size: 24px;
+        line-height: 32px;
+    }
+
+    .formRow {
+        gap: 16px;
+    }
+}
+
+@media (max-width: 1023px) {
+    .availableApartmentsContent {
+        flex-wrap: wrap;
+    }
+
+    .availableApartmentsContentDesktop {
+        display: none;
+    }
+
+    .availableApartmentsContentMobile {
+        display: flex;
+    }
+
+    .transportAvailabilityContent {
+        flex-direction: column;
+    }
+
+    .transportAvailabilityImage {
+        width: 100%;
+        height: 300px;
+    }
+
+    .technologiesContainer {
+        flex-direction: column;
+    }
+
+    .technologiesImage {
+        width: 100%;
+        height: 300px;
+    }
+
+    .locationContent {
+        flex-direction: column;
+    }
+
+    .locationMapContainer {
+        width: 100%;
+        height: 400px;
+    }
+}
+
+@media (max-width: 360px) {
+    .container {
+        margin-top: 60px;
+    }
+
+    .topImageTriangleOverlay {
+        height: 30px;
+        top: auto;
+        bottom: 0px;
+        z-index: 1;
+    }
+
+    .generalInfo {
+        padding-right: 16px;
+        padding-left: 16px;
+        padding-bottom: 40px;
+        gap: 24px;
+        margin-top: 32px;
+    }
+
+    .generalInfoTopContainer {
+        gap: 8px;
+    }
+
+    .complexTitle {
+        font-size: 32px;
+        line-height: 44px;
+        letter-spacing: -3%;
+    }
+
+    .complexLocationText {
+        font-size: 16px;
+        line-height: 22px;
+    }
+
+    .generalInfoBottomContainer {
+        gap: 24px;
+    }
+
+    .complexDescription {
+        font-size: 16px;
+        line-height: 28px;
+    }
+
+    .location {
+        padding-right: 0px;
+        padding-left: 0px;
+        padding-top: 40px;
+        padding-bottom: 40px;
+        gap: 24px;
+    }
+
+    .locationTitle {
+        padding-right: 16px;
+        padding-left: 16px;
+        font-size: 20px;
+        line-height: 30px;
+    }
+
+    .locationContent {
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .locationLeftContainer {
+        padding-right: 16px;
+        padding-left: 16px;
+        gap: 24px;
+    }
+
+    .locationMotto {
+        font-size: 16px;
+        line-height: 24px;
+    }
+
+    .goodThingTitle {
+        font-size: 16px;
+        line-height: 20px;
+    }
+
+    .goodThingDescription {
+        font-size: 16px;
+        line-height: 24px;
+    }
+
+    .goodThing svg {
+        height: 20px;
+        width: 20px;
+    }
+
+    .goodThing2 {
+        width: 100%;
+    }
+
+    .locationMapContainer {
+        width: 100%;
+        height: 360px;
+    }
+
+    .availableApartments {
+        padding-right: 16px;
+        padding-left: 16px;
+        padding-bottom: 40px;
+        gap: 24px;
+    }
+
+    .availableApartmentsHeader {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .availableApartmentsTitle {
+        font-size: 20px;
+        line-height: 30px;
+    }
+
+    .availableApartmentsViewAll {
+        font-size: 14px;
+        line-height: 100%;
+        transform: translateY(-3px);
+    }
+
+    .availableApartmentsContent {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .transportAvailability {
+        padding-right: 0px;
+        padding-left: 0px;
+        padding-bottom: 40px;
+        gap: 24px;
+    }
+
+    .transportAvailabilityHeader {
+        padding-right: 16px;
+        padding-left: 16px;
+        font-size: 20px;
+        line-height: 30px;
+    }
+
+    .transportAvailabilityContent {
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .transportAvailabilityLeftContainer {
+        padding-right: 16px;
+        padding-left: 16px;
+        width: 100%;
+        gap: 24px;
+    }
+
+    .transportAvailabilityItemTitle {
+        font-size: 15px;
+        line-height: 22px;
+    }
+
+    .transportAvailabilityItemDescription {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .transportAvailabilityItem svg {
+        height: 20px;
+        width: 20px;
+    }
+
+    .transportAvailabilityItem2 {
+        width: 100%;
+    }
+
+    .transportAvailabilityImage {
+        width: 100%;
+        height: 360px;
+    }
+
+    .technologies {
+        padding-right: 0px;
+        padding-left: 0px;
+        padding-bottom: 40px;
+        gap: 24px;
+    }
+
+    .technologiesHeader {
+        padding-right: 16px;
+        padding-left: 16px;
+        font-size: 20px;
+        line-height: 30px;
+    }
+
+    .technologiesContainer {
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .technologiesLeftContainer {
+        padding-right: 16px;
+        padding-left: 16px;
+        width: 100%;
+        gap: 24px;
+    }
+
+    .technologiesText {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .technologiesItemTitle {
+        font-size: 16px;
+        line-height: 20px;
+    }
+
+    .technologiesItemDescription {
+        font-size: 16px;
+        line-height: 24px;
+    }
+
+    .technologiesItem svg {
+        height: 20px;
+        width: 20px;
+    }
+
+    .technologiesItem2 {
+        width: 100%;
+    }
+
+    .technologiesImage {
+        width: 100%;
+        height: 360px;
+    }
+
+    .catchIt {
+        display: none;
+        padding-top: 32px;
+        padding-bottom: 60px;
+        gap: 24px;
+    }
+
+    .catchItHeader {
+        padding-right: 16px;
+        padding-left: 16px;
+        font-size: 20px;
+        line-height: 30px;
+    }
+
+    .catchItOfferContainer {
+        width: auto;
+        height: auto;
+        padding: 24px 16px;
+        gap: 16px;
+    }
+
+    .catchItOfferTextBlock {
+        gap: 12px;
+    }
+
+    .catchItOfferTitle {
+        font-size: 18px;
+        line-height: 100%;
+    }
+
+    .sendRequestContainer {
+        height: auto;
+        background-image: none;
+        background-color: transparent;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .sendRequestContainer::after {
+        content: '';
+        width: 100%;
+        height: 250px;
+        background-image: url('/images/HomePage3.png');
+        background-size: cover;
+        background-position: 90%;
+        background-repeat: no-repeat;
+        order: 1;
+    }
+
+    .sendRequestForm {
+        margin: 0px;
+        padding: 0px 16px 24px 16px;
+        width: 100%;
+        gap: 20px;
+    }
+
+    .sendRequestContainer::before {
+        display: none;
+    }
+
+    .sendRequestHeader {
+        gap: 4px;
+    }
+
+    .sendRequestHeaderTopText {
+        font-size: 24px;
+        line-height: 32px;
+    }
+
+    .sendRequestHeaderBottomText {
+        display: none;
+    }
+
+    .sendRequestContent {
+        gap: 20px;
+    }
+
+    .formInputs {
+        gap: 16px;
+    }
+
+    .formRow {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .formInputContainer {
+        gap: 16px;
+    }
+
+    .formBottom {
+        font-size: 14px;
+        line-height: 20px;
+        gap: 12px;
+    }
 }

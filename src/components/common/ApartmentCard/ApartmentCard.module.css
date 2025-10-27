@@ -6,16 +6,23 @@
     z-index: 2;
     background-color: var(--color-background);
     cursor: pointer;
+    min-height: 600px;
 }
 
 .imageContainer {
     position: relative;
     display: inline-block;
+    background-color: white;
+    width: 100%;
+    flex-shrink: 0;
 }
 
 .imageContainer img {
     display: block;
     width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    height: auto;
 }
 
 .purpleTextBlock {
@@ -36,6 +43,8 @@
     background-color: var(--color-background);
     display: flex;
     flex-direction: column;
+    flex: 1;
+    overflow: hidden;
 }
 
 .apartmentGeneralInfo {
@@ -44,6 +53,7 @@
     flex-direction: column;
     gap: 16px;
     padding: 20px 20px 16px 20px;
+    flex-shrink: 0;
 }
 
 .apartmentTitle {
@@ -73,6 +83,8 @@
     flex-direction: column;
     gap: 30px;
     padding: 16px 20px 20px 20px;
+    flex-grow: 1;
+    justify-content: flex-end;
 }
 
 .apartmentExtraParams {
@@ -105,4 +117,17 @@
 
 .fillFix path {
     fill: #A9B3BD;
+}
+
+@media (max-width: 1366px) {
+    .apartmentGeneralInfo {
+        height: 156px;
+    }
+}
+
+@media (max-width: 360px) {
+    .container {
+        width: 100%;
+        min-height: auto;
+    }
 }

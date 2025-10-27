@@ -207,3 +207,58 @@
     vertical-align: middle;
     width: 60px;
 }
+
+@media (max-width: 1366px) {
+    .conveniencies {
+        padding-right: 59px;
+        padding-left: 59px;
+    }
+
+    .convenienciesLeftContainer,
+    .convenienciesLeftContainer2 {
+        width: auto;
+    }
+
+    .convenienciesImage {
+        width: 600px;
+        height: 400px;
+    }
+
+    .conveniencyTitle {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 1023px) {
+    .convenienciesContent {
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .convenienciesImage {
+        width: 100%;
+        height: 400px;
+    }
+
+    .convenienciesLeftContainer,
+    .convenienciesLeftContainer2 {
+        width: 100%;
+    }
+}
+
+@media (max-width: 360px) {
+    .conveniencies {
+        padding-right: 16px;
+        padding-left: 16px;
+        padding-bottom: 16px;
+        gap: 24px;
+    }
+
+    .convenienciesImage {
+        height: 360px;
+    }
+
+    .conveniencyTitle {
+        font-size: 15px;
+    }
+}

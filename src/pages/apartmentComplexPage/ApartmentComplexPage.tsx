@@ -24,6 +24,7 @@ import Conveniencies from "../../components/common/Conveniencies/Conveniencies.t
 import { Input } from "../../components/common/Input/Input.tsx";
 import FindApartmentModal from "../../components/common/FindApartmentModal/FindApartmentModal.tsx";
 import ApartmentCard from "../../components/common/ApartmentCard/ApartmentCard.tsx";
+import Carousel from "../../components/common/Carousel/Carousel.tsx";
 
 const YandexMap = lazy(() => import("../../components/YandexMap.tsx"));
 
@@ -135,7 +136,7 @@ const ApartmentComplexPage = () => {
                         >Смотреть все</Link>
                     </div>
 
-                    <div className={styles.availableApartmentsContent}>
+                    <div className={styles.availableApartmentsContentDesktop}>
                         {apartments.slice(0, 4).map((apartment) => (
                             <ApartmentCard
                                 key={apartment.flat.id}
@@ -150,6 +151,25 @@ const ApartmentComplexPage = () => {
                                 includeComplexButton={false}
                             />
                         ))}
+                    </div>
+
+                    <div className={styles.availableApartmentsContentMobile}>
+                        <Carousel
+                            items={apartments.slice(0, 4).map((apartment) => (
+                                <ApartmentCard
+                                    key={apartment.flat.id}
+                                    roomCount={apartment.flat.numberOfRooms}
+                                    toiletCount={apartment.flat.numberOfBathrooms}
+                                    houseComplexTitle={apartment.flat.houseComplexTitle || ""}
+                                    address={apartment.flat.address}
+                                    variants={apartment.flat.variants}
+                                    houseComplexId={apartment.flat.homeId || ""}
+                                    flatId={apartment.flat.id}
+                                    imageSrc={apartment.flat.images?.[0] || ""}
+                                    includeComplexButton={false}
+                                />
+                            ))}
+                        />
                     </div>
                 </div>
 

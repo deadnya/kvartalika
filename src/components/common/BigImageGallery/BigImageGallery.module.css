@@ -185,3 +185,35 @@
     color: #999;
     font-size: 16px;
 }
+
+@media (max-width: 1366px) {
+    .container {
+        height: 500px;
+    }
+
+    .arrowLeft {
+        left: 50px;
+    }
+
+    .arrowRight {
+        right: 50px;
+    }
+}
+
+@media (max-width: 1366px) {
+    .container {
+        height: 240px;
+    }
+
+    .arrowLeft {
+        display: none;
+    }
+
+    .arrowRight {
+        display: none;
+    }
+
+    .dotPagination {
+        bottom: 30px;
+    }
+}

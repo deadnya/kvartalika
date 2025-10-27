@@ -85,7 +85,7 @@
 
 .imageContainer {
     position: relative;
-    width: 1075px;
+    max-width: 1075px;
     height: 600px;
 }
 
@@ -107,4 +107,144 @@
     padding-bottom: 13px;
     padding-left: 20px;
     color: white;
+}
+
+@media (max-width: 1366px) {
+    
+    .card {
+        gap: 32px;
+    }
+
+    .complexLeftContainer {
+        width: 100%;
+        height: 500px;
+    }
+
+    .complexTopParamText {
+        font-size: 16px;
+        line-height: 22px;
+    }
+
+    .complexDescription {
+        font-size: 18px;
+        line-height: 30px;
+    }
+
+    .complexTitle {
+        font-size: 30px;
+        line-height: 40px;
+        line-height: 100%;
+    }
+
+    .imageContainer {
+        max-width: 667px;
+        height: 500px;
+    }
+
+    .image {
+        width: auto;
+        height: 100%;
+    }
+}
+
+@media (max-width: 1023px) {
+    .card {
+        flex-direction: column;
+        gap: 24px;
+        width: 100%;
+    }
+
+    .imageContainer {
+        order: -1;
+        width: 100%;
+        max-width: 1023px;
+        height: 300px;
+        object-fit: cover;
+    }
+
+    .image {
+        width: 100%;
+        height: 300px;
+    }
+
+    .complexLeftContainer {
+        gap: 32px;
+        width: 100%;
+        height: auto;
+        justify-content: flex-start;
+        padding: 0px 16px;
+    }
+
+    .complexData {
+        gap: 24px;
+    }
+
+    .complexTopData {
+        gap: 12px;
+        padding-bottom: 16px;
+    }
+
+    .complexTitle {
+        font-size: 24px;
+        line-height: 100%;
+    }
+
+    .complexTopParamText {
+        font-size: 16px;
+        line-height: 22px;
+    }
+
+    .complexDescription {
+        font-size: 18px;
+        line-height: 28px;
+    }
+
+    .complexButtons {
+        flex-direction: column;
+        gap: 12px;
+    }
+}
+
+@media (max-width: 360px) {
+    .finishDateContainer {
+        display: none;
+    }
+
+    .card {
+        gap: 16px;
+    }
+
+    .imageContainer {
+        order: -1;
+        height: 240px;
+    }
+
+    .image {
+        height: 240px;
+    }
+
+    .complexTitle {
+        font-size: 20px;
+        line-height: 100%;
+    }
+
+    .complexTopParamText {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .complexDescription {
+        font-size: 16px;
+        line-height: 24px;
+    }
+
+    .finishDateContainer {
+        left: 12px;
+        top: 12px;
+        padding-top: 8px;
+        padding-right: 12px;
+        padding-bottom: 8px;
+        padding-left: 12px;
+        font-size: 12px;
+    }
 }

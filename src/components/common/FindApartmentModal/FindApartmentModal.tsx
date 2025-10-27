@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import Button from "../Button";
 import { Input } from "../Input/Input";
 import styles from "./FindApartmentModal.module.css"
@@ -105,7 +106,7 @@ const FindApartmentModal = ({ onClose }: FindApartmentModalProps) => {
         }
     };
 
-    return (
+    return createPortal(
         <div className={styles.modalOverlay} onClick={handleOverlayClick}>
             <div className={styles.modalWindow} onClick={(e) => e.stopPropagation()}>
                 <button 
@@ -191,7 +192,8 @@ const FindApartmentModal = ({ onClose }: FindApartmentModalProps) => {
                 </form>
                 )}
             </div>
-        </div>
+        </div>,
+        document.body
     );
 };
 

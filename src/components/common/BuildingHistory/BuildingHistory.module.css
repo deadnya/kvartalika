@@ -135,3 +135,68 @@
     object-fit: cover;
     border-radius: 4px;
 }
+
+@media (max-width: 1366px) {
+    .buildingHistory {
+        padding-right: 59px;
+        padding-left: 59px;
+    }
+
+    .buildingHistoryLeftContainer {
+        width: auto;
+    }
+
+    .buildingHistoryImage {
+        width: 600px;
+        height: 400px;
+    }
+
+    .buildingHistoryItemTitle {
+        font-size: 32px;
+    }
+}
+
+@media (max-width: 1023px) {
+    .buildingHistoryContent {
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .buildingHistoryLeftContainer {
+        gap: 40px;
+        width: 100%;
+    }
+
+    .buildingHistoryImage {
+        width: 100%;
+        height: 400px;
+    }
+}
+
+@media (max-width: 360px) {
+    .buildingHistory {
+        padding-right: 0px;
+        padding-left: 0px;
+        padding-bottom: 16px;
+        gap: 24px;
+    }
+
+    .buildingHistoryLeftContainer {
+        padding-right: 16px;
+        padding-left: 16px;
+    }
+
+    .buildingHistoryHeader {
+        padding-right: 16px;
+        padding-left: 16px;
+    }
+
+    .buildingHistoryItemTitle {
+        font-size: 24px;
+        line-height: 32px;
+    }
+
+    .buildingHistoryImage {
+        height: 360px;
+    }
+}

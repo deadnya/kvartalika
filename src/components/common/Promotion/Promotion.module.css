@@ -37,3 +37,18 @@
     font-size: 16px;
     line-height: 24px;
 }
+
+@media (max-width: 1366px) {
+    .image {
+        height: 220px;
+    }
+
+    .promotionDetails {
+        padding: 20px;
+    }
+
+    .promotionTitle {
+        font-size: 18px;
+        line-height: 26px;
+    }
+}

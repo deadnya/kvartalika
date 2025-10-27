@@ -1,9 +1,9 @@
 .paymentMethod {
     display: flex;
+    flex: 1;
     flex-direction: column;
     justify-content: space-between;
     padding: 30px;
-    height: 300px;
     width: 358px;
     background-color: #FFFFFF;
     box-shadow: 0px 0px 12px var(--color-main-8);
@@ -25,4 +25,31 @@
 
 .paymentDescription {
     color: var(--color-gray);
+}
+
+@media (max-width: 1366px) {
+    .paymentMethod {
+        padding: 20px;
+    }
+
+    .paymentTitle {
+        font-size: 20px;
+        line-height: 26px;
+    }
+
+    .paymentDescription {
+        font-size: 16px;
+        line-height: 24px;
+    }
+}
+
+@media (max-width: 1366px) {
+    .paymentMethod {
+        width: 100%;
+        gap: 24px;
+    }
+
+    .paymentTextContainer {
+        gap: 8px;
+    }
 }

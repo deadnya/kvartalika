@@ -1,15 +1,16 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import Logo from "../../Logo";
-import { useAuthStore } from "../../../store/auth.store";
 import styles from "./Header.module.css";
 import Button from "../Button";
 import FindApartmentModal from "../FindApartmentModal/FindApartmentModal";
 
+import MenuIcon from "../../../assets/icons/menu.svg?react"
+import CloseIcon from "../../../assets/icons/close.svg?react"
+import LogoIcon from "../../../assets/icons/logo.svg?react"
+
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
-  const { isAuthenticated, logout } = useAuthStore();
   
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handleModalOpen = () => {
@@ -36,7 +37,8 @@ const Header = () => {
       <div className={styles.container}>
         <div className={styles.content}>
           <Link to="/" className={styles.logoLink}>
-            <Logo className={styles.logo} />
+            <LogoIcon />
+            <span className={styles.logoText}>Кварталика</span>
           </Link>
 
           <nav className={styles.nav}>
@@ -73,23 +75,11 @@ const Header = () => {
             className={styles.mobileMenuButton}
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
-            <div className={styles.hamburgerIcon}>
-              <span
-                className={`${styles.hamburgerLine} ${
-                  isMobileMenuOpen ? styles.hamburgerLineOpen : ""
-                }`}
-              />
-              <span
-                className={`${styles.hamburgerLine} ${
-                  isMobileMenuOpen ? styles.hamburgerLineOpen : ""
-                }`}
-              />
-              <span
-                className={`${styles.hamburgerLine} ${
-                  isMobileMenuOpen ? styles.hamburgerLineOpen : ""
-                }`}
-              />
-            </div>
+            {isMobileMenuOpen ? (
+              <CloseIcon />
+            ) : (
+              <MenuIcon />
+            )}
           </button>
         </div>
 
@@ -117,30 +107,25 @@ const Header = () => {
               >
                 Квартиры
               </Link>
-              {!isAuthenticated ? (
-                <Link 
-                  to="/about" 
-                  className={`${styles.mobileNavButton} ${isActiveLink("/about") ? styles.mobileNavButtonActive : ""}`}
-                >
-                  О нас
-                </Link>
-              ) : (
-                <div className={styles.logoutButton} onClick={() => logout()}>
-                  <p className={styles.logoutText}>Выйти</p>
-                </div>
-              )}
-              <div className={styles.mobileCta}>
-                <button
-                  className={styles.mobileCtaButton}
+              <Link 
+                to="/about" 
+                className={`${styles.mobileNavLink} ${isActiveLink("/about") ? styles.mobileNavLinkActive : ""}`}
+              >
+                О нас
+              </Link>
+            </nav>
+
+            <div className={styles.mobileCta}>
+                <Button
+                  className={styles.button}
                   onClick={() => {
                     handleModalOpen();
                     setIsMobileMenuOpen(false);
                   }}
                 >
                   Найти квартиру
-                </button>
+                </Button>
               </div>
-            </nav>
           </div>
         )}
       </div>
