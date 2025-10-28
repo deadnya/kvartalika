@@ -10,12 +10,12 @@
 
 .topImageTriangleOverlay {
     position: absolute;
-    top: 0;
+    bottom: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 50px;
     background-color: #fafbfc;
-    clip-path: polygon(0% 82%, 0% 100%, 100% 100%);
+    clip-path: polygon(0% 100%, 0% 0%, 100% 100%);
     pointer-events: none;
 }
 
@@ -244,4 +244,337 @@
     column-gap: 24px;
     row-gap: 40px;
     position: relative;
+    justify-items: center;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+@media (max-width: 1366px) {
+    .containerCompactWidth {
+        width: 294px;
+    }
+}
+
+@media (max-width: 1366px) {
+    .container {
+        margin-top: 60px;
+    }
+
+    .topImageContainer {
+        height: 240px;
+    }
+
+    .topImageTriangleOverlay {
+        height: 40px;
+        top: auto;
+        bottom: 0;
+    }
+
+    .topImageContainer img {
+        height: 240px;
+    }
+
+    .searchParamsContainer {
+        padding-right: 59px;
+        padding-left: 59px;
+    }
+
+    .searchParamsHeader {
+        font-size: 48px;
+        line-height: 56px;
+    }
+
+    .searchParamsText {
+        font-size: 18px;
+        line-height: 24px;
+    }
+
+    .topParamRow {
+        gap: 24px;
+    }
+
+    .inputBlock {
+        width: 358px;
+        gap: 8px;
+    }
+
+    .bottomParamRow {
+        gap: 80px;
+    }
+
+    .checkboxContainer {
+        gap: 24px;
+    }
+
+    .apartmentVariants {
+        padding-right: 59px;
+        padding-left: 59px;
+        padding-top: 56px;
+        padding-bottom: 80px;
+        gap: 40px;
+    }
+
+    .apartmentVariants::before,
+    .apartmentVariants::after,
+    .apartmentVariantsBlurLeft {
+        display: none;
+    }
+
+    .apartmentsContainer {
+        grid-template-columns: repeat(4, 1fr);
+        column-gap: 24px;
+        row-gap: 48px;
+        justify-items: center;
+        max-width: 100%;
+        overflow: hidden;
+    }
+}
+
+@media (max-width: 1300px) {
+    .apartmentsContainer {
+        grid-template-columns: repeat(3, 1fr);
+        column-gap: 16px;
+        row-gap: 24px;
+        justify-items: center;
+        max-width: 100%;
+        overflow: hidden;
+    }
+}
+
+@media (max-width: 900px) {
+    .apartmentsContainer {
+        grid-template-columns: repeat(2, 1fr);
+        column-gap: 16px;
+        row-gap: 24px;
+        justify-items: center;
+        max-width: 100%;
+        overflow: hidden;
+    }
+}
+
+@media (max-width: 1023px) {
+    .container {
+        margin-top: 50px;
+    }
+
+    .searchParamsContainer {
+        padding-right: 16px;
+        padding-left: 16px;
+        padding-top: 16px;
+        gap: 32px;
+    }
+
+    .searchParamsHeader {
+        font-size: 32px;
+        line-height: 44px;
+    }
+
+    .searchParamsText {
+        font-size: 16px;
+        line-height: 22px;
+    }
+
+    .params {
+        gap: 16px;
+    }
+
+    .topParamRow {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .inputBlock,
+    .inputBlock2 {
+        width: 100%;
+    }
+
+    .bottomParamRow {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .checkboxContainer {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .buttonsContainer {
+        gap: 16px;
+    }
+
+    .apartmentVariants {
+        padding-right: 16px;
+        padding-left: 16px;
+        padding-top: 40px;
+        padding-bottom: 60px;
+        gap: 32px;
+    }
+
+    .sortingAndApartCount {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .apartmentsContainer {
+        grid-template-columns: repeat(2, 1fr);
+        column-gap: 12px;
+        row-gap: 16px;
+        justify-items: center;
+        max-width: 100%;
+        overflow: hidden;
+    }
+}
+
+@media (max-width: 630px) {
+    .apartmentsContainer {
+        grid-template-columns: 1fr;
+        column-gap: 0px;
+        row-gap: 16px;
+        padding: 0px 16px;
+        justify-items: center;
+        max-width: 100%;
+        overflow: hidden;
+    }
+
+    .sortingContainer {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .sortingVariants {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+}
+
+@media (max-width: 360px) {
+    .container {
+        margin-top: 40px;
+    }
+
+    .topImageTriangleOverlay {
+        height: 30px;
+    }
+
+    .topImageContainer {
+        height: 200px;
+    }
+
+    .topImageContainer img {
+        height: 200px;
+    }
+
+    .searchParamsContainer {
+        padding-right: 16px;
+        padding-left: 16px;
+        padding-top: 16px;
+        gap: 24px;
+    }
+
+    .searchParamsHeaderContainer {
+        gap: 12px;
+    }
+
+    .searchParamsHeader {
+        font-size: 30px;
+        line-height: 100%;
+        letter-spacing: -3%;
+    }
+
+    .searchParamsText {
+        font-size: 16px;
+        line-height: 24px;
+    }
+
+    .params {
+        gap: 16px;
+    }
+
+    .topParamRow {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .inputBlock,
+    .inputBlock2 {
+        width: 100%;
+    }
+
+    .inputBlockLabel {
+        font-size: 14px;
+        line-height: 18px;
+    }
+
+    .bottomParamRow {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .checkboxContainer {
+        flex-direction: row;
+        gap: 12px;
+    }
+
+    .buttonsContainer {
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .clearFiltersText {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .apartmentVariants {
+        padding-right: 0px;
+        padding-left: 0px;
+        padding-top: 60px;
+        padding-bottom: 40px;
+        gap: 24px;
+    }
+
+    .apartmentVariantsTriangleOverlay {
+        height: 20px;
+    }
+
+    .sortingAndApartCount {
+        flex-direction: column;
+        gap: 12px;
+        padding: 0px 16px;
+    }
+
+    .sortingContainer {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .sortingVariants {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .sortingText {
+        font-size: 16px;
+        line-height: 24px;
+    }
+
+    .sortingContainer .sortingText {
+        display: none;
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .apartmentsContainer {
+        grid-template-columns: 1fr;
+        column-gap: 0px;
+        row-gap: 16px;
+        padding: 0px 16px;
+        justify-items: center;
+        max-width: 100%;
+        overflow: hidden;
+    }
+
+    .containerCompactWidth {
+        width: 328px;
+    }
 }

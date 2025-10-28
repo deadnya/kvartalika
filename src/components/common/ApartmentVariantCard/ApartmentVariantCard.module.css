@@ -89,3 +89,43 @@
     line-height: 24px;
     letter-spacing: 0%;
 }
+
+@media (max-width: 360px) {
+    .apartmentVariantId {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .apartmentVariantStatus {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .apartmentVariantPrice {
+        font-size: 18px;
+        line-height: 24px;
+    }
+
+    .apartmentVariantPropValue {
+        font-size: 14px;
+        line-height: 18px;
+    }
+    
+    .apartmentVariantProp svg {
+        height: 20px;
+        width: 20px;
+    }
+
+    .apartmentVariantTopContainer {
+        gap: 8px;
+    }
+
+    .apartmentVariantTopTopContainer {
+        align-items: center;
+    }
+
+    .apartmentVariant {
+        padding: 16px;
+        gap: 20px;
+    }
+}

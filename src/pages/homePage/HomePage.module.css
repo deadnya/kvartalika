@@ -507,7 +507,7 @@
 
 @media (max-width: 1366px) {
     .titleContainer {
-        padding: 32px 59px 0px 59px;
+        padding: 32px 80px 0px 80px;
         gap: 36px;
     }
 
@@ -517,15 +517,15 @@
     }
 
     .titleMenu {
-        width: 930px;
+        width: 100%;
     }
 
     .mottoContainer {
-        width: 930px;
+        width: 100%;
     }
 
     .ourProjectsTitleContainer {
-        padding: 0px 59px;
+        padding: 0px 80px;
     }
 
     .ourProjects {
@@ -533,66 +533,48 @@
     }
 
     .projectBottomContent {
-        margin: 0px 59px;
+        margin: 0px 80px;
     }
 
     .hotDeals {
-        padding: 80px 59px;
+        padding: 80px 80px;
     }
 
     .paymentMethodsContainer {
-        padding: 24px 59px;
+        padding: 60px 80px;
     }
 
     .promotionsHeader {
-        padding: 0px 59px;
+        padding: 0px 80px;
     }
 
     .promotionsContent {
-        padding: 0px 59px;
+        padding: 0px 80px;
     }
 
     .sendRequestForm {
-        margin: 0px 59px;
-        padding: 16px 32px 32px 32px;
+        margin: 0px 80px;
+        padding: 24px 40px;
     }
 }
 
 @media (max-width: 1023px) {
-    .hotDealsContentDesktop {
-        display: none;
-    }
-
-    .hotDealsContentMobile {
-        display: flex;
-    }
-}
-
-@media (max-width: 360px) {
-    .imageWrapper img {
-        max-height: 240px;
-    }
-
-    .triangleOverlay {
-        height: 30px;
-    }
-
     .titleContainer {
-        padding: 24px 16px 0px 16px;
-        gap: 24px;
+        padding: 24px 32px 0px 32px;
+        gap: 32px;
     }
 
     .title {
-        font-size: 32px;
-        line-height: 44px;
+        font-size: 48px;
+        line-height: 64px;
     }
 
     .titleMenu {
-        width: auto;
+        width: 100%;
     }
 
     .mottoContainer {
-        width: auto;
+        width: 100%;
     }
 
     .motto {
@@ -600,28 +582,23 @@
         line-height: 28px;
     }
 
-    .titleButtonsContainer {
-        flex-direction: column;
-    }
-
     .ourProjectsTitleContainer {
-        padding: 0px 16px;
-        flex-direction: column;
-        align-items: flex-start;
-
+        padding: 0px 32px;
+        gap: 12px;
         font-size: 20px;
-        line-height: 30px;
+        line-height: 28px;
     }
 
     .ourProjects {
-        padding-top: 60px;
-        padding-bottom: 40px;
+        padding-top: 80px;
         gap: 24px;
     }
 
-    .ourProjectsText {
-        font-size: 20px;
-        line-height: 30px;
+    .projectBottomContent {
+        width: 100%;
+        margin: 0px 0px;
+        padding: 24px 32px;
+        gap: 32px;
     }
 
     .projectContainer {
@@ -636,7 +613,7 @@
     .projectContainer::before {
         content: '';
         width: 100%;
-        height: 240px;
+        height: 300px;
         background-image: url('/images/HomePage2.jpg');
         background-size: cover;
         background-position: center;
@@ -644,29 +621,9 @@
         order: -1;
     }
 
-    .projectBottomContent {
-        width: 100%;
-        padding: 24px 16px;
-        gap: 32px;
-    }
-
-    .projectMainInfo {
-        padding-bottom: 20px;
-    }
-
     .projectTitle {
-        font-size: 20px;
+        font-size: 28px;
         line-height: 100%;
-        font-weight: 400;
-    }
-
-    .projectParam {
-        line-height: 22px;
-    }
-
-    .projectParam svg {
-        height: 22px;
-        width: 22px;
     }
 
     .projectDescriptionText {
@@ -674,44 +631,51 @@
         line-height: 24px;
     }
 
+    .projectParam {
+        font-size: 16px;
+        line-height: 22px;
+    }
+
     .projectButtonsContainer {
         flex-direction: column;
     }
 
     .hotDeals {
-        padding: 0px 0px 40px 0px;
-        gap: 32px;
+        padding: 80px 32px;
+        gap: 24px;
+    }
+
+    .hotDealsContentDesktop {
+        display: none;
+    }
+
+    .hotDealsContentMobile {
+        display: flex;
     }
 
     .hotDealsHeader {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 0px 16px;
+        gap: 12px;
+        padding: 0px;
     }
 
     .hotDealsHeaderText {
         font-size: 20px;
-        line-height: 30px;
-    }
-
-    .hotDealsContentMobile {
-        padding: 0px 16px;
+        line-height: 28px;
     }
 
     .viewMore {
         font-size: 14px;
-        line-height: 100%;
+        line-height: 20px;
     }
 
     .paymentMethodsContainer {
-        padding: 0px 16px;
+        padding: 60px 32px;
         gap: 24px;
-        padding-bottom: 56px;
     }
 
     .paymentMethodsHeader {
-        font-size: 20px;
-        line-height: 30px;
+        font-size: 24px;
+        line-height: 32px;
     }
 
     .paymentMethods {
@@ -719,11 +683,12 @@
     }
 
     .promotionsHeader {
-        padding: 0px 59px;
+        padding: 0px 32px;
     }
 
     .promotionsContent {
-        padding: 0px 59px;
+        padding: 0px 32px;
+        gap: 24px;
     }
 
     .sendRequestContainer {
@@ -747,15 +712,400 @@
     }
 
     .sendRequestForm {
-        margin: 0px;
-        padding: 0px 16px 32px 16px;
         width: 100%;
+        margin: 0px;
+        padding: 24px 32px;
         gap: 24px;
     }
 
     .sendRequestHeaderTopText {
+        font-size: 28px;
+        line-height: 36px;
+    }
+
+    .sendRequestHeaderBottomText {
+        font-size: 16px;
+        line-height: 24px;
+    }
+
+    .contactInfo {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .contactInfoContent {
+        width: 100%;
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .formRow {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 768px) {
+    .imageWrapper img {
+        max-height: 280px;
+    }
+
+    .titleContainer {
+        padding: 24px 24px 0px 24px;
+        gap: 28px;
+    }
+
+    .title {
+        font-size: 40px;
+        line-height: 52px;
+    }
+
+    .mottoContainer {
+        width: 100%;
+    }
+
+    .motto {
+        font-size: 17px;
+        line-height: 26px;
+    }
+
+    .titleButtonsContainer {
+        flex-direction: column;
+    }
+
+    .ourProjectsTitleContainer {
+        padding: 0px 24px;
+        flex-direction: column;
+        align-items: flex-start;
+        font-size: 18px;
+        line-height: 26px;
+    }
+
+    .ourProjectsText {
+        font-size: 18px;
+        line-height: 26px;
+    }
+
+    .ourProjects {
+        padding-top: 70px;
+    }
+
+    .projectContainer {
+        height: auto;
+        background-image: none;
+        background-color: transparent;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .projectContainer::before {
+        content: '';
+        width: 100%;
+        height: 280px;
+        background-image: url('/images/HomePage2.jpg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        order: -1;
+    }
+
+    .projectBottomContent {
+        width: 100%;
+        padding: 24px;
+        gap: 32px;
+    }
+
+    .projectTitle {
         font-size: 24px;
-        line-height: 32px;
+        line-height: 100%;
+    }
+
+    .projectParam {
+        font-size: 15px;
+        line-height: 20px;
+    }
+
+    .projectParam svg {
+        height: 20px;
+        width: 20px;
+    }
+
+    .projectDescriptionText {
+        font-size: 15px;
+        line-height: 22px;
+    }
+
+    .projectButtonsContainer {
+        flex-direction: column;
+    }
+
+    .hotDeals {
+        padding: 60px 24px;
+    }
+
+    .hotDealsHeader {
+        padding: 0px;
+    }
+
+    .hotDealsHeaderText {
+        font-size: 18px;
+        line-height: 26px;
+    }
+
+    .hotDealsContentMobile {
+        padding: 0px;
+    }
+
+    .viewMore {
+        font-size: 14px;
+    }
+
+    .paymentMethodsContainer {
+        padding: 50px 24px;
+    }
+
+    .paymentMethodsHeader {
+        font-size: 22px;
+        line-height: 30px;
+    }
+
+    .paymentMethods {
+        flex-direction: column;
+    }
+
+    .promotionsHeader {
+        padding: 0px 24px;
+    }
+
+    .promotionsContent {
+        padding: 0px 24px;
+    }
+
+    .sendRequestContainer {
+        height: auto;
+        background-image: none;
+        background-color: transparent;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .sendRequestContainer::after {
+        content: '';
+        width: 100%;
+        height: 280px;
+        background-image: url('/images/HomePage3.png');
+        background-size: cover;
+        background-position: 90%;
+        background-repeat: no-repeat;
+        order: 1;
+    }
+
+    .sendRequestForm {
+        width: 100%;
+        margin: 0px;
+        padding: 20px 24px;
+        gap: 20px;
+    }
+
+    .sendRequestHeaderTopText {
+        font-size: 26px;
+        line-height: 34px;
+    }
+
+    .sendRequestHeaderBottomText {
+        font-size: 15px;
+        line-height: 22px;
+    }
+
+    .contactInfo {
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .contactInfoContent {
+        width: 100%;
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .formRow {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .paymentMethodsContainer .paymentBlurOverlay {
+        display: none;
+    }
+
+    .hotDeals .hotDealsBlurOverlay {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .imageWrapper img {
+        max-height: 220px;
+    }
+
+    .triangleOverlay {
+        height: 25px;
+    }
+
+    .titleContainer {
+        padding: 20px 16px 0px 16px;
+        gap: 20px;
+    }
+
+    .title {
+        font-size: 36px;
+        line-height: 48px;
+    }
+
+    .mottoContainer {
+        width: 100%;
+    }
+
+    .motto {
+        font-size: 16px;
+        line-height: 24px;
+    }
+
+    .ourProjectsTitleContainer {
+        padding: 0px 16px;
+        font-size: 16px;
+        line-height: 24px;
+    }
+
+    .ourProjectsText {
+        font-size: 16px;
+        line-height: 24px;
+    }
+
+    .ourProjects {
+        padding-top: 50px;
+        padding-bottom: 30px;
+    }
+
+    .projectContainer {
+        height: auto;
+        background-image: none;
+        background-color: transparent;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .projectContainer::before {
+        content: '';
+        width: 100%;
+        height: 200px;
+        background-image: url('/images/HomePage2.jpg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        order: -1;
+    }
+
+    .projectBottomContent {
+        width: 100%;
+        padding: 20px 16px;
+        gap: 24px;
+    }
+
+    .projectMainInfo {
+        padding-bottom: 16px;
+    }
+
+    .projectTitle {
+        font-size: 22px;
+        line-height: 100%;
+    }
+
+    .projectParam {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .projectParam svg {
+        height: 20px;
+        width: 20px;
+    }
+
+    .projectDescriptionText {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .hotDeals {
+        padding: 50px 0px 30px 0px;
+    }
+
+    .hotDealsHeader {
+        padding: 0px 16px;
+    }
+
+    .hotDealsHeaderText {
+        font-size: 16px;
+        line-height: 24px;
+    }
+
+    .hotDealsContentMobile {
+        padding: 0px 16px;
+    }
+
+    .viewMore {
+        font-size: 12px;
+        line-height: 100%;
+    }
+
+    .paymentMethodsContainer {
+        padding: 40px 16px;
+    }
+
+    .paymentMethodsHeader {
+        font-size: 20px;
+        line-height: 28px;
+    }
+
+    .promotionsHeader {
+        padding: 0px 16px;
+    }
+
+    .promotionsContent {
+        padding: 0px 16px;
+    }
+
+    .sendRequestContainer {
+        height: auto;
+        background-image: none;
+        background-color: transparent;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .sendRequestContainer::after {
+        content: '';
+        width: 100%;
+        height: 240px;
+        background-image: url('/images/HomePage3.png');
+        background-size: cover;
+        background-position: 90%;
+        background-repeat: no-repeat;
+        order: 1;
+    }
+
+    .sendRequestForm {
+        margin: 0px;
+        padding: 0px 16px 24px 16px;
+        width: 100%;
+        gap: 20px;
+    }
+
+    .sendRequestHeaderTopText {
+        font-size: 22px;
+        line-height: 30px;
     }
 
     .sendRequestHeaderBottomText {
@@ -767,18 +1117,209 @@
         gap: 12px;
     }
 
+    .contactInfoContent {
+        width: 100%;
+        font-size: 13px;
+        line-height: 18px;
+    }
+
     .formRow {
         flex-direction: column;
-        gap: 24px;
+        gap: 18px;
+    }
+
+    .formBottom {
+        font-size: 12px;
+        line-height: 18px;
+    }
+}
+
+@media (max-width: 360px) {
+    .imageWrapper img {
+        max-height: 200px;
+    }
+
+    .triangleOverlay {
+        height: 20px;
+    }
+
+    .titleContainer {
+        padding: 16px 12px 0px 12px;
+        gap: 16px;
+    }
+
+    .title {
+        font-size: 28px;
+        line-height: 36px;
+    }
+
+    .mottoContainer {
+        width: 100%;
+    }
+
+    .motto {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .titleButtonsContainer {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .ourProjectsTitleContainer {
+        padding: 0px 12px;
+        font-size: 14px;
+        line-height: 20px;
+        gap: 8px;
+    }
+
+    .ourProjectsText {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .ourProjects {
+        padding-top: 40px;
+        padding-bottom: 24px;
+        gap: 18px;
+    }
+
+    .projectContainer {
+        height: auto;
+    }
+
+    .projectContainer::before {
+        height: 160px;
+    }
+
+    .projectBottomContent {
+        padding: 16px 12px;
+        gap: 20px;
+    }
+
+    .projectMainInfo {
+        padding-bottom: 12px;
+    }
+
+    .projectTitle {
+        font-size: 18px;
+    }
+
+    .projectParam {
+        font-size: 12px;
+        line-height: 18px;
+    }
+
+    .projectParam svg {
+        height: 18px;
+        width: 18px;
+    }
+
+    .projectDescriptionText {
+        font-size: 13px;
+        line-height: 18px;
+    }
+
+    .projectButtonsContainer {
+        gap: 12px;
+    }
+
+    .hotDeals {
+        padding: 40px 0px 24px 0px;
+        gap: 18px;
+    }
+
+    .hotDealsHeader {
+        padding: 0px 12px;
+        gap: 8px;
+    }
+
+    .hotDealsHeaderText {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .hotDealsContentMobile {
+        padding: 0px 12px;
+    }
+
+    .viewMore {
+        font-size: 11px;
+    }
+
+    .paymentMethodsContainer {
+        padding: 30px 12px;
+        gap: 18px;
+    }
+
+    .paymentMethodsHeader {
+        font-size: 18px;
+        line-height: 24px;
+    }
+
+    .paymentMethods {
+        gap: 16px;
+    }
+
+    .promotionsHeader {
+        padding: 0px 12px;
+    }
+
+    .promotionsContent {
+        padding: 0px 12px;
+        gap: 16px;
+    }
+
+    .sendRequestContainer::after {
+        height: 200px;
+    }
+
+    .sendRequestForm {
+        padding: 0px 12px 18px 12px;
+        gap: 16px;
+    }
+
+    .sendRequestHeaderTopText {
+        font-size: 20px;
+        line-height: 28px;
+    }
+
+    .sendRequestHeader {
+        gap: 4px;
+    }
+
+    .contactInfo {
+        gap: 8px;
+    }
+
+    .contactInfoBlock {
+        gap: 8px;
+    }
+
+    .contactInfoContent {
+        font-size: 12px;
+        line-height: 16px;
+        gap: 4px;
+    }
+
+    .formInputs {
+        gap: 16px;
+    }
+
+    .formRow {
+        gap: 16px;
+    }
+
+    .formBottom {
+        font-size: 11px;
+        line-height: 16px;
+        gap: 8px;
     }
 }
 
 @media (max-width: 1023px) {
     .promotions {
-        display: none;
-    }
-
-    .paymentMethodsContainer .paymentBlurOverlay {
         display: none;
     }
 }

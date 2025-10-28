@@ -235,6 +235,11 @@
         gap: 24px;
     }
 
+    .conveniencies {
+        padding-right: 24px;
+        padding-left: 24px;
+    }
+
     .convenienciesImage {
         width: 100%;
         height: 400px;
@@ -244,21 +249,231 @@
     .convenienciesLeftContainer2 {
         width: 100%;
     }
+
+    .convenienciesHeader {
+        font-size: 24px;
+        line-height: 32px;
+    }
+
+    .conveniencyTitle {
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    .conveniencies {
+        padding-right: 24px;
+        padding-left: 24px;
+        padding-bottom: 60px;
+        gap: 28px;
+    }
+
+    .conveniencies::before {
+        display: none;
+    }
+
+    .convenienciesHeaderContainer {
+        flex-direction: column;
+        gap: 24px;
+        align-items: flex-start;
+    }
+
+    .convenienciesContent {
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .convenienciesLeftContainer,
+    .convenienciesLeftContainer2 {
+        width: 100%;
+        gap: 28px;
+    }
+
+    .convenienciesHeader {
+        font-size: 22px;
+        line-height: 30px;
+    }
+
+    .convenienciesMotto {
+        font-size: 15px;
+        line-height: 22px;
+    }
+
+    .conveniencyTitle {
+        font-size: 16px;
+    }
+
+    .conveniencyDescription {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .conveniencyItem svg {
+        height: 20px;
+        width: 20px;
+    }
+
+    .paginationButton {
+        width: 44px;
+        height: 44px;
+    }
+
+    .paginationButton svg {
+        width: 36px;
+        height: 36px;
+    }
+
+    .paginationCounter {
+        font-size: 16px;
+        line-height: 24px;
+    }
+
+    .convenienciesImage {
+        width: 100%;
+        height: 350px;
+    }
+}
+
+@media (max-width: 480px) {
+    .conveniencies {
+        padding-right: 16px;
+        padding-left: 16px;
+        padding-bottom: 40px;
+        gap: 20px;
+    }
+
+    .convenienciesHeaderContainer {
+        flex-direction: column;
+        gap: 20px;
+        align-items: flex-start;
+    }
+
+    .convenienciesContent {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .convenienciesLeftContainer,
+    .convenienciesLeftContainer2 {
+        width: 100%;
+        gap: 24px;
+    }
+
+    .convenienciesHeader {
+        font-size: 20px;
+        line-height: 28px;
+    }
+
+    .convenienciesMotto {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .conveniencyTitle {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .conveniencyDescription {
+        font-size: 13px;
+        line-height: 18px;
+    }
+
+    .conveniencyItem svg {
+        height: 18px;
+        width: 18px;
+    }
+
+    .paginationButton {
+        width: 40px;
+        height: 40px;
+    }
+
+    .paginationButton svg {
+        width: 32px;
+        height: 32px;
+    }
+
+    .paginationCounter {
+        font-size: 14px;
+        line-height: 20px;
+        width: 50px;
+    }
+
+    .convenienciesImage {
+        width: 100%;
+        height: 280px;
+    }
 }
 
 @media (max-width: 360px) {
     .conveniencies {
         padding-right: 16px;
         padding-left: 16px;
-        padding-bottom: 16px;
-        gap: 24px;
+        padding-bottom: 24px;
+        gap: 20px;
     }
 
-    .convenienciesImage {
-        height: 360px;
+    .convenienciesHeaderContainer {
+        flex-direction: column;
+        gap: 16px;
+        align-items: flex-start;
+    }
+
+    .convenienciesHeader {
+        font-size: 20px;
+        line-height: 28px;
+    }
+
+    .convenienciesMotto {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .convenienciesContent {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .convenienciesLeftContainer,
+    .convenienciesLeftContainer2 {
+        width: 100%;
+        gap: 20px;
     }
 
     .conveniencyTitle {
-        font-size: 15px;
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .conveniencyDescription {
+        font-size: 13px;
+        line-height: 18px;
+    }
+
+    .conveniencyItem svg {
+        height: 18px;
+        width: 18px;
+    }
+
+    .paginationButton {
+        width: 40px;
+        height: 40px;
+    }
+
+    .paginationButton svg {
+        width: 32px;
+        height: 32px;
+    }
+
+    .paginationCounter {
+        font-size: 14px;
+        line-height: 20px;
+        width: 50px;
+    }
+
+    .convenienciesImage {
+        height: 280px;
+        width: 100%;
     }
 }

@@ -9,6 +9,10 @@
     min-height: 600px;
 }
 
+.containerCompactWidth {
+    width: 294px;
+}
+
 .imageContainer {
     position: relative;
     display: inline-block;
@@ -122,6 +126,10 @@
 @media (max-width: 1366px) {
     .apartmentGeneralInfo {
         height: 156px;
+    }
+
+    .containerCompactWidth {
+        width: 294px;
     }
 }
 

@@ -205,26 +205,103 @@
     }
 }
 
-@media (max-width: 360px) {
-    .finishDateContainer {
-        display: none;
+@media (max-width: 768px) {
+    .card {
+        flex-direction: column;
+        gap: 20px;
+        width: 100%;
     }
 
+    .imageContainer {
+        order: -1;
+        width: 100%;
+        height: 280px;
+        object-fit: cover;
+    }
+
+    .image {
+        width: 100%;
+        height: 280px;
+    }
+
+    .complexLeftContainer {
+        gap: 24px;
+        width: 100%;
+        height: auto;
+        justify-content: flex-start;
+        padding: 0px 24px;
+    }
+
+    .complexData {
+        gap: 20px;
+    }
+
+    .complexTopData {
+        gap: 10px;
+        padding-bottom: 14px;
+    }
+
+    .complexTitle {
+        font-size: 28px;
+        line-height: 100%;
+    }
+
+    .complexTopParamText {
+        font-size: 16px;
+        line-height: 22px;
+    }
+
+    .complexDescription {
+        font-size: 17px;
+        line-height: 26px;
+    }
+
+    .complexButtons {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .finishDateContainer {
+        left: 16px;
+        top: 16px;
+        padding-top: 10px;
+        padding-right: 14px;
+        padding-bottom: 10px;
+        padding-left: 14px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
     .card {
         gap: 16px;
     }
 
     .imageContainer {
         order: -1;
-        height: 240px;
+        height: 200px;
     }
 
     .image {
-        height: 240px;
+        height: 200px;
+    }
+
+    .complexLeftContainer {
+        gap: 16px;
+        padding: 0px 16px;
+    }
+
+    .complexData {
+        gap: 16px;
+    }
+
+    .complexTopData {
+        gap: 8px;
+        padding-bottom: 12px;
     }
 
     .complexTitle {
-        font-size: 20px;
+        font-size: 22px;
         line-height: 100%;
     }
 
@@ -234,17 +311,75 @@
     }
 
     .complexDescription {
-        font-size: 16px;
-        line-height: 24px;
+        font-size: 15px;
+        line-height: 22px;
+    }
+
+    .complexButtons {
+        flex-direction: column;
+        gap: 10px;
     }
 
     .finishDateContainer {
-        left: 12px;
-        top: 12px;
+        left: 14px;
+        top: 14px;
         padding-top: 8px;
         padding-right: 12px;
         padding-bottom: 8px;
         padding-left: 12px;
         font-size: 12px;
+    }
+}
+
+@media (max-width: 360px) {
+    .finishDateContainer {
+        display: none;
+    }
+
+    .card {
+        gap: 12px;
+    }
+
+    .imageContainer {
+        order: -1;
+        height: 160px;
+    }
+
+    .image {
+        height: 160px;
+    }
+
+    .complexLeftContainer {
+        gap: 12px;
+        padding: 0px 12px;
+    }
+
+    .complexData {
+        gap: 12px;
+    }
+
+    .complexTopData {
+        gap: 6px;
+        padding-bottom: 10px;
+    }
+
+    .complexTitle {
+        font-size: 18px;
+        line-height: 100%;
+    }
+
+    .complexTopParamText {
+        font-size: 12px;
+        line-height: 16px;
+    }
+
+    .complexDescription {
+        font-size: 13px;
+        line-height: 18px;
+    }
+
+    .complexButtons {
+        flex-direction: column;
+        gap: 8px;
     }
 }

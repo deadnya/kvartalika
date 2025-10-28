@@ -18,26 +18,33 @@
 
   display: flex;
   flex-direction: row;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: flex-start;
 }
 
 .breadcrumbLink {
   color: #2D3748;
   transition: 0.2s;
+  white-space: nowrap;
+  margin-right: 4px;
 }
 
 .breadcrumbLink:hover {
   color: #7B2CBF;
 }
 
-.breadcrumbSeparator {
-  margin: 0 0.5rem;
-  color: #121212;
+.breadcrumbNav svg {
+  flex-shrink: 0;
+  height: 20px;
+  width: 20px;
+  margin-right: 4px;
 }
 
-.breadcrumbCurrent {
+.breadcrumbWord {
   color: #2D3748;
   opacity: 0.5;
+  white-space: nowrap;
 }
 
 .contentSection {
@@ -59,4 +66,116 @@
     line-height: 72px;
     letter-spacing: -5%;
     font-weight: 500;
+}
+
+@media (max-width: 1366px) {
+    .breadcrumbContainer {
+        padding: 32px 59px 24px 59px;
+    }
+
+    .contentSection {
+        padding: 0px 59px;
+    }
+
+    .contentContainer {
+        gap: 32px;
+        padding-bottom: 60px;
+    }
+
+    .title {
+        font-size: 48px;
+        line-height: 64px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .breadcrumbContainer {
+        padding: 28px 48px 20px 48px;
+    }
+
+    .contentSection {
+        padding: 0px 48px;
+    }
+
+    .contentContainer {
+        gap: 28px;
+        padding-bottom: 50px;
+    }
+
+    .title {
+        font-size: 44px;
+        line-height: 56px;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        margin-top: 70px;
+    }
+
+    .breadcrumbContainer {
+        padding: 28px 32px 20px 32px;
+    }
+
+    .contentSection {
+        padding: 0px 32px;
+    }
+
+    .contentContainer {
+        gap: 24px;
+        padding-bottom: 50px;
+    }
+
+    .title {
+        font-size: 36px;
+        line-height: 48px;
+    }
+}
+
+@media (max-width: 1023px) {
+    .container {
+        margin-top: 60px;
+    }
+
+    .breadcrumbContainer {
+        padding: 24px 16px 16px 16px;
+    }
+
+    .contentSection {
+        padding: 0px 16px;
+    }
+
+    .contentContainer {
+        gap: 24px;
+        padding-bottom: 40px;
+    }
+
+    .title {
+        font-size: 28px;
+        line-height: 36px;
+    }
+}
+
+@media (max-width: 360px) {
+    .container {
+        margin-top: 60px;
+    }
+
+    .breadcrumbContainer {
+        padding: 24px 16px 16px 16px;
+    }
+
+    .contentSection {
+        padding: 0px 16px;
+    }
+
+    .contentContainer {
+        gap: 24px;
+        padding-bottom: 40px;
+    }
+
+    .title {
+        font-size: 28px;
+        line-height: 36px;
+    }
 }

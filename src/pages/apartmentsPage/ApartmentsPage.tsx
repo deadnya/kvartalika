@@ -382,6 +382,7 @@ const ApartmentsPage = () => {
                                     houseComplexId={apartment.homeId || apartment.id}
                                     imageSrc={apartment.images?.[0] || ""}
                                     flatId={apartment.id}
+                                    containerClassName={styles.containerCompactWidth}
                                 />
                             );
                         })

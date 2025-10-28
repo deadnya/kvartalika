@@ -9,7 +9,47 @@
     font-family: var(--font-family-montserrat);
     font-weight: 500;
     font-size: 20px;
-    line-height: 100%;
+    line-height: 22px;
     letter-spacing: -5%;
     color: var(--color-purple-main);
+}
+
+@media (max-width: 1366px) {
+    .container {
+        width: 100%;
+        max-width: 1122px;
+        font-size: 16px;
+        line-height: 22px;
+    }
+
+    .content {
+        font-size: 16px;
+        line-height: 22px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .container {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        width: 100%;
+    }
+}
+
+@media (max-width: 1023px) {
+    .container {
+        width: 100%;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 360px) {
+    .container {
+        width: 100%;
+        max-width: 100%;
+    }
 }

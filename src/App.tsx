@@ -110,7 +110,7 @@ const InnerApp = () => {
       >
         <ScrollToTop />
         <ScrollToAnchor />
-        <div className="min-h-screen flex flex-col bg-surface-50">
+        <div className="flex flex-col bg-surface-50">
           <Header />
 
           <main className="flex-grow">

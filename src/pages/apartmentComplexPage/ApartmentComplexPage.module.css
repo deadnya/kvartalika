@@ -270,6 +270,8 @@
 }
 
 .availableApartmentsHeader {
+    padding-right: 16px;
+    padding-left: 16px;
     display: flex;
     flex-direction: row;
     gap: 14px;
@@ -793,11 +795,15 @@
     }
 
     .locationTitle {
+        padding-right: 16px;
+        padding-left: 16px;
         font-size: 24px;
         line-height: 32px;
     }
 
     .locationLeftContainer {
+        padding-right: 16px;
+        padding-left: 16px;
         width: auto;
     }
 
@@ -841,6 +847,9 @@
     }
 
     .transportAvailabilityLeftContainer {
+        padding-right: 16px;
+        padding-left: 16px;
+        padding-bottom: 16px;
         width: auto;
     }
 
@@ -892,10 +901,6 @@
     .catchItOfferTitle {
         font-size: 20px;
         line-height: 100%;
-    }
-
-    .sendRequestContainer {
-        height: 500px;
     }
 
     .sendRequestForm {
@@ -953,6 +958,602 @@
         width: 100%;
         height: 400px;
     }
+
+    .generalInfo {
+        padding-right: 24px;
+        padding-left: 24px;
+    }
+
+    .complexTitle {
+        font-size: 48px;
+        line-height: 64px;
+    }
+
+    .complexDescription {
+        font-size: 17px;
+        line-height: 26px;
+    }
+
+    .location {
+        padding-right: 0px;
+        padding-left: 0px;
+        padding-top: 60px;
+    }
+
+    .locationTitle {
+        font-size: 24px;
+        line-height: 32px;
+    }
+
+    .availableApartments {
+        padding-right: 0px;
+        padding-left: 0px;
+        padding-bottom: 60px;
+    }
+
+    .availableApartmentsTitle {
+        font-size: 24px;
+        line-height: 32px;
+    }
+
+    .transportAvailability {
+        padding-right: 0px;
+        padding-left: 0px;
+        padding-bottom: 60px;
+    }
+
+    .transportAvailabilityHeader {
+        padding-right: 16px;
+        padding-left: 16px;
+        font-size: 24px;
+        line-height: 32px;
+    }
+
+    .technologies {
+        padding-right: 0px;
+        padding-left: 0px;
+        padding-bottom: 60px;
+    }
+
+    .technologiesHeader {
+        padding-left: 16px;
+        padding-right: 16px;
+        font-size: 24px;
+        line-height: 32px;
+    }
+
+    .technologiesLeftContainer {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .catchIt {
+        padding-top: 50px;
+        padding-bottom: 80px;
+    }
+
+    .catchItHeader {
+        font-size: 24px;
+        line-height: 32px;
+    }
+
+    .sendRequestForm {
+        width: 100%;
+        margin: 0px 24px;
+        padding: 20px 24px 24px 24px;
+    }
+
+    .sendRequestHeaderTopText {
+        font-size: 24px;
+        line-height: 32px;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        margin-top: 70px;
+    }
+
+    .generalInfo {
+        padding-right: 24px;
+        padding-left: 24px;
+        padding-bottom: 32px;
+        gap: 32px;
+        margin-top: 24px;
+    }
+
+    .complexTitle {
+        font-size: 40px;
+        line-height: 52px;
+    }
+
+    .complexLocationText {
+        font-size: 16px;
+        line-height: 22px;
+    }
+
+    .complexDescription {
+        font-size: 16px;
+        line-height: 24px;
+    }
+
+    .location {
+        padding-right: 0px;
+        padding-left: 0px;
+        padding-top: 50px;
+    }
+
+    .location::before {
+        display: none;
+    }
+
+    .locationTitle {
+        padding-right: 16px;
+        padding-left: 16px;
+        font-size: 22px;
+        line-height: 30px;
+    }
+
+    .locationContent {
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .locationLeftContainer {
+        padding-right: 16px;
+        padding-left: 16px;
+        gap: 24px;
+    }
+
+    .locationMotto {
+        font-size: 15px;
+        line-height: 22px;
+    }
+
+    .goodThingTitle {
+        font-size: 16px;
+        line-height: 22px;
+    }
+
+    .goodThingDescription {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .goodThing svg {
+        height: 20px;
+        width: 20px;
+    }
+
+    .goodThing2 {
+        width: 100%;
+    }
+
+    .locationMapContainer {
+        width: 100%;
+        height: 350px;
+    }
+
+    .availableApartments {
+        padding-right: 0px;
+        padding-left: 0px;
+        padding-bottom: 50px;
+        gap: 28px;
+    }
+
+    .availableApartments::before {
+        display: none;
+    }
+
+    .availableApartmentsTitle {
+        font-size: 22px;
+        line-height: 30px;
+    }
+
+    .availableApartmentsContent {
+        gap: 16px;
+    }
+
+    .transportAvailability {
+        padding-right: 0px;
+        padding-left: 0px;
+        padding-bottom: 50px;
+        gap: 28px;
+    }
+
+    .transportAvailability::before {
+        display: none;
+    }
+
+    .transportAvailabilityHeader {
+        font-size: 22px;
+        line-height: 30px;
+    }
+
+    .transportAvailabilityContent {
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .transportAvailabilityLeftContainer {
+        padding-right: 16px;
+        padding-left: 16px;
+        width: 100%;
+        gap: 24px;
+    }
+
+    .transportAvailabilityItemTitle {
+        font-size: 15px;
+        line-height: 22px;
+    }
+
+    .transportAvailabilityItemDescription {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .transportAvailabilityItem svg {
+        height: 20px;
+        width: 20px;
+    }
+
+    .transportAvailabilityItem2 {
+        width: 100%;
+    }
+
+    .transportAvailabilityImage {
+        width: 100%;
+        height: 320px;
+    }
+
+    .technologies {
+        padding-right: 0px;
+        padding-left: 0px;
+        padding-bottom: 50px;
+        gap: 28px;
+    }
+
+    .technologies::before {
+        display: none;
+    }
+
+    .technologiesHeader {
+        font-size: 22px;
+        line-height: 30px;
+    }
+
+    .technologiesContainer {
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .technologiesLeftContainer {
+        width: 100%;
+        gap: 24px;
+    }
+
+    .technologiesItemTitle {
+        font-size: 15px;
+        line-height: 22px;
+    }
+
+    .technologiesItemDescription {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .technologiesItem svg {
+        height: 20px;
+        width: 20px;
+    }
+
+    .technologiesItem2 {
+        width: 100%;
+    }
+
+    .technologiesImage {
+        width: 100%;
+        height: 320px;
+    }
+
+    .catchIt {
+        padding-top: 40px;
+        padding-bottom: 60px;
+        gap: 32px;
+    }
+
+    .catchItHeader {
+        font-size: 22px;
+        line-height: 30px;
+    }
+
+    .catchItOfferContainer {
+        width: 100%;
+        height: auto;
+        padding: 28px 24px;
+        gap: 20px;
+    }
+
+    .catchItOfferTitle {
+        font-size: 18px;
+        line-height: 100%;
+    }
+    .sendRequestForm {
+        width: 100%;
+        margin: 0px 24px;
+        padding: 20px 24px 24px 24px;
+        gap: 24px;
+    }
+
+    .sendRequestHeaderTopText {
+        font-size: 22px;
+        line-height: 30px;
+    }
+
+    .sendRequestHeaderBottomText {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .formRow {
+        gap: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        margin-top: 60px;
+    }
+
+    .generalInfo {
+        padding-right: 16px;
+        padding-left: 16px;
+        padding-bottom: 32px;
+        gap: 28px;
+        margin-top: 20px;
+    }
+
+    .complexTitle {
+        font-size: 36px;
+        line-height: 48px;
+    }
+
+    .complexLocationText {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .generalInfoBottomContainer {
+        gap: 20px;
+    }
+
+    .complexDescription {
+        font-size: 15px;
+        line-height: 22px;
+    }
+
+    .location {
+        padding-right: 0px;
+        padding-left: 0px;
+        padding-top: 40px;
+        gap: 20px;
+    }
+
+    .locationTitle {
+        padding-right: 16px;
+        padding-left: 16px;
+        font-size: 20px;
+        line-height: 28px;
+    }
+
+    .locationContent {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .locationLeftContainer {
+        padding-right: 16px;
+        padding-left: 16px;
+        gap: 20px;
+    }
+
+    .locationMotto {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .goodThingTitle {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .goodThingDescription {
+        font-size: 13px;
+        line-height: 18px;
+    }
+
+    .goodThing svg {
+        height: 18px;
+        width: 18px;
+    }
+
+    .locationMapContainer {
+        width: 100%;
+        height: 300px;
+    }
+
+    .availableApartments {
+        padding-right: 16px;
+        padding-left: 16px;
+        padding-bottom: 40px;
+        gap: 20px;
+    }
+
+    .availableApartmentsHeader {
+        padding-right: 16px;
+        padding-left: 16px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .availableApartmentsTitle {
+        font-size: 20px;
+        line-height: 28px;
+    }
+
+    .availableApartmentsViewAll {
+        font-size: 13px;
+    }
+
+    .availableApartmentsContent {
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .transportAvailability {
+        padding-right: 0px;
+        padding-left: 0px;
+        padding-bottom: 40px;
+        gap: 20px;
+    }
+
+    .transportAvailabilityHeader {
+        font-size: 20px;
+        line-height: 28px;
+    }
+
+    .transportAvailabilityContent {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .transportAvailabilityLeftContainer {
+        width: 100%;
+        gap: 20px;
+    }
+
+    .transportAvailabilityItemTitle {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .transportAvailabilityItemDescription {
+        font-size: 13px;
+        line-height: 18px;
+    }
+
+    .transportAvailabilityItem svg {
+        height: 18px;
+        width: 18px;
+    }
+
+    .transportAvailabilityImage {
+        width: 100%;
+        height: 280px;
+    }
+
+    .technologies {
+        padding-right: 0px;
+        padding-left: 0px;
+        padding-bottom: 40px;
+        gap: 20px;
+    }
+
+    .technologiesHeader {
+        font-size: 20px;
+        line-height: 28px;
+    }
+
+    .technologiesContainer {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .technologiesLeftContainer {
+        width: 100%;
+        gap: 20px;
+    }
+
+    .technologiesText {
+        font-size: 13px;
+        line-height: 18px;
+    }
+
+    .technologiesItemTitle {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .technologiesItemDescription {
+        font-size: 13px;
+        line-height: 18px;
+    }
+
+    .technologiesItem svg {
+        height: 18px;
+        width: 18px;
+    }
+
+    .technologiesImage {
+        width: 100%;
+        height: 280px;
+    }
+
+    .catchIt {
+        padding-top: 32px;
+        padding-bottom: 50px;
+        gap: 20px;
+    }
+
+    .catchItHeader {
+        font-size: 20px;
+        line-height: 28px;
+        padding: 0px 16px;
+    }
+
+    .catchItOfferContainer {
+        width: 100%;
+        height: auto;
+        padding: 20px 16px;
+        gap: 16px;
+    }
+
+    .catchItOfferTitle {
+        font-size: 16px;
+        line-height: 100%;
+    }
+
+    .sendRequestForm {
+        margin: 0px;
+        padding: 0px 16px 20px 16px;
+        width: 100%;
+        gap: 18px;
+    }
+
+    .sendRequestHeaderTopText {
+        font-size: 20px;
+        line-height: 28px;
+    }
+
+    .sendRequestContent {
+        gap: 18px;
+    }
+
+    .formInputs {
+        gap: 16px;
+    }
+
+    .formRow {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .formBottom {
+        font-size: 12px;
+        line-height: 18px;
+        gap: 10px;
+    }
 }
 
 @media (max-width: 360px) {
@@ -1003,7 +1604,6 @@
         padding-right: 0px;
         padding-left: 0px;
         padding-top: 40px;
-        padding-bottom: 40px;
         gap: 24px;
     }
 
@@ -1062,6 +1662,8 @@
     }
 
     .availableApartmentsHeader {
+        padding-right: 16px;
+        padding-left: 16px;
         flex-direction: column;
         align-items: flex-start;
         gap: 12px;
@@ -1230,7 +1832,6 @@
     .sendRequestContainer::after {
         content: '';
         width: 100%;
-        height: 250px;
         background-image: url('/images/HomePage3.png');
         background-size: cover;
         background-position: 90%;

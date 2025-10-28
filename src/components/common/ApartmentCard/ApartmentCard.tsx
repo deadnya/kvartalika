@@ -43,6 +43,7 @@ interface ApartmentCardProps {
     areaMax?: number;
     includeComplexButton?: boolean;
     purpleBlockText?: string;
+    containerClassName?: string;
 }
 
 const ApartmentCard: React.FC<ApartmentCardProps> = ({
@@ -57,7 +58,8 @@ const ApartmentCard: React.FC<ApartmentCardProps> = ({
     areaMin: areaMinProp,
     areaMax: areaMaxProp,
     includeComplexButton = true,
-    purpleBlockText
+    purpleBlockText,
+    containerClassName = ""
 }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [imageError, setImageError] = useState(false);
@@ -106,7 +108,7 @@ const ApartmentCard: React.FC<ApartmentCardProps> = ({
 
     return (
         <>
-            <div className={styles.container} onClick={() => {navigate(`/apartment/${flatId}`)}}>
+            <div className={`${styles.container} ${containerClassName}`} onClick={() => {navigate(`/apartment/${flatId}`)}}>
                 <div className={styles.imageContainer}>
                     <img 
                         src={displayImage}

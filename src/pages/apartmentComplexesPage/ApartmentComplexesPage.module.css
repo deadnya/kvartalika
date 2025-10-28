@@ -98,6 +98,17 @@
         padding-bottom: 80px;
         padding-left: 59px;
     }
+
+    .topImageContainer {
+        width: 100%;
+        height: 250px;
+    }
+
+    .topImageContainer img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+    }
 }
 
 @media (max-width: 1023px) {
@@ -107,7 +118,7 @@
 
     .topImageContainer {
         width: 100%;
-        height: 200px;
+        height: 220px;
     }
 
     .topImageTriangleOverlay {
@@ -117,8 +128,8 @@
     }
 
     .topImageContainer img {
-        width: auto;
-        height: 200px;
+        width: 100%;
+        height: 220px;
         object-fit: cover;
     }
 
@@ -161,6 +172,116 @@
     }
 }
 
+@media (max-width: 768px) {
+    .container {
+        margin-top: 60px;
+    }
+
+    .topImageContainer {
+        width: 100%;
+        height: 220px;
+    }
+
+    .topImageContainer img {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+    }
+
+    .topImageTriangleOverlay {
+        height: 35px;
+    }
+
+    .apartmentComplexesList {
+        padding-top: 28px;
+        gap: 28px;
+    }
+
+    .apartmentComplexesListHeader {
+        padding: 0px 24px;
+        gap: 14px;
+    }
+
+    .apartmentComplexesListTitle {
+        font-size: 32px;
+        line-height: 40px;
+    }
+
+    .apartmentComplexesListDescription {
+        font-size: 16px;
+        line-height: 24px;
+    }
+
+    .apartmentComplexesListContent {
+        flex-direction: column;
+        align-items: stretch;
+        padding-top: 32px;
+        padding-bottom: 50px;
+        padding-left: 0px;
+        padding-right: 0px;
+        gap: 28px;
+    }
+
+    .apartmentComplexesListContent::before {
+        height: 35px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        margin-top: 50px;
+    }
+
+    .topImageContainer {
+        width: 100%;
+        height: 200px;
+    }
+
+    .topImageContainer img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .topImageTriangleOverlay {
+        height: 25px;
+    }
+
+    .apartmentComplexesList {
+        padding-top: 20px;
+        gap: 20px;
+    }
+
+    .apartmentComplexesListHeader {
+        padding: 0px 16px;
+        gap: 12px;
+    }
+
+    .apartmentComplexesListTitle {
+        font-size: 26px;
+        line-height: 32px;
+    }
+
+    .apartmentComplexesListDescription {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .apartmentComplexesListContent {
+        flex-direction: column;
+        align-items: stretch;
+        padding-top: 20px;
+        padding-bottom: 32px;
+        padding-left: 0px;
+        padding-right: 0px;
+        gap: 20px;
+    }
+
+    .apartmentComplexesListContent::before {
+        height: 25px;
+    }
+}
+
 @media (max-width: 360px) {
     .apartmentComplexesList {
         padding-top: 16px;
@@ -188,5 +309,20 @@
         padding-left: 0px;
         padding-right: 0px;
         gap: 16px;
+    }
+
+    .topImageContainer {
+        width: 100%;
+        height: 180px;
+    }
+
+    .topImageContainer img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+    }
+
+    .topImageTriangleOverlay {
+        height: 20px;
     }
 }

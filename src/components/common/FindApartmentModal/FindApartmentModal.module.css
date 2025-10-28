@@ -169,3 +169,19 @@
     text-align: center;
     vertical-align: middle;
 }
+
+@media (max-width: 1023px) {
+    .modalWindow {
+        padding-top: 24px;
+        padding-right: 16px;
+        padding-bottom: 16px;
+        padding-left: 16px;
+    }
+
+    .successDesc {
+        padding-top: 24px;
+        padding-right: 16px;
+        padding-bottom: 16px;
+        padding-left: 16px; 
+    }
+}

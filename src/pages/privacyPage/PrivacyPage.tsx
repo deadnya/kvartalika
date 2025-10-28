@@ -15,7 +15,9 @@ const PrivacyPage = () => {
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M9.16667 13.334L12.5 10.0007L9.16667 6.66732" stroke="#121212" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
-                        <span className={styles.breadcrumbCurrent}>Политика в отношении обработки персональных данных</span>
+                        {Array.from('Политика в отношении обработки персональных данных'.split(' ')).map((word, i) => (
+                            <span key={i} className={styles.breadcrumbWord}>{word}</span>
+                        ))}
                     </nav>
                 </div>
             </section>

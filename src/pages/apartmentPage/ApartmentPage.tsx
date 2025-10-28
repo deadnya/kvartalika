@@ -85,6 +85,11 @@ const ApartmentPage = () => {
     const flat = apartmentData.flat;
     const allVariants = flat.variants && flat.variants.length > 0 ? flat.variants : [];
     const filteredVariants = allVariants.filter(variant => variant.hasDecoration === isEnabled);
+    
+    // Select images based on toggle state (isEnabled = with decoration = images, disabled = clean = imagesClean)
+    const galleryImages = isEnabled 
+        ? (flat.images && flat.images.length > 0 ? flat.images : [])
+        : (flat.imagesClean && flat.imagesClean.length > 0 ? flat.imagesClean : []);
 
     const getStatusLabel = (status: string): string => {
         switch (status) {
@@ -114,15 +119,17 @@ const ApartmentPage = () => {
                 <div className={styles.content}>
                     <div className={styles.contentLeft}>
                         <div className={styles.galleryContainer}>
-                            <Gallery imageSrcs={flat.images && flat.images.length > 0 ? flat.images : [
-                                "https://placehold.co/996x744",
-                                "https://placehold.co/1096x744",
-                                "https://placehold.co/1196x744",
-                            ]} />
-                            {categories.length > 0 && (
-                                <div className={styles.galleryInfoContainer}>
-                                    <span className={styles.galleryInfoContainerText}>{categories[0].name}</span>
-                                </div>
+                            {galleryImages.length > 0 ? (
+                                <>
+                                    <Gallery imageSrcs={galleryImages} />
+                                    {categories.length > 0 && (
+                                        <div className={styles.galleryInfoContainer}>
+                                            <span className={styles.galleryInfoContainerText}>{categories[0].name}</span>
+                                        </div>
+                                    )}
+                                </>
+                            ) : (
+                                <div className={styles.noImagesMessage}>Изображения недоступны</div>
                             )}
                         </div>
                         <div className={styles.descriptionContainer}>

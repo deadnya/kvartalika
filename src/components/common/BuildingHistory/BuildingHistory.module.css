@@ -165,11 +165,146 @@
     .buildingHistoryLeftContainer {
         gap: 40px;
         width: 100%;
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .buildingHistory {
+        padding-right: 0px;
+        padding-left: 0px;
     }
 
     .buildingHistoryImage {
         width: 100%;
         height: 400px;
+    }
+
+    .buildingHistoryHeader {
+        font-size: 24px;
+        line-height: 32px;
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .buildingHistoryItemTitle {
+        font-size: 28px;
+    }
+}
+
+@media (max-width: 768px) {
+    .buildingHistory {
+        padding-right: 0px;
+        padding-left: 0px;
+        padding-bottom: 60px;
+        gap: 28px;
+    }
+
+    .buildingHistory::before {
+        display: none;
+    }
+
+    .buildingHistoryContent {
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .buildingHistoryLeftContainer {
+        gap: 32px;
+        width: 100%;
+    }
+
+    .buildingHistoryHeader {
+        font-size: 22px;
+        line-height: 30px;
+    }
+
+    .buildingHistoryItemTitle {
+        font-size: 26px;
+        line-height: 100%;
+    }
+
+    .buildingHistoryItemDescription {
+        font-size: 15px;
+        line-height: 22px;
+    }
+
+    .paginationButton {
+        width: 44px;
+        height: 44px;
+    }
+
+    .paginationButton svg {
+        width: 36px;
+        height: 36px;
+    }
+
+    .paginationCounter {
+        font-size: 16px;
+        line-height: 24px;
+    }
+
+    .buildingHistoryImage {
+        width: 100%;
+        height: 350px;
+    }
+}
+
+@media (max-width: 480px) {
+    .buildingHistory {
+        padding-right: 0px;
+        padding-left: 0px;
+        padding-bottom: 40px;
+        gap: 20px;
+    }
+
+    .buildingHistoryContent {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .buildingHistoryLeftContainer {
+        gap: 24px;
+        width: 100%;
+    }
+
+    .buildingHistoryLeftTopContainer {
+        gap: 20px;
+    }
+
+    .buildingHistoryHeader {
+        font-size: 20px;
+        line-height: 28px;
+    }
+
+    .buildingHistoryItemTitle {
+        font-size: 22px;
+        line-height: 100%;
+    }
+
+    .buildingHistoryItemDescription {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .paginationButton {
+        width: 40px;
+        height: 40px;
+    }
+
+    .paginationButton svg {
+        width: 32px;
+        height: 32px;
+    }
+
+    .paginationCounter {
+        font-size: 14px;
+        line-height: 20px;
+        width: 50px;
+    }
+
+    .buildingHistoryImage {
+        width: 100%;
+        height: 280px;
     }
 }
 
@@ -177,26 +312,46 @@
     .buildingHistory {
         padding-right: 0px;
         padding-left: 0px;
-        padding-bottom: 16px;
-        gap: 24px;
+        padding-bottom: 24px;
+        gap: 20px;
     }
 
     .buildingHistoryLeftContainer {
-        padding-right: 16px;
-        padding-left: 16px;
+        gap: 24px;
     }
 
     .buildingHistoryHeader {
-        padding-right: 16px;
-        padding-left: 16px;
+        font-size: 20px;
+        line-height: 28px;
     }
 
     .buildingHistoryItemTitle {
-        font-size: 24px;
-        line-height: 32px;
+        font-size: 20px;
+        line-height: 100%;
+    }
+
+    .buildingHistoryItemDescription {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .paginationButton {
+        width: 40px;
+        height: 40px;
+    }
+
+    .paginationButton svg {
+        width: 32px;
+        height: 32px;
+    }
+
+    .paginationCounter {
+        font-size: 14px;
+        line-height: 20px;
     }
 
     .buildingHistoryImage {
-        height: 360px;
+        height: 280px;
+        width: 100%;
     }
 }

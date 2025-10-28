@@ -40,9 +40,13 @@ const getResponsiveDimensions = () => {
   const width = window.innerWidth;
 
   if (width <= 360) {
-    return { width: "100vw", height: "360px" };
+    return { width: "100%", height: "300px" };
+  } else if (width <= 480) {
+    return { width: "100%", height: "320px" };
+  } else if (width <= 768) {
+    return { width: "100%", height: "350px" };
   } else if (width <= 1023) {
-    return { width: "calc(100vw - 32px)", height: "400px" };
+    return { width: "100%", height: "400px" };
   } else if (width <= 1366) {
     return { width: "600px", height: "400px" };
   } else {
