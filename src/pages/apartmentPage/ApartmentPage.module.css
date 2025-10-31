@@ -29,13 +29,12 @@
 }
 
 .contentLeft {
-    width: 996px;
+    width: 70%;
     display: flex;
     flex-direction: column;
 }
 
 .galleryContainer {
-    width: 996px;
     height: 744px;
     position: relative;
 }
@@ -185,7 +184,7 @@
     display: flex;
     flex-direction: column;
     gap: 30px;
-    width: 468px;
+    width: 30%;
 }
 
 .buttonContainer {
@@ -217,10 +216,6 @@
         padding-right: 59px;
         padding-left: 59px;
         gap: 32px;
-    }
-
-    .contentLeft {
-        width: 824px;
     }
 
     .galleryContainer {
@@ -260,7 +255,6 @@
     }
 
     .contentRight {
-        width: 392px;
         gap: 24px;
     }
 
@@ -492,5 +486,19 @@
 
     .apartmentVariants {
         gap: 16px;
+    }
+}
+
+@media (min-width: 1921px) {
+    .contentLeft {
+        width: 70%;
+    }
+
+    .galleryContainer {
+        width: 100%;
+    }
+
+    .contentRight {
+        width: 30%;
     }
 }

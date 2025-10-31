@@ -134,6 +134,11 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    white-space: pre-wrap;
+  }
+
+  html {
+    white-space: normal;
   }
 
   html {
@@ -177,7 +182,12 @@
   }
 
   #root {
+    display: flex;
+    flex-direction: column;
     min-height: 100vh;
+  }
+  
+  body {
     display: flex;
     flex-direction: column;
   }

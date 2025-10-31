@@ -110,6 +110,7 @@ const Header = () => {
               <Link 
                 to="/about" 
                 className={`${styles.mobileNavLink} ${isActiveLink("/about") ? styles.mobileNavLinkActive : ""}`}
+                onClick={() => setIsMobileMenuOpen(false)}
               >
                 О нас
               </Link>

@@ -16,6 +16,7 @@
     padding-top: 40px;
     padding-bottom: 40px;
     z-index: 10;
+    margin-top: auto;
 }
 
 .topFooter {
@@ -28,6 +29,8 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
+    flex: 1;
+    min-width: 0;
 }
 
 .logo {
@@ -50,13 +53,16 @@
     display: flex;
     flex-direction: row;
     gap: 24px;
+    flex: 2;
+    min-width: 0;
 }
 
 .menu {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    width: 358px;
+    flex: 1;
+    min-width: 0;
 }
 
 .title {
@@ -86,7 +92,8 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
-    width: 485px;
+    flex: 1;
+    min-width: 0;
 }
 
 .contactsItems {

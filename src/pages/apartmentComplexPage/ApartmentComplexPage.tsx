@@ -248,7 +248,7 @@ const ApartmentComplexPage = () => {
                             </div>
                         </div>
 
-                        <img src={HomePage1} className={styles.technologiesImage}></img>
+                        <img src={content.technologiesImage ?? undefined} className={styles.technologiesImage}></img>
                     </div>
                 </div>
 

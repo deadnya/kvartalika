@@ -4,8 +4,13 @@
 }
 
 .topImageContainer {
+    width: 100%;
     position: relative;
     display: inline-block;
+}
+
+.topImageContainer img {
+    width: 100%;
 }
 
 .topImageTriangleOverlay {
@@ -240,13 +245,14 @@
 
 .apartmentsContainer {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     column-gap: 24px;
     row-gap: 40px;
     position: relative;
     justify-items: center;
     max-width: 100%;
     overflow: hidden;
+    margin: 0 auto;
 }
 
 @media (max-width: 1366px) {
@@ -321,7 +327,7 @@
     }
 
     .apartmentsContainer {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(4, minmax(0, 1fr));
         column-gap: 24px;
         row-gap: 48px;
         justify-items: center;
@@ -330,7 +336,7 @@
     }
 }
 
-@media (max-width: 1300px) {
+@media (max-width: 1366px) {
     .apartmentsContainer {
         grid-template-columns: repeat(3, 1fr);
         column-gap: 16px;

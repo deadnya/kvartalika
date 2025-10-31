@@ -231,7 +231,7 @@ export interface TransportAvailabilityItem {
 
 export interface BuildingHistoryItem {
   id: string;
-  title: string;
+  header: string;
   description: string;
   image: string;
 }

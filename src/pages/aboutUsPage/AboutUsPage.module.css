@@ -10,6 +10,7 @@
 }
 
 .topContainer {
+    width: 100%;
     position: relative;
     display: inline-block;
 
@@ -17,8 +18,13 @@
 }
 
 .topImageContainer {
+    width: 100%;
     position: relative;
     display: inline-block;
+}
+
+.topImageContainer img {
+    width: 100%;
 }
 
 .topImageTriangleOverlay {
@@ -42,6 +48,7 @@
 }
 
 .mottoTopContainer {
+    max-width: 1500px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -100,6 +107,7 @@
 }
 
 .principles {
+    align-items: center;
     display: flex;
     flex-direction: column;
     gap: 110px;
@@ -167,8 +175,15 @@
 }
 
 .valuesImageContainer {
+    width: 100%;
     position: relative;
     display: inline-block;
+}
+
+.valuesImageContainer img {
+    width: 100%;
+    max-height: 500px;
+    object-fit: cover;
 }
 
 .valuesImageTriangleOverlay {
@@ -511,6 +526,160 @@
     cursor: pointer;
 }
 
+@media (min-width: 1024px) and (max-width: 1366px) {
+    .mottoContainer {
+        padding-right: 100px;
+        padding-left: 100px;
+        gap: 40px;
+    }
+
+    .motto {
+        font-size: 64px;
+        line-height: 80px;
+    }
+
+    .mottoBottomText {
+        max-width: 100%;
+        font-size: 18px;
+        line-height: 30px;
+    }
+
+    .principle {
+        padding-right: 100px;
+        padding-left: 100px;
+        gap: 80px;
+    }
+
+    .principleTitle {
+        width: 550px;
+    }
+
+    .principleTitleText {
+        width: 350px;
+        font-size: 36px;
+        line-height: 48px;
+        left: 180px;
+        bottom: -20px;
+    }
+
+    .principleDescription {
+        width: 100%;
+        font-size: 17px;
+        line-height: 28px;
+    }
+
+    .ourValuesHeader {
+        font-size: 26px;
+        line-height: 36px;
+    }
+
+    .ourValuesElements {
+        width: 100%;
+        max-width: 1100px;
+        padding: 0px 100px;
+    }
+
+    .ourValuesElement {
+        height: auto;
+        gap: 80px;
+        padding: 40px 0px;
+    }
+
+    .ourValuesTextBlockHeader {
+        font-size: 24px;
+        line-height: 32px;
+    }
+
+    .ourValuesTextBlockDescription {
+        font-size: 17px;
+        line-height: 28px;
+    }
+
+    .worksWithUsContent {
+        padding: 0px 100px;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 30px;
+    }
+
+    .worksWithUsCompany {
+        width: 280px;
+        height: auto;
+        padding: 24px;
+    }
+
+    .worksWithUsCompany:not(:last-child)::after {
+        display: none;
+    }
+
+    .worksWithUsHeader {
+        font-size: 26px;
+        line-height: 36px;
+    }
+
+    .sendRequestForm {
+        margin: 0px 100px;
+        padding: 0px 32px 32px 32px;
+        width: auto;
+        max-width: 600px;
+    }
+
+    .sendRequestHeaderTopText {
+        font-size: 26px;
+        line-height: 36px;
+    }
+
+    .sendRequestHeaderBottomText {
+        font-size: 18px;
+        line-height: 26px;
+    }
+
+    .contactInfoContent {
+        font-size: 16px;
+        line-height: 24px;
+        width: auto;
+    }
+
+    .topContainer {
+        padding-bottom: 60px;
+    }
+
+    .imageRow {
+        padding-bottom: 80px;
+        gap: 24px;
+    }
+
+    .imageRow img {
+        max-height: 350px;
+    }
+
+    .principles {
+        gap: 80px;
+        padding-bottom: 120px;
+    }
+
+    .ourValues {
+        padding-bottom: 60px;
+        gap: 24px;
+    }
+
+    .valuesImageContainer img {
+        max-height: 400px;
+    }
+
+    .worksWithUs {
+        padding-top: 60px;
+        padding-bottom: 100px;
+        gap: 32px;
+    }
+
+    .sendRequestContainer {
+        height: auto;
+        padding-top: 40px;
+        padding-bottom: 40px;
+    }
+}
+
 @media (max-width: 1366px) {
     .imageRow {
         gap: 8px;
@@ -632,6 +801,20 @@
         padding-bottom: 48px;
     }
 
+    .mottoContainer {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .motto {
+        font-size: 40px;
+        line-height: 50px;
+    }
+
+    .mottoBottomText {
+        width: 100%;
+    }
+
     .imageRow img {
         max-height: 180px;
         object-fit: cover;
@@ -660,8 +843,8 @@
     }
 
     .principle {
-        padding-right: 59px;
-        padding-left: 59px;
+        padding-right: 16px;
+        padding-left: 16px;
         flex-direction: column;
         gap: 30px;
     }
@@ -675,7 +858,7 @@
         position: absolute;
         font-size: 28px;
         line-height: 38px;
-        bottom: -150px;
+        bottom: -10px;
         left: 110px;
     }
 
@@ -684,12 +867,13 @@
     }
 
     .ourValuesList {
+        text-align: center;
         gap: 30px;
     }
 
     .ourValuesElements {
         width: 100%;
-        padding: 0px 59px;
+        padding: 0px 16px;
     }
 
     .ourValuesElement {
@@ -698,10 +882,27 @@
         flex-direction: column;
     }
 
+    .ourValuesElement:not(:first-child) {
+        margin-top: 32px;
+    }
+
+    .ourValuesElement:not(:last-child) {
+        padding-bottom: 24px;
+    }
+
+    .valuesImageContainer {
+        height: 240px;
+    }
+
+    .valuesImageContainer img {
+        height: 100%;
+        object-fit: cover;
+    }
+
     .worksWithUsContent {
         flex-direction: column;
         align-items: center;
-        padding: 0px 59px;
+        padding: 0px 16px;
         gap: 0;
     }
 
@@ -743,6 +944,11 @@
         padding-bottom: 32px;
         padding-left: 32px;
         background-color: white;
+        width: 100%;
+    }
+
+    .formRow {
+        flex-direction: column;
     }
 
     .sendRequestContainer::after {
@@ -842,8 +1048,7 @@
 
     .valuesImageContainer img {
         width: 100%;
-        height: auto;
-        max-height: 200px;
+        max-height: 240px;
         object-fit: cover;
         display: block;
     }
@@ -862,6 +1067,7 @@
     .principleTitleText {
         font-size: 20px;
         line-height: 28px;
+        bottom: -140px;
     }
 
     .principleDescription {

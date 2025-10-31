@@ -110,7 +110,7 @@ const InnerApp = () => {
       >
         <ScrollToTop />
         <ScrollToAnchor />
-        <div className="flex flex-col bg-surface-50">
+        <div className="flex flex-col min-h-screen bg-surface-50">
           <Header />
 
           <main className="flex-grow">
@@ -151,11 +151,12 @@ const InnerApp = () => {
               </Routes>
             </Suspense>
           </main>
+
+          {/* Footer inside flex container to stick to bottom */}
+          {!shouldShowLoader && <Footer />}
         </div>
       </AnimatedPageLoader>
       
-      {/* Footer outside of loader to prevent flickering */}
-      {!shouldShowLoader && <Footer />}
       <RouterListener />
     </>
   );

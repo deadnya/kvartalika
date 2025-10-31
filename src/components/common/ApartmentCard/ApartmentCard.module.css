@@ -1,5 +1,5 @@
 .container {
-    width: 358px;
+    max-width: 358px;
     display: flex;
     flex-direction: column;
     box-shadow: 0px 0px 12px var(--color-main-12);

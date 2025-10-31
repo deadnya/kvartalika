@@ -134,7 +134,6 @@
 .projectContainer {
     height: 700px;
     position: relative;
-    background-image: url('/images/HomePage2.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -227,6 +226,7 @@
     gap: 32px;
     position: relative;
     background-color: white;
+    overflow: hidden;
 }
 
 .hotDeals .hotDealsBlurOverlay {

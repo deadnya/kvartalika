@@ -20,9 +20,9 @@ import PaymentIcon2 from "../../assets/icons/homePagePayment2.svg?react"
 import PaymentIcon3 from "../../assets/icons/homePagePayment3.svg?react"
 import PaymentIcon4 from "../../assets/icons/homePagePayment4.svg?react"
 import Promotion from "../../components/common/Promotion/Promotion";
-import { getHomePageContent } from "../../services/api/pages.api.requests";
+import { getApartmentComplex, getApartmentComplexPageContent, getHomePageContent } from "../../services/api/pages.api.requests";
 import { getFooterData } from "../../services/api/pages.api.requests";
-import type { HomePageContent, ProjectInfo } from "../../services/api/pages.api.types";
+import type { ApartmentComplexPageContent, HomePageContent, ProjectInfo } from "../../services/api/pages.api.types";
 import type { FooterDto } from "../../services/api/pages.api.types";
 import { DEFAULT_HOME_PAGE_CONTENT } from "../../services/api/pages.api.defaults";
 
@@ -30,15 +30,28 @@ const HomePage = () => {
     const navigate = useNavigate();
     const [content, setContent] = useState<HomePageContent | null>(null);
     const [footerData, setFooterData] = useState<FooterDto | null>(null);
+    const [complexData, setComplexData] = useState<ApartmentComplexPageContent | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
     const fetchContent = async () => {
         try {
             const data = await getHomePageContent();
+            if (data.projects[0]) fetchComplex(data.projects[0].id)
             setContent(data);
         } catch (error) {
             console.error("Error fetching home page content:", error);
             setContent(DEFAULT_HOME_PAGE_CONTENT);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const fetchComplex = async (id: string) => {
+        try {
+            const data = await getApartmentComplexPageContent(id);
+            setComplexData(data);
+        } catch (error) {
+            console.error("Error fetching complex content:", error);
         } finally {
             setIsLoading(false);
         }
@@ -142,7 +155,12 @@ const HomePage = () => {
                     >Смотреть все</Link>
                 </div>
 
-                <div className={styles.projectContainer}>
+                <div 
+                    className={styles.projectContainer}
+                    style={{
+                        backgroundImage: complexData?.images?.[0] ? `url('${complexData.images[0]}')` : "url('/images/HomePage2.jpg')"
+                    }}
+                >
                     {content.projects.map((project: ProjectInfo) => (
                         <div key={project.id} className={styles.projectBottomContent}>
                             <div className={styles.projectInfo}>
@@ -285,7 +303,7 @@ const HomePage = () => {
                                 <div className={styles.contactInfoBlock}>
                                     <MapIcon />
                                     <div className={styles.contactInfoContent}>
-                                        <span>{content.contactInfo?.address ?? "Томск, площадь Батенькова 2, подъезд 7, этаж 3, офис 310"}</span>
+                                        <span>{footerData?.address ?? "Томск, площадь Батенькова 2, подъезд 7, этаж 3, офис 310"}</span>
                                         <span>
                                             Режим работы:<br/>
                                             {footerData?.workingHours ?? content.contactInfo?.workingHours ?? "пн–пт: 9:00 –19:00\nсб: 10:00 –18:00"}
@@ -297,13 +315,13 @@ const HomePage = () => {
                                 <div className={styles.contactInfoBlock}>
                                     <PhoneIcon />
                                     <div className={styles.contactInfoContent}>
-                                        <span>{content.contactInfo?.phone ?? "+7 (3822) 30-99-22"}</span>
+                                        <span>{footerData?.phone ?? "+7 (3822) 30-99-22"}</span>
                                     </div>
                                 </div>
                                 <div className={styles.contactInfoBlock}>
                                     <EmailIcon />
                                     <div className={styles.contactInfoContent}>
-                                        <span>{content.contactInfo?.email ?? "info@kvartalika.ru"}</span>
+                                        <span>{footerData?.email ?? "info@kvartalika.ru"}</span>
                                     </div>
                                 </div>
                             </div>

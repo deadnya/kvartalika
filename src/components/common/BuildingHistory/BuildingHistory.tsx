@@ -4,7 +4,7 @@ import ChevronLeftIcon from "../../../assets/icons/chevron-left-big.svg?react";
 import ChevronRightIcon from "../../../assets/icons/chevron-right-big.svg?react";
 
 export interface HistoryItem {
-    title: string;
+    header: string;
     description: string;
     imageSrc: string;
 }
@@ -39,7 +39,7 @@ const BuildingHistory = ({ items, title = "История строительст
             <div className={styles.buildingHistoryContent}>
                 <div className={styles.buildingHistoryLeftContainer}>
                     <div className={styles.buildingHistoryLeftTopContainer}>
-                        <h3 className={styles.buildingHistoryItemTitle}>{currentItem.title}</h3>
+                        <h3 className={styles.buildingHistoryItemTitle}>{currentItem.header}</h3>
                         <p className={styles.buildingHistoryItemDescription}>{currentItem.description}</p>
                     </div>
 
@@ -67,7 +67,7 @@ const BuildingHistory = ({ items, title = "История строительст
                 <img
                     className={styles.buildingHistoryImage}
                     src={currentItem.imageSrc}
-                    alt={currentItem.title}
+                    alt={currentItem.header}
                 />
             </div>
         </div>

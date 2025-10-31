@@ -1926,10 +1926,10 @@ const ContentEditor: FC<ContentEditorUnifiedProps> = ({
                 <label className="block text-xs font-medium mb-1">Название этапа</label>
                 <input
                   type="text"
-                  value={item.title}
+                  value={item.header}
                   onChange={(e) => {
                     const updated = [...(apartmentComplexPayload.history || [])];
-                    updated[index] = { ...item, title: e.target.value };
+                    updated[index] = { ...item, header: e.target.value };
                     setApartmentComplexPayload((p) => ({
                       ...p,
                       history: updated,
@@ -1991,7 +1991,7 @@ const ContentEditor: FC<ContentEditorUnifiedProps> = ({
                 ...p,
                 history: [
                   ...(p.history || []),
-                  { id: Date.now().toString(), title: "", description: "", image: "" },
+                  { id: Date.now().toString(), header: "", description: "", image: "" },
                 ],
               }));
             }}
