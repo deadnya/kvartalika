@@ -8,6 +8,7 @@ import ScrollToAnchor from "./components/ScrollToAnchor.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
 import { usePageLoadingState } from "./hooks/usePageLoadingState.ts";
 import { executePreloadStrategies } from "./store/pagePreload.manager.ts";
+import { pageDataReadyRef } from "./store/pageReady.ts";
 
 import HomePage from "./pages/homePage/HomePage.tsx";
 import ApartmentsPage from "./pages/apartmentsPage/ApartmentsPage.tsx";
@@ -29,7 +30,7 @@ import NotFoundPage from "./pages/notFoundPage/NotFoundPage.tsx";
 import("./pages/homePage/HomePage.tsx").catch(() => {});
 
 // Preload critical pages on app startup to prevent flickering on navigation
-executePreloadStrategies(['homePage', 'aboutPage', 'complexesPage', 'apartmentsPage']).catch(err => {
+executePreloadStrategies(['homePage', 'aboutPage', 'complexesPage', 'apartmentsPage', 'complexPage']).catch(err => {
   console.error('Failed to preload critical pages:', err);
 });
 
@@ -53,6 +54,9 @@ const InnerApp = () => {
   // Monitor and wait for all images to load AND page to be ready, then hide the loader
   useEffect(() => {
     if (imagesLoadedRef.current) return;
+
+    // Reset data ready flag when route changes
+    pageDataReadyRef.current = false;
 
     let timeoutId: NodeJS.Timeout;
     let rafId: number;
@@ -95,13 +99,14 @@ const InnerApp = () => {
       }
 
       // Log status
-      console.log(`[Loader Check] Elapsed: ${elapsed}ms | Images: ${loaded}/${images.length} (min:${minImageCount}) | Stable: ${stableCheckCount}/10 | AllLoaded: ${allLoaded}`);
+      console.log(`[Loader Check] Elapsed: ${elapsed}ms | Images: ${loaded}/${images.length} (min:${minImageCount}) | Stable: ${stableCheckCount}/10 | AllLoaded: ${allLoaded} | DataReady: ${pageDataReadyRef.current}`);
 
-      // If we have enough images, all are loaded and stable, we're done
-      if (allLoaded && stableCheckCount >= 10) {
+      // If we have enough images, all are loaded and stable, or page data is ready, we're done
+      if ((allLoaded && stableCheckCount >= 10) || pageDataReadyRef.current) {
         // 10 * 100ms = 1 second stable
         console.log("[Loader] ✅ All conditions met - HIDING LOADER");
         imagesLoadedRef.current = true;
+        pageDataReadyRef.current = false; // Reset for next page
         pageLoading.start([]);
         return;
       }
@@ -110,6 +115,7 @@ const InnerApp = () => {
       if (elapsed > MAX_WAIT_TIME) {
         console.log("[Loader] ⏱️ TIMEOUT - showing content anyway");
         imagesLoadedRef.current = true;
+        pageDataReadyRef.current = false; // Reset for next page
         pageLoading.start([]);
         return;
       }

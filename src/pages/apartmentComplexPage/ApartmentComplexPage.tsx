@@ -31,8 +31,8 @@ const YandexMap = lazy(() => import("../../components/YandexMap.tsx"));
 const ApartmentComplexPage = () => {
     const { homeId } = useParams<{ homeId: string }>();
     const { complexPageContent, complexPageApartments, setComplexPageContent, setComplexPageApartments } = usePageContentStore();
-    const [content, setLocalContent] = useState<ApartmentComplexPageContent>(
-        homeId && complexPageContent[homeId] ? complexPageContent[homeId] : DEFAULT_APARTMENT_COMPLEX_PAGE_CONTENT
+    const [content, setLocalContent] = useState<ApartmentComplexPageContent | null>(
+        homeId && complexPageContent[homeId] ? complexPageContent[homeId] : null
     );
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [apartments, setLocalApartments] = useState<ApartmentDtoResponse[]>(
@@ -47,13 +47,17 @@ const ApartmentComplexPage = () => {
         if (!homeId) return;
 
         const loadContent = async () => {
-            const data = await getApartmentComplexPageContent(homeId);
-            const aparts = await getApartmentsForComplex(homeId);
-            
-            setLocalContent(data);
-            setLocalApartments(aparts);
-            setComplexPageContent(homeId, data);
-            setComplexPageApartments(homeId, aparts);
+            try {
+                const data = await getApartmentComplexPageContent(homeId);
+                const aparts = await getApartmentsForComplex(homeId);
+                
+                setLocalContent(data);
+                setLocalApartments(aparts);
+                setComplexPageContent(homeId, data);
+                setComplexPageApartments(homeId, aparts);
+            } catch (error) {
+                console.error("Error loading complex page:", error);
+            }
         };
 
         loadContent();
@@ -76,15 +80,17 @@ const ApartmentComplexPage = () => {
     return (
         <>
             <div className={styles.container}>
-                <div className={styles.topGalleryContainer}>
-                    <BigImageGallery imageSrcs={content.images}/>
-                    <div className={styles.topImageTriangleOverlay}></div>
-                </div>
+                {content ? (
+                    <>
+                        <div className={styles.topGalleryContainer}>
+                            <BigImageGallery imageSrcs={content.images}/>
+                            <div className={styles.topImageTriangleOverlay}></div>
+                        </div>
 
-                <BreadcrumbNav items={[
-                    { label: "Жилые комплексы", path: "/complexes" },
-                    { label: content.name }
-                ]} />
+                        <BreadcrumbNav items={[
+                            { label: "Жилые комплексы", path: "/complexes" },
+                            { label: content.name }
+                        ]} />
 
                 <div className={styles.generalInfo}>
                     <div className={styles.generalInfoTopContainer}>
@@ -319,6 +325,10 @@ const ApartmentComplexPage = () => {
                         </div>
                     </div>
                 </div>
+                    </>
+                ) : (
+                    <div style={{ padding: '40px', textAlign: 'center' }}>Loading...</div>
+                )}
             </div>
 
             {isModalOpen && (

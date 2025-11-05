@@ -12,6 +12,7 @@ import {
   getApartmentComplexesPageContent,
   getAboutUsPageContent,
   getApartmentsPageContent,
+  getApartmentsForComplex,
 } from '../services/api/pages.api.requests';
 
 interface PreloadStrategy {
@@ -165,6 +166,50 @@ const preloadStrategies: Record<string, PreloadStrategy> = {
         console.log(`[Preload] Apartments page preloaded`);
       } catch (error) {
         console.error(`[Preload] Error loading apartments page:`, error);
+      }
+    },
+  },
+
+  complexPage: {
+    name: 'Complex Pages',
+    execute: async () => {
+      const { complexesPageContent, setComplexPageContent, setComplexPageApartments } = usePageContentStore.getState();
+      
+      try {
+        // We need the complexes list first - if it's not loaded, load it
+        let complexesList = complexesPageContent;
+        if (!complexesList || complexesList.length === 0) {
+          complexesList = await getApartmentComplexesPageContent();
+        }
+
+        // Preload the first 3 complexes to improve navigation experience
+        const complexesToPreload = complexesList.slice(0, 3);
+        const images: string[] = [];
+
+        for (const complex of complexesToPreload) {
+          try {
+            const [complexData, apartments] = await Promise.all([
+              getApartmentComplexPageContent(complex.id),
+              getApartmentsForComplex(complex.id),
+            ]);
+
+            setComplexPageContent(complex.id, complexData);
+            setComplexPageApartments(complex.id, apartments);
+
+            // Extract images from both complex and apartments
+            images.push(...extractImageUrls(complexData));
+            images.push(...extractImageUrls(apartments));
+          } catch (error) {
+            console.error(`[Preload] Error loading complex ${complex.id}:`, error);
+          }
+        }
+
+        // Preload all extracted images in parallel
+        await preloadImages([...new Set(images)]); // Remove duplicates
+
+        console.log(`[Preload] Complex pages preloaded (${complexesToPreload.length} complexes)`);
+      } catch (error) {
+        console.error(`[Preload] Error loading complex pages:`, error);
       }
     },
   },
