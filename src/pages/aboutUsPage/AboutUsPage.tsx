@@ -25,31 +25,35 @@ import type { AboutUsPageContent } from '../../services/api/pages.api.types'
 import type { FooterDto } from '../../services/api/pages.api.types'
 import { DEFAULT_ABOUT_US_PAGE_CONTENT } from '../../services/api/pages.api.defaults'
 import AdminOverlay from '../../components/common/AdminOverlay/AdminOverlay'
+import { usePageContentStore } from '../../store/pageContent.store'
 
 const AboutUsPage = () => {
-    const [content, setContent] = useState<AboutUsPageContent>(DEFAULT_ABOUT_US_PAGE_CONTENT)
-    const [footerData, setFooterData] = useState<FooterDto | null>(null)
+    const { aboutUsPageContent, homePageFooter, setAboutUsPageContent, setHomePageFooter } = usePageContentStore();
+    const [content, setLocalContent] = useState<AboutUsPageContent>(aboutUsPageContent || DEFAULT_ABOUT_US_PAGE_CONTENT)
+    const [footerData, setLocalFooterData] = useState<FooterDto | null>(homePageFooter)
+
+    const fetchContent = async () => {
+        try {
+            const data = await getAboutUsPageContent()
+            setLocalContent(data)
+            setAboutUsPageContent(data)
+        } catch (error) {
+            console.error("Error fetching about us page content:", error)
+            setLocalContent(DEFAULT_ABOUT_US_PAGE_CONTENT)
+        }
+    }
+
+    const fetchFooterData = async () => {
+        try {
+            const response = await getFooterData()
+            setLocalFooterData(response.data)
+            setHomePageFooter(response.data)
+        } catch (error) {
+            console.error("Error fetching footer data:", error)
+        }
+    }
 
     useEffect(() => {
-        const fetchContent = async () => {
-            try {
-                const data = await getAboutUsPageContent()
-                setContent(data)
-            } catch (error) {
-                console.error("Error fetching about us page content:", error)
-                setContent(DEFAULT_ABOUT_US_PAGE_CONTENT)
-            }
-        }
-
-        const fetchFooterData = async () => {
-            try {
-                const response = await getFooterData()
-                setFooterData(response.data)
-            } catch (error) {
-                console.error("Error fetching footer data:", error)
-            }
-        }
-
         fetchContent()
         fetchFooterData()
     }, [])
@@ -64,16 +68,9 @@ const AboutUsPage = () => {
         });
     }, [content]);
 
+    // Listen for custom event from AboutUsPageEditor when data is saved
     useEffect(() => {
         const handleAboutUsDataSaved = () => {
-            const fetchContent = async () => {
-                try {
-                    const data = await getAboutUsPageContent()
-                    setContent(data)
-                } catch (error) {
-                    console.error("Error fetching updated about us page content:", error)
-                }
-            }
             fetchContent()
         }
 
@@ -83,16 +80,9 @@ const AboutUsPage = () => {
         }
     }, [])
 
+    // Listen for custom event from FooterEditor when data is saved
     useEffect(() => {
         const handleFooterDataSaved = () => {
-            const fetchFooterData = async () => {
-                try {
-                    const response = await getFooterData()
-                    setFooterData(response.data)
-                } catch (error) {
-                    console.error("Error fetching footer data:", error)
-                }
-            }
             fetchFooterData()
         }
 

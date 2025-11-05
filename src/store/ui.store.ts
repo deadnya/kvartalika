@@ -95,7 +95,6 @@ export interface UIState {
   bidForm: BidRequest;
 
   loading: {
-    global: boolean;
     bid: boolean;
     upload: boolean;
   };
@@ -209,7 +208,6 @@ export const useUIStore = create<UIState & UIActions>()(
       },
 
       loading: {
-        global: false,
         bid: false,
         upload: false,
       },
@@ -232,8 +230,7 @@ export const useUIStore = create<UIState & UIActions>()(
       },
 
       loadPageInfo: async () => {
-        const { setLoading, addNotification } = get();
-        setLoading("global", true);
+        const { addNotification } = get();
         try {
           const info = await getPageInfo();
           set({ pageInfo: info });
@@ -248,8 +245,7 @@ export const useUIStore = create<UIState & UIActions>()(
       },
 
       loadAboutUsInfo: async () => {
-        const { setLoading, addNotification } = get();
-        setLoading("global", true);
+        const { addNotification } = get();
 
         try {
           const info = await getAboutUsInfo();
@@ -261,8 +257,6 @@ export const useUIStore = create<UIState & UIActions>()(
             message: "Не удалось загрузить секцию 'О нас'",
             duration: 2500,
           });
-        } finally {
-          setLoading("global", false);
         }
       },
       updateAboutUsInfo: async (newAboutUsInfo: AboutUsInfo) => {

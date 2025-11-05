@@ -21,10 +21,17 @@
   width: 409px;
   height: 334px;
   object-fit: cover;
+  transform: scale(0.8);
+  opacity: 0;
+}
+
+.coverImage.loaded {
+  opacity: 1;
   transform: scale(1);
-  transition: transform 1s ease-in;
+  transition: opacity 0.3s ease-in;
 }
 
 .coverImage.exiting {
   transform: scale(0.5);
+  transition: transform 1s ease-in;
 }

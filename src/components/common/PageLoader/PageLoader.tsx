@@ -8,6 +8,7 @@ interface PageLoaderProps {
 
 const PageLoader = ({ isLoading, onExitComplete }: PageLoaderProps) => {
   const [isExiting, setIsExiting] = useState(false);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   useEffect(() => {
     if (!isLoading && !isExiting) {
@@ -32,7 +33,8 @@ const PageLoader = ({ isLoading, onExitComplete }: PageLoaderProps) => {
       <img 
         src="/images/Cover.png" 
         alt="Cover" 
-        className={`${styles.coverImage} ${isExiting ? styles.exiting : ''}`}
+        className={`${styles.coverImage} ${isImageLoaded ? styles.loaded : ''} ${isExiting ? styles.exiting : ''}`}
+        onLoad={() => setIsImageLoaded(true)}
       />
     </div>
   );

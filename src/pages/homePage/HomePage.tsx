@@ -4,6 +4,7 @@ import Button from "../../components/common/Button";
 import AdminOverlay from "../../components/common/AdminOverlay/AdminOverlay";
 import { setMetaTags, resetMetaTags } from "../../utils/metaTagsManager";
 import styles from "./HomePage.module.css"
+import { usePageContentStore } from "../../store/pageContent.store";
 
 import MapIcon from "../../assets/icons/map.svg?react"
 import BuildingIcon from "../../assets/icons/building.svg?react"
@@ -20,7 +21,7 @@ import PaymentIcon2 from "../../assets/icons/homePagePayment2.svg?react"
 import PaymentIcon3 from "../../assets/icons/homePagePayment3.svg?react"
 import PaymentIcon4 from "../../assets/icons/homePagePayment4.svg?react"
 import Promotion from "../../components/common/Promotion/Promotion";
-import { getApartmentComplex, getApartmentComplexPageContent, getHomePageContent } from "../../services/api/pages.api.requests";
+import { getApartmentComplexPageContent, getHomePageContent } from "../../services/api/pages.api.requests";
 import { getFooterData } from "../../services/api/pages.api.requests";
 import type { ApartmentComplexPageContent, HomePageContent, ProjectInfo } from "../../services/api/pages.api.types";
 import type { FooterDto } from "../../services/api/pages.api.types";
@@ -28,39 +29,41 @@ import { DEFAULT_HOME_PAGE_CONTENT } from "../../services/api/pages.api.defaults
 
 const HomePage = () => {
     const navigate = useNavigate();
-    const [content, setContent] = useState<HomePageContent | null>(null);
-    const [footerData, setFooterData] = useState<FooterDto | null>(null);
-    const [complexData, setComplexData] = useState<ApartmentComplexPageContent | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const { homePageContent, homePageFooter, homePageComplex, setHomePageContent, setHomePageFooter, setHomePageComplex } = usePageContentStore();
+    const [content, setLocalContent] = useState<HomePageContent>(homePageContent || DEFAULT_HOME_PAGE_CONTENT);
+    const [footerData, setLocalFooterData] = useState<FooterDto | null>(homePageFooter);
+    const [complexData, setLocalComplexData] = useState<ApartmentComplexPageContent | null>(homePageComplex);
 
     const fetchContent = async () => {
+        console.log("[HomePage] fetchContent starting");
         try {
             const data = await getHomePageContent();
+            console.log("[HomePage] fetchContent received data");
             if (data.projects[0]) fetchComplex(data.projects[0].id)
-            setContent(data);
+            setLocalContent(data);
+            setHomePageContent(data);
+            console.log("[HomePage] fetchContent complete");
         } catch (error) {
-            console.error("Error fetching home page content:", error);
-            setContent(DEFAULT_HOME_PAGE_CONTENT);
-        } finally {
-            setIsLoading(false);
+            console.error("[HomePage] fetchContent error:", error);
+            setLocalContent(DEFAULT_HOME_PAGE_CONTENT);
         }
     };
 
     const fetchComplex = async (id: string) => {
         try {
             const data = await getApartmentComplexPageContent(id);
-            setComplexData(data);
+            setLocalComplexData(data);
+            setHomePageComplex(data);
         } catch (error) {
             console.error("Error fetching complex content:", error);
-        } finally {
-            setIsLoading(false);
         }
     };
 
     const fetchFooterData = async () => {
         try {
             const response = await getFooterData();
-            setFooterData(response.data);
+            setLocalFooterData(response.data);
+            setHomePageFooter(response.data);
         } catch (error) {
             console.error("Error fetching footer data:", error);
         }
@@ -108,11 +111,6 @@ const HomePage = () => {
     return (
         <>
             <AdminOverlay />
-            {isLoading ? (
-                <div className={styles.container}>
-                    <div style={{ textAlign: "center", padding: "40px" }}>Loading...</div>
-                </div>
-            ) : content ? (
             <div className={styles.container}>
             <div className={styles.titleMainContainer}>
                 <div className={styles.titleImageContainer}>
@@ -360,13 +358,8 @@ const HomePage = () => {
                 </div>
             </div>
             </div>
-            ) : (
-                <div className={styles.container}>
-                    <div style={{ textAlign: "center", padding: "40px" }}>Failed to load content</div>
-                </div>
-            )}
-        </>
-    );
-};
+            </>
+        );
+    };
 
-export default HomePage;
+    export default HomePage;

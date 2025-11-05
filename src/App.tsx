@@ -1,33 +1,37 @@
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
-import { useEffect, lazy, Suspense, useState } from "react";
+import { useEffect, useRef } from "react";
 
 import Header from "./components/common/Header";
 import Footer from "./components/common/Footer";
 import AnimatedPageLoader from "./components/common/PageLoader/AnimatedPageLoader.tsx";
 import ScrollToAnchor from "./components/ScrollToAnchor.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
+import { usePageLoadingState } from "./hooks/usePageLoadingState.ts";
+import { executePreloadStrategies } from "./store/pagePreload.manager.ts";
 
-const HomePage = lazy(() => import("./pages/homePage/HomePage.tsx"));
-const ApartmentsPage = lazy(() => import("./pages/apartmentsPage/ApartmentsPage.tsx"));
-const LayoutsPage = lazy(() => import("./pages/LayoutsPage.tsx"));
-const LayoutPage = lazy(() => import("./pages/LayoutPage.tsx"));
-const ApartmentComplexesPage = lazy(() => import("./pages/apartmentComplexesPage/ApartmentComplexesPage.tsx"));
-const ComplexPage = lazy(() => import("./pages/apartmentComplexPage/ApartmentComplexPage.tsx"));
-const ApartmentPage = lazy(() => import("./pages/apartmentPage/ApartmentPage.tsx"));
-const AuthPage = lazy(() => import("./pages/AuthPage.tsx"));
-const AdminPage = lazy(() => import("./components/admin/AdminPage.tsx"));
-const ContentManagementPage = lazy(
-  () => import("./components/content/ContentManagementPage.tsx"),
-);
-const PrivacyPage = lazy(() => import("./pages/privacyPage/PrivacyPage.tsx"));
-
-import { useAuthStore } from "./store/auth.store.ts";
+import HomePage from "./pages/homePage/HomePage.tsx";
+import ApartmentsPage from "./pages/apartmentsPage/ApartmentsPage.tsx";
+import LayoutsPage from "./pages/LayoutsPage.tsx";
+import LayoutPage from "./pages/LayoutPage.tsx";
+import ApartmentComplexesPage from "./pages/apartmentComplexesPage/ApartmentComplexesPage.tsx";
+import ComplexPage from "./pages/apartmentComplexPage/ApartmentComplexPage.tsx";
+import ApartmentPage from "./pages/apartmentPage/ApartmentPage.tsx";
+import AuthPage from "./pages/AuthPage.tsx";
+import AdminPage from "./components/admin/AdminPage.tsx";
+import ContentManagementPage from "./components/content/ContentManagementPage.tsx";
+import PrivacyPage from "./pages/privacyPage/PrivacyPage.tsx";
 import RouterListener from "./components/RouterListener.tsx";
-import { useUIStore } from "./store/ui.store.ts";
-import { useFlatsStore } from "./store/flats.store.ts";
 import AboutUsPage from "./pages/aboutUsPage/AboutUsPage.tsx";
 import TermsOfServicePage from "./pages/termsOfServicePage/TermsOfServicePage.tsx";
 import NotFoundPage from "./pages/notFoundPage/NotFoundPage.tsx";
+
+// Preload home page on app start
+import("./pages/homePage/HomePage.tsx").catch(() => {});
+
+// Preload critical pages on app startup to prevent flickering on navigation
+executePreloadStrategies(['homePage', 'aboutPage', 'complexesPage', 'apartmentsPage']).catch(err => {
+  console.error('Failed to preload critical pages:', err);
+});
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -40,73 +44,97 @@ function ScrollToTop() {
 }
 
 const InnerApp = () => {
-  const globalLoading = useUIStore((state) => state.loading.global);
-  const setLoading = useUIStore((state) => state.setLoading);
-
-  const loadPageInfo = useUIStore((state) => state.loadPageInfo);
-  const loadSocialMediaList = useUIStore((state) => state.loadSocialMediaList);
-  const pageInfo = useUIStore((state) => state.pageInfo);
-
-  const loadAboutUsInfo = useUIStore((state) => state.loadAboutUsInfo);
-
-  const loadAllData = useFlatsStore((state) => state.loadAllData);
-
-  const { role, isAuthenticated } = useAuthStore();
   const location = useLocation();
-  const [isDocumentReady, setIsDocumentReady] = useState(false);
 
-  // Track when document is fully ready (images loaded, DOM painted)
+  // Use page loading state hook for clean, loop-free loading management
+  const pageLoading = usePageLoadingState();
+  const imagesLoadedRef = useRef(false);
+
+  // Monitor and wait for all images to load AND page to be ready, then hide the loader
   useEffect(() => {
-    const checkDocumentReady = () => {
-      if (document.readyState === "complete") {
-        setIsDocumentReady(true);
+    if (imagesLoadedRef.current) return;
+
+    let timeoutId: NodeJS.Timeout;
+    let rafId: number;
+    const startTime = Date.now();
+    const MAX_WAIT_TIME = 45000; // 45 seconds max wait
+    let stableCheckCount = 0;
+    let lastImageCount = 0;
+    let minImageCount = 0; // Minimum images we expect to see
+
+    const checkAllImagesLoaded = () => {
+      const images = Array.from(document.querySelectorAll("img") as NodeListOf<HTMLImageElement>);
+      const elapsed = Date.now() - startTime;
+
+      const loaded = images.filter((img) => img.complete && img.naturalHeight > 0).length;
+      
+      // Debug: log all images on page
+      if (elapsed > 1000 && elapsed < 1100) {
+        console.log("[DEBUG] Images in DOM:", images.map(img => ({
+          src: img.src?.substring(0, 50),
+          complete: img.complete,
+          naturalHeight: img.naturalHeight,
+          className: img.className
+        })));
       }
+      
+      // Update minimum image count (once we see more images, that's our baseline)
+      if (images.length > minImageCount) {
+        minImageCount = images.length;
+      }
+
+      // Only consider "all loaded" if we have at least 1 image and all are loaded
+      const allLoaded = images.length >= 1 && loaded === images.length;
+
+      // Track if image count has stabilized
+      if (images.length === lastImageCount) {
+        stableCheckCount++;
+      } else {
+        stableCheckCount = 0;
+        lastImageCount = images.length;
+      }
+
+      // Log status
+      console.log(`[Loader Check] Elapsed: ${elapsed}ms | Images: ${loaded}/${images.length} (min:${minImageCount}) | Stable: ${stableCheckCount}/10 | AllLoaded: ${allLoaded}`);
+
+      // If we have enough images, all are loaded and stable, we're done
+      if (allLoaded && stableCheckCount >= 10) {
+        // 10 * 100ms = 1 second stable
+        console.log("[Loader] ✅ All conditions met - HIDING LOADER");
+        imagesLoadedRef.current = true;
+        pageLoading.start([]);
+        return;
+      }
+
+      // If timeout reached, show content anyway
+      if (elapsed > MAX_WAIT_TIME) {
+        console.log("[Loader] ⏱️ TIMEOUT - showing content anyway");
+        imagesLoadedRef.current = true;
+        pageLoading.start([]);
+        return;
+      }
+
+      // Keep checking
+      rafId = requestAnimationFrame(() => {
+        timeoutId = setTimeout(checkAllImagesLoaded, 100);
+      });
     };
 
-    document.addEventListener("readystatechange", checkDocumentReady);
-    checkDocumentReady(); // Check immediately in case already loaded
+    // Start checking after a brief delay to let initial render happen
+    console.log("[Loader] Starting image monitor for path:", location.pathname);
+    timeoutId = setTimeout(checkAllImagesLoaded, 300);
 
-    return () => document.removeEventListener("readystatechange", checkDocumentReady);
-  }, []);
-
-  useEffect(() => {
-    const loadData = async () => {
-      setLoading("global", true);
-      try {
-        await Promise.all([
-          loadPageInfo(),
-          loadSocialMediaList(),
-          loadAboutUsInfo(),
-        ]);
-      } catch (error) {
-        console.error("Error loading data:", error);
-      }
+    return () => {
+      clearTimeout(timeoutId);
+      cancelAnimationFrame(rafId);
     };
-
-    loadData().then(async () => {
-      await loadAllData(true);
-      setLoading("global", false);
-    });
-  }, [
-    loadAllData,
-    loadPageInfo,
-    loadSocialMediaList,
-    loadAboutUsInfo,
-    setLoading,
-  ]);
-
-  const shouldShowLoader =
-    !["/auth", "/admin", "/content"].includes(location.pathname) &&
-    (globalLoading ||
-      (pageInfo?.published &&
-        (!isAuthenticated ||
-          (role !== "ADMIN" && role !== "CONTENT_MANAGER"))));
+  }, [pageLoading, location.pathname]);
 
   return (
     <>
       <AnimatedPageLoader 
-        isLoading={shouldShowLoader ?? false}
-        isContentReady={isDocumentReady}
+        isLoading={pageLoading.isLoading && !["/auth", "/admin", "/content"].includes(location.pathname)}
+        isContentReady={!pageLoading.isLoading}
       >
         <ScrollToTop />
         <ScrollToAnchor />
@@ -114,46 +142,44 @@ const InnerApp = () => {
           <Header />
 
           <main className="flex-grow">
-            <Suspense fallback={<div />}>
-              <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/auth" element={<AuthPage />} />
-                <Route
-                  path="/admin"
-                  element={
-                    <ProtectedRoute requiredRole={["CONTENT_MANAGER", "ADMIN"]}>
-                      <AdminPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/content"
-                  element={
-                    <ProtectedRoute requiredRole={["CONTENT_MANAGER", "ADMIN"]}>
-                      <ContentManagementPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route path="/apartments" element={<ApartmentsPage />} />
-                <Route path="/complexes" element={<ApartmentComplexesPage />} />
-                <Route path="/layouts" element={<LayoutsPage />} />
-                <Route path="/complex/:homeId" element={<ComplexPage />} />
-                <Route
-                  path="/apartment/:apartmentId"
-                  element={<ApartmentPage />}
-                />
-                <Route path="/layout/:layoutId" element={<LayoutPage />} />
-                <Route path="/privacy" element={<PrivacyPage />} />
-                <Route path="/termsofservice" element={<TermsOfServicePage />} />
-                <Route path="/about" element={<AboutUsPage />} />
-                
-                <Route path="*" element={<NotFoundPage />}/>
-              </Routes>
-            </Suspense>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/auth" element={<AuthPage />} />
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedRoute requiredRole={["CONTENT_MANAGER", "ADMIN"]}>
+                    <AdminPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/content"
+                element={
+                  <ProtectedRoute requiredRole={["CONTENT_MANAGER", "ADMIN"]}>
+                    <ContentManagementPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="/apartments" element={<ApartmentsPage />} />
+              <Route path="/complexes" element={<ApartmentComplexesPage />} />
+              <Route path="/layouts" element={<LayoutsPage />} />
+              <Route path="/complex/:homeId" element={<ComplexPage />} />
+              <Route
+                path="/apartment/:apartmentId"
+                element={<ApartmentPage />}
+              />
+              <Route path="/layout/:layoutId" element={<LayoutPage />} />
+              <Route path="/privacy" element={<PrivacyPage />} />
+              <Route path="/termsofservice" element={<TermsOfServicePage />} />
+              <Route path="/about" element={<AboutUsPage />} />
+              
+              <Route path="*" element={<NotFoundPage />}/>
+            </Routes>
           </main>
 
           {/* Footer inside flex container to stick to bottom */}
-          {!shouldShowLoader && <Footer />}
+          {!(pageLoading.isLoading && !["/auth", "/admin", "/content"].includes(location.pathname)) && <Footer />}
         </div>
       </AnimatedPageLoader>
       

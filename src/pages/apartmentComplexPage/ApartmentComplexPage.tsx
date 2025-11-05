@@ -6,8 +6,8 @@ import { BigImageGallery } from "../../components/common/BigImageGallery/BigImag
 import { getApartmentComplexPageContent, getApartmentsForComplex } from "../../services/api/pages.api.requests";
 import type { ApartmentComplexPageContent, ApartmentDtoResponse } from "../../services/api/pages.api.types";
 import { DEFAULT_APARTMENT_COMPLEX_PAGE_CONTENT } from "../../services/api/pages.api.defaults";
+import { usePageContentStore } from "../../store/pageContent.store";
 
-import HomePage1 from "/images/HomePage1.png"
 import BreadcrumbNav from "../../components/common/BreadcrumbNav/BreadcrumbNav.tsx";
 
 import MapIcon from "../../assets/icons/map.svg?react"
@@ -30,25 +30,34 @@ const YandexMap = lazy(() => import("../../components/YandexMap.tsx"));
 
 const ApartmentComplexPage = () => {
     const { homeId } = useParams<{ homeId: string }>();
-    const [content, setContent] = useState<ApartmentComplexPageContent>(DEFAULT_APARTMENT_COMPLEX_PAGE_CONTENT);
+    const { complexPageContent, complexPageApartments, setComplexPageContent, setComplexPageApartments } = usePageContentStore();
+    const [content, setLocalContent] = useState<ApartmentComplexPageContent>(
+        homeId && complexPageContent[homeId] ? complexPageContent[homeId] : DEFAULT_APARTMENT_COMPLEX_PAGE_CONTENT
+    );
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [apartments, setApartments] = useState<ApartmentDtoResponse[]>([])
+    const [apartments, setLocalApartments] = useState<ApartmentDtoResponse[]>(
+        homeId && complexPageApartments[homeId] ? complexPageApartments[homeId] : []
+    );
 
     const handleModalClose = () => {
         setIsModalOpen(false);
     };
 
     useEffect(() => {
+        if (!homeId) return;
+
         const loadContent = async () => {
-            if (!homeId) return;
             const data = await getApartmentComplexPageContent(homeId);
-            const aparts = await getApartmentsForComplex(homeId)
-            console.log(data)
-            setApartments(aparts)
-            setContent(data);
+            const aparts = await getApartmentsForComplex(homeId);
+            
+            setLocalContent(data);
+            setLocalApartments(aparts);
+            setComplexPageContent(homeId, data);
+            setComplexPageApartments(homeId, aparts);
         };
+
         loadContent();
-    }, [homeId]);
+    }, [homeId, setComplexPageContent, setComplexPageApartments]);
 
     // Set meta tags when content is loaded
     useEffect(() => {

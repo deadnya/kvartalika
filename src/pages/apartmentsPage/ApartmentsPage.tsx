@@ -16,8 +16,10 @@ import { Pagination } from "../../components/common/Pagination/Pagination";
 import { getApartmentsPageContent, searchApartments, getCategories, getApartmentComplexes, type SearchApartmentsRequest } from "../../services/api/pages.api.requests";
 import type { ApartmentDto } from "../../services/api/pages.api.types";
 import { useSearchParams } from "react-router-dom";
+import { usePageContentStore } from "../../store/pageContent.store";
 
 const ApartmentsPage = () => {
+    const { setApartmentsPageContent } = usePageContentStore();
     const [searchParams, setSearchParams] = useSearchParams();
     const [apartments, setApartments] = useState<ApartmentDto[]>([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -56,7 +58,8 @@ const ApartmentsPage = () => {
     useEffect(() => {
         const fetchContent = async () => {
             try {
-                await getApartmentsPageContent();
+                const pageContent = await getApartmentsPageContent();
+                setApartmentsPageContent(pageContent);
                 
                 const complexes = await getApartmentComplexes();
                 const complexOptions = complexes.map((complex) => ({
@@ -77,7 +80,7 @@ const ApartmentsPage = () => {
         };
 
         fetchContent();
-    }, []);
+    }, [setApartmentsPageContent]);
 
     // Search apartments based on filters
     useEffect(() => {

@@ -6,16 +6,20 @@ import BreadcrumbNav from "../../components/common/BreadcrumbNav"
 import ApartmentComplexCard from "../../components/common/ApartmentComplexCard/ApartmentComplexCard";
 import { getApartmentComplexesPageContent } from "../../services/api/pages.api.requests"
 import type { ApartmentComplexCardProps } from "../../services/api/pages.api.types"
+import { usePageContentStore } from "../../store/pageContent.store"
 
 const ApartmentComplexesPage: React.FC = () => {
-  const [content, setContent] = useState<ApartmentComplexCardProps[] | null>(null);
+  const { complexesPageContent, setComplexesPageContent } = usePageContentStore();
+  const [content, setLocalContent] = useState<ApartmentComplexCardProps[] | null>(complexesPageContent || null);
+
+  const fetchContent = async () => {
+    const data = await getApartmentComplexesPageContent();
+    setLocalContent(data);
+    setComplexesPageContent(data);
+  }
 
   useEffect(() => {
-    const loadContent = async () => {
-      const data = await getApartmentComplexesPageContent();
-      setContent(data);
-    };
-    loadContent();
+    fetchContent();
   }, []);
 
     return (
