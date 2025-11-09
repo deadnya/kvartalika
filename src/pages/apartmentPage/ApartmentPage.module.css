@@ -91,6 +91,12 @@
     gap: 20px;
 }
 
+.descriptionTextContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
 .descriptionText {
     color: var(--color-gray2);
     font-weight: 400;

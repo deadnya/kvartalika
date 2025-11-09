@@ -121,7 +121,11 @@ const ApartmentPage = () => {
                         </div>
                         <div className={styles.descriptionContainer}>
                             <div className={styles.topDescriptionContainer}>
-                                <p className={styles.descriptionText}>{flat.description}</p>
+                                <div className={styles.descriptionTextContainer}>
+                                    {flat.description && flat.description.split('\n').map((paragraph, index) => (
+                                        <p key={index} className={styles.descriptionText}>{paragraph}</p>
+                                    ))}
+                                </div>
                             
                                 <div className={styles.goodThings}>
                                     {flat.features && flat.features.length > 0 ? (
@@ -131,12 +135,7 @@ const ApartmentPage = () => {
                                                 <span className={styles.goodThingText}>{feature}</span>
                                             </div>
                                         ))
-                                    ) : (
-                                        <div className={styles.goodThing}>
-                                            <CheckIcon />
-                                            <span className={styles.goodThingText}>Удобства</span>
-                                        </div>
-                                    )}
+                                    ) : (<></>)}
                                 </div>
                             </div>                            <div className={styles.bottomDescriptionContainer}>
                                 <h3 className={styles.bottomDescriptionHeader}>Характеристики квартиры</h3>

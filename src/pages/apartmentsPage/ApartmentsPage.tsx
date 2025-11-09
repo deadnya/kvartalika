@@ -24,7 +24,7 @@ const ApartmentsPage = () => {
     const [apartments, setApartments] = useState<ApartmentDto[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [complexOptions, setComplexOptions] = useState<any[]>([]);
-    const [categoryOptions, setCategoryOptions] = useState<any[]>([]);
+    //const [categoryOptions, setCategoryOptions] = useState<any[]>([]);
 
     const [selectedComplex, setSelectedComplex] = useState<string | number | null>(() => {
         const val = searchParams.get("complex");
@@ -68,12 +68,12 @@ const ApartmentsPage = () => {
                 }));
                 setComplexOptions(complexOptions);
                 
-                const categories = await getCategories();
-                const categoryOptions = categories.map((category) => ({
-                    value: category.id,
-                    label: category.name,
-                }));
-                setCategoryOptions(categoryOptions);
+                //const categories = await getCategories();
+                //const categoryOptions = categories.map((category) => ({
+                    //value: category.id,
+                    //label: category.name,
+                //}));
+                //setCategoryOptions(categoryOptions);
             } catch (error) {
                 console.error("Failed to fetch apartments page content:", error);
             }
@@ -271,7 +271,8 @@ const ApartmentsPage = () => {
                                 }}
                             />
                         </div>
-                        <div className={styles.inputBlock}>
+
+                        {/* <div className={styles.inputBlock}>
                             <span className={styles.inputBlockLabel}>Категории</span>
                             <Select
                                 options={categoryOptions || []}
@@ -279,14 +280,14 @@ const ApartmentsPage = () => {
                                 onChange={setSelectedCategory}
                                 placeholder="Выбрать категорию"
                             />
-                        </div>
+                        </div> */}
                     </div>
 
                     <div className={styles.bottomParamRow}>
                         <div className={styles.inputBlock2}>
                             <span className={styles.inputBlockLabel}>Количество комнат</span>
                             <ButtonSelect 
-                                variants={["1", "2", "3", "4+"]} 
+                                variants={["1", "2", "3"]} 
                                 value={roomCount}
                                 onChange={setRoomCount}
                             />
@@ -295,7 +296,7 @@ const ApartmentsPage = () => {
                         <div className={styles.inputBlock2}>
                             <span className={styles.inputBlockLabel}>Санузлы</span>
                             <ButtonSelect 
-                                variants={["1", "2", "3+"]} 
+                                variants={["1", "2", "3"]} 
                                 value={bathroomCount}
                                 onChange={setBathroomCount}
                             />
@@ -311,7 +312,7 @@ const ApartmentsPage = () => {
                             />
                         </div>
 
-                        <div className={styles.inputBlock2}>
+                        {/* <div className={styles.inputBlock2}>
                             <span className={styles.inputBlockLabel}>Инфраструктура</span>
                             <div className={styles.checkboxContainer}>
                                 <Checkbox 
@@ -333,7 +334,7 @@ const ApartmentsPage = () => {
                                     uncheckedLabel="Магазины"
                                 />
                             </div>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
 

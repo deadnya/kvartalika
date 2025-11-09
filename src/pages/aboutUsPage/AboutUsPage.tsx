@@ -238,13 +238,13 @@ const AboutUsPage = () => {
                                     <div className={styles.contactInfoBlock}>
                                         <PhoneIcon />
                                         <div className={styles.contactInfoContent}>
-                                            <span>{footerData?.phone ?? "+7 (3822) 30-99-22"}</span>
+                                            <a href={`tel:${footerData?.phone.replace(/\s+/g, '')}`}>{footerData?.phone}</a>
                                         </div>
                                     </div>
                                     <div className={styles.contactInfoBlock}>
                                         <EmailIcon />
                                         <div className={styles.contactInfoContent}>
-                                            <span>{footerData?.email ?? "info@kvartalika.ru"}</span>
+                                            <a href={`mailto:${footerData?.email}`}>{footerData?.email}</a>
                                         </div>
                                     </div>
                                 </div>
