@@ -91,19 +91,6 @@ const ApartmentPage = () => {
         ? (flat.images && flat.images.length > 0 ? flat.images : [])
         : (flat.imagesClean && flat.imagesClean.length > 0 ? flat.imagesClean : []);
 
-    const getStatusLabel = (status: string): string => {
-        switch (status) {
-            case "AVAILABLE":
-                return "В продаже";
-            case "RESERVED":
-                return "Зарезервирована";
-            case "SOLD":
-                return "Продана";
-            default:
-                return status;
-        }
-    };
-
     return (
         <>
             <div className={styles.container}>
@@ -200,7 +187,7 @@ const ApartmentPage = () => {
                                     <ApartmentVariantCard
                                         key={variant.id}
                                         variantId={`Вариант #${variant.id}`}
-                                        status={getStatusLabel(variant.status)}
+                                        status={variant.status}
                                         price={variant.price}
                                         area={`${variant.area} м²`}
                                         floor={`Этаж ${variant.floor}`}

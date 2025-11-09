@@ -82,10 +82,9 @@ const ApartmentsPage = () => {
         fetchContent();
     }, [setApartmentsPageContent]);
 
-    // Search apartments based on filters
+            // Search apartments based on filters
     useEffect(() => {
         const performSearch = async () => {
-            setIsLoading(true);
             try {
                 // Determine sort field and order
                 let sortBy: 'price' | 'rooms' | 'area' | 'location' | string = 'price';
@@ -167,12 +166,13 @@ const ApartmentsPage = () => {
                     });
                 }
 
+                // Only update apartments after fetch completes
                 setApartments(sortedResults);
                 setCurrentPage(1);
+                setIsLoading(false);
             } catch (error) {
                 console.error("Failed to search apartments:", error);
                 setApartments([]);
-            } finally {
                 setIsLoading(false);
             }
         };
@@ -368,9 +368,7 @@ const ApartmentsPage = () => {
                 </div>
 
                 <div className={styles.apartmentsContainer}>
-                    {isLoading ? (
-                        <div style={{ textAlign: "center", padding: "40px" }}>Loading...</div>
-                    ) : paginatedApartments.length > 0 ? (
+                    {paginatedApartments.length > 0 ? (
                         paginatedApartments.map((apartment) => {
                             const areaRange = getAreaRange(apartment.variants);
                             return (
@@ -390,7 +388,7 @@ const ApartmentsPage = () => {
                             );
                         })
                     ) : (
-                        <div style={{ textAlign: "center", padding: "40px" }}>No apartments found</div>
+                        <div style={{ textAlign: "center", padding: "40px" }}>{isLoading ? "Loading..." : "No apartments found"}</div>
                     )}
                 </div>
 

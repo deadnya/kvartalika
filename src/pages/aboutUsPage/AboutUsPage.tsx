@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { setMetaTags } from '../../utils/metaTagsManager'
+import { useIntersectionObserver } from '../../hooks/useIntersectionObserver'
 import styles from "./AboutUsPage.module.css"
 
 import image01 from "/images/01.png"
@@ -31,6 +32,16 @@ const AboutUsPage = () => {
     const { aboutUsPageContent, homePageFooter, setAboutUsPageContent, setHomePageFooter } = usePageContentStore();
     const [content, setLocalContent] = useState<AboutUsPageContent>(aboutUsPageContent || DEFAULT_ABOUT_US_PAGE_CONTENT)
     const [footerData, setLocalFooterData] = useState<FooterDto | null>(homePageFooter)
+
+    // Intersection Observer refs
+    const mottoRef = useIntersectionObserver({ threshold: 0.1 });
+    const principleRefs = content.principles.map(() => useIntersectionObserver({ threshold: 0.1 }));
+    const ourValuesImageRef = useIntersectionObserver({ threshold: 0.1 });
+    const ourValuesHeaderRef = useIntersectionObserver({ threshold: 0.1 });
+    const ourValuesElementRefs = content.values.map(() => useIntersectionObserver({ threshold: 0.1 }));
+    const worksWithUsHeaderRef = useIntersectionObserver({ threshold: 0.1 });
+    const worksWithUsContentRef = useIntersectionObserver({ threshold: 0.1 });
+    const sendRequestRef = useIntersectionObserver({ threshold: 0.1 });
 
     const fetchContent = async () => {
         try {
@@ -103,9 +114,9 @@ const AboutUsPage = () => {
                     <BreadcrumbNav currentPage="О нас" />
                     <div className={styles.mottoContainer}>
                         <div className={styles.mottoTopContainer}>
-                            <span className={styles.motto + " " + styles.motto1}>{content.hero.motto.partOne}</span>
-                            <span className={styles.motto + " " + styles.motto2}>{content.hero.motto.partTwo}</span>
-                            <span className={styles.motto + " " + styles.motto3}>{content.hero.motto.partThree}</span>
+                            <span ref={mottoRef.ref} className={`${styles.motto} ${styles.motto1} ${mottoRef.isVisible ? styles.fadeInLeft : ''}`}>{content.hero.motto.partOne}</span>
+                            <span className={`${styles.motto} ${styles.motto2} ${mottoRef.isVisible ? styles.fadeInRight : ''}`}>{content.hero.motto.partTwo}</span>
+                            <span className={`${styles.motto} ${styles.motto3} ${mottoRef.isVisible ? styles.fadeInLeft : ''}`}>{content.hero.motto.partThree}</span>
                         </div>
                         <p className={styles.mottoBottomText}>
                             {content.hero.bottomText.split('\n').map((line, index) => (
@@ -126,8 +137,8 @@ const AboutUsPage = () => {
                 </div>
 
                 <div className={styles.principles}>
-                    {content.principles.map((principle) => (
-                        <div key={principle.id} className={styles.principle}>
+                    {content.principles.map((principle, index) => (
+                        <div ref={principleRefs[index].ref} key={principle.id} className={`${styles.principle} ${principleRefs[index].isVisible ? styles.fadeIn : ''}`}>
                             <div className={styles.principleTitle}>
                                 <img 
                                     src={principle.imageNumber === "01" ? image01 : image02} 
@@ -145,14 +156,14 @@ const AboutUsPage = () => {
                 </div>
 
                 <div className={styles.ourValues}>
-                    <div className={styles.valuesImageContainer}>
+                    <div ref={ourValuesImageRef.ref} className={`${styles.valuesImageContainer} ${ourValuesImageRef.isVisible ? styles.fadeIn : ''}`}>
                         <img src={content.valuesImage}></img>
                         <div className={styles.valuesImageTriangleOverlay}></div>
                     </div>
                     <div className={styles.ourValuesList}>
-                        <h2 className={styles.ourValuesHeader}>Наши ценности</h2>
+                        <h2 ref={ourValuesHeaderRef.ref} className={`${styles.ourValuesHeader} ${ourValuesHeaderRef.isVisible ? styles.fadeIn : ''}`}>Наши ценности</h2>
                         <div className={styles.ourValuesElements}>
-                            {content.values.map((value) => {
+                            {content.values.map((value, index) => {
                                 const iconMap: { [key: string]: React.ComponentType<any> } = {
                                     'principle1': Principle1Icon,
                                     'principle2': Principle2Icon,
@@ -161,7 +172,7 @@ const AboutUsPage = () => {
                                 };
                                 const IconComponent = iconMap[value.iconType];
                                 return (
-                                    <div key={value.id} className={styles.ourValuesElement}>
+                                    <div ref={ourValuesElementRefs[index].ref} key={value.id} className={`${styles.ourValuesElement} ${ourValuesElementRefs[index].isVisible ? styles.fadeIn : ''}`}>
                                         <div className={styles.principleIconContainer}>
                                             <IconComponent />
                                         </div>
@@ -177,8 +188,8 @@ const AboutUsPage = () => {
                 </div>
 
                 <div className={styles.worksWithUs}>
-                    <h2 className={styles.worksWithUsHeader}>С нами уже работают</h2>
-                    <div className={styles.worksWithUsContent}>
+                    <h2 ref={worksWithUsHeaderRef.ref} className={`${styles.worksWithUsHeader} ${worksWithUsHeaderRef.isVisible ? styles.fadeIn : ''}`}>С нами уже работают</h2>
+                    <div ref={worksWithUsContentRef.ref} className={`${styles.worksWithUsContent} ${worksWithUsContentRef.isVisible ? styles.fadeIn : ''}`}>
                         {content.partners.map((partner) => {
                             const iconMap: { [key: string]: React.ComponentType<any> } = {
                                 'sberbank': SberbankIcon,
@@ -198,7 +209,7 @@ const AboutUsPage = () => {
                     </div>
                 </div>
 
-                <div className={styles.sendRequestContainer}>
+                <div ref={sendRequestRef.ref} className={`${styles.sendRequestContainer} ${sendRequestRef.isVisible ? styles.fadeIn : ''}`}>
                     <div className={styles.sendRequestTriangleOverlay}></div>
                     <div className={styles.sendRequestForm}>
                         <div className={styles.sendRequestHeader}>

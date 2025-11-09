@@ -10,6 +10,10 @@ interface PaginationProps {
 }
 
 export const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) => {
+    if (totalPages === 0) {
+        return null;
+    }
+
     const getPageNumbers = (): (number | string)[] => {
         if (totalPages <= 5) {
             return Array.from({ length: totalPages }, (_, i) => i + 1);

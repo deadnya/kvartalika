@@ -101,12 +101,17 @@
 }
 
 .navLink:hover {
-  opacity: 0.5;
+  color: var(--color-purple);
   transition: 0.2s;
 }
 
 .navLinkActive {
   opacity: 0.5;
+}
+
+.navLinkActive:hover {
+  opacity: 0.5;
+  color: rgb(var(--color-main));
 }
 
 .navButton {

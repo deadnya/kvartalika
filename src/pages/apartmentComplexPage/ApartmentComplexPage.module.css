@@ -1,4 +1,36 @@
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        margin-top: 40px;
+    }
+    to {
+        opacity: 1;
+        margin-top: 0;
+    }
+}
+
+.fadeIn {
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+/* Initial state to prevent flickering - set on animated elements before they're visible */
+.location,
+.availableApartments,
+.transportAvailability,
+.technologies,
+.catchIt,
+.sendRequestContainer {
+    opacity: 0;
+}
+
+/* Wrapper divs for components like BuildingHistory and Conveniencies */
+.wrapper2 > div {
+    opacity: 0;
+}
+
 .container {
+    background-color: white;
     margin-top: 80px;
     font-family: var(--font-family-open-sans);
     overflow: hidden;
@@ -21,7 +53,7 @@
 }
 
 .generalInfo {
-    margin-top: 32px;
+    padding-top: 32px;
     display: flex;
     flex-direction: column;
     padding-right: 208px;
@@ -31,6 +63,10 @@
     position: relative;
 }
 
+.playerContainer {
+    padding: 0px 208px;
+    padding-top: 60px;
+}
 
 .generalInfo > * {
     position: relative;
@@ -192,7 +228,6 @@
 }
 
 .goodThing2 {
-    width: 573px;
     display: flex;
     flex-direction: row;
     gap: 16px;
@@ -766,6 +801,11 @@
     .generalInfo {
         padding-right: 59px;
         padding-left: 59px;
+    }   
+
+    .playerContainer {
+        padding: 0px 59px;
+        padding-top: 40px;
     }
 
     .complexTitle {
@@ -924,6 +964,11 @@
         flex-wrap: wrap;
     }
 
+    .playerContainer {
+        padding: 0px 0px;
+        padding-top: 16px;
+    }
+
     .availableApartmentsContentDesktop {
         display: none;
     }
@@ -1059,7 +1104,7 @@
         padding-left: 24px;
         padding-bottom: 32px;
         gap: 32px;
-        margin-top: 24px;
+        padding-top: 24px;
     }
 
     .complexTitle {
@@ -1310,7 +1355,7 @@
         padding-left: 16px;
         padding-bottom: 32px;
         gap: 28px;
-        margin-top: 20px;
+        padding-top: 20px;
     }
 
     .complexTitle {
@@ -1573,7 +1618,7 @@
         padding-left: 16px;
         padding-bottom: 40px;
         gap: 24px;
-        margin-top: 32px;
+        padding-top: 32px;
     }
 
     .generalInfoTopContainer {
@@ -1884,5 +1929,35 @@
         font-size: 14px;
         line-height: 20px;
         gap: 12px;
+    }
+}
+
+.wrapper1 {
+    background-color: var(--color-background);
+}
+
+@media (min-width: 1921px) {
+    .wrapper1 > div {
+        width: 100%;
+        max-width: 1920px;
+    }
+
+    .wrapper2 > div {
+        width: 100%;
+        max-width: 1920px;
+    }
+
+    .wrapper1 {
+        display: flex;
+        justify-content: space-around;
+        padding: 0px auto;
+        background-color: var(--color-background);
+    }
+
+    .wrapper2 {
+        display: flex;
+        justify-content: space-around;
+        padding: 0px auto;
+        background-color: white;
     }
 }

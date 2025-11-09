@@ -7,6 +7,15 @@
     background-color: var(--color-background);
     cursor: pointer;
     min-height: 600px;
+    transition: 0.3s;
+}
+
+.container:hover {
+    transform: translateY(-10px);
+}
+
+.container:hover .apartmentTitle {
+    color: var(--color-purple);
 }
 
 .containerCompactWidth {

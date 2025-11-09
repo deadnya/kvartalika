@@ -51,7 +51,7 @@ const InnerApp = () => {
   const pageLoading = usePageLoadingState();
   const imagesLoadedRef = useRef(false);
 
-  // Monitor and wait for all images to load AND page to be ready, then hide the loader
+  // Monitor and wait for all images to load, fonts to load, AND page to be ready, then hide the loader
   useEffect(() => {
     if (imagesLoadedRef.current) return;
 
@@ -65,6 +65,26 @@ const InnerApp = () => {
     let stableCheckCount = 0;
     let lastImageCount = 0;
     let minImageCount = 0; // Minimum images we expect to see
+    let fontsReady = false;
+
+    // Wait for fonts to load
+    const waitForFonts = () => {
+      return Promise.race([
+        document.fonts.ready.then(() => {
+          console.log("[Loader] ✅ Fonts loaded");
+          fontsReady = true;
+          return true;
+        }),
+        new Promise((resolve) => {
+          const timeout = setTimeout(() => {
+            console.log("[Loader] ⏱️ Font loading timeout - proceeding anyway");
+            fontsReady = true;
+            resolve(true);
+          }, 10000); // 10 second timeout for fonts
+          return () => clearTimeout(timeout);
+        }),
+      ]);
+    };
 
     const checkAllImagesLoaded = () => {
       const images = Array.from(document.querySelectorAll("img") as NodeListOf<HTMLImageElement>);
@@ -99,10 +119,11 @@ const InnerApp = () => {
       }
 
       // Log status
-      console.log(`[Loader Check] Elapsed: ${elapsed}ms | Images: ${loaded}/${images.length} (min:${minImageCount}) | Stable: ${stableCheckCount}/10 | AllLoaded: ${allLoaded} | DataReady: ${pageDataReadyRef.current}`);
+      console.log(`[Loader Check] Elapsed: ${elapsed}ms | Images: ${loaded}/${images.length} (min:${minImageCount}) | Stable: ${stableCheckCount}/10 | AllLoaded: ${allLoaded} | Fonts: ${fontsReady} | DataReady: ${pageDataReadyRef.current}`);
 
-      // If we have enough images, all are loaded and stable, or page data is ready, we're done
-      if ((allLoaded && stableCheckCount >= 10) || pageDataReadyRef.current) {
+      // If we have enough images, all are loaded and stable, fonts ready, or page data is ready, we're done
+      // Hero image is optional (nice to have), fonts and stable images are required
+      if ((allLoaded && stableCheckCount >= 10 && fontsReady) || pageDataReadyRef.current) {
         // 10 * 100ms = 1 second stable
         console.log("[Loader] ✅ All conditions met - HIDING LOADER");
         imagesLoadedRef.current = true;
@@ -126,9 +147,19 @@ const InnerApp = () => {
       });
     };
 
-    // Start checking after a brief delay to let initial render happen
-    console.log("[Loader] Starting image monitor for path:", location.pathname);
-    timeoutId = setTimeout(checkAllImagesLoaded, 300);
+    // Start loading and checking
+    const init = async () => {
+      console.log("[Loader] Starting loader sequence for path:", location.pathname);
+      
+      // Wait for fonts to be ready (hero image is optional, loads in background)
+      await waitForFonts();
+      
+      // Then start the image check loop
+      console.log("[Loader] Starting image monitor");
+      timeoutId = setTimeout(checkAllImagesLoaded, 300);
+    };
+
+    init();
 
     return () => {
       clearTimeout(timeoutId);

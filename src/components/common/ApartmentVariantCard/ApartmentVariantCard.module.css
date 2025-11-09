@@ -51,6 +51,21 @@
     padding-left: 10px;
 }
 
+.apartmentVariantStatus[data-status="AVAILABLE"] {
+    background-color: var(--color-green-light);
+    color: var(--color-green);
+}
+
+.apartmentVariantStatus[data-status="RESERVED"] {
+    background-color: #FFF3CD;
+    color: #856404;
+}
+
+.apartmentVariantStatus[data-status="SOLD"] {
+    background-color: #F8D7DA;
+    color: #721C24;
+}
+
 .apartmentVariantPrice {
     font-family: var(--font-family-montserrat);
     font-weight: 600;

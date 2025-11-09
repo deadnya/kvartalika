@@ -87,6 +87,7 @@
     position: relative;
     max-width: 1075px;
     height: 600px;
+    overflow: hidden;
 }
 
 .image {
@@ -94,6 +95,11 @@
     object-position: center;
     width: 1075px;
     height: 600px;
+    transition: transform 0.3s ease-in-out;
+}
+
+.imageContainer:hover .image {
+    transform: scale(1.05);
 }
 
 .finishDateContainer {

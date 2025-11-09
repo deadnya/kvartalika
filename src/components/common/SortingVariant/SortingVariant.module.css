@@ -19,6 +19,22 @@
     transition: all 0.2s ease;
 }
 
+.sortingButton:hover {
+    color: var(--color-purple);
+}
+
+.sortingButton:hover .arrow path {
+    stroke: var(--color-purple);
+}
+
+.sortingButton[data-selected="true"]:not([data-selected="noSort"]) {
+    color: var(--color-purple);
+}
+
+.sortingButton[data-selected="true"]:not([data-selected="noSort"]) .arrow path {
+    stroke: var(--color-purple);
+}
+
 .buttonText {
     display: flex;
     align-items: center;
@@ -29,6 +45,10 @@
     font-size: 12px;
     font-weight: bold;
     color: #666;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transform-origin: center center;
 }
 
 .arrow svg {
@@ -40,49 +60,104 @@
     stroke: var(--color-gray2);
 }
 
-.sortingDropdown {
-    width: calc(100% + 24px);
-    position: absolute;
-    top: calc(100% + 4px);
-    left: -12px;
-    right: 0;
-    background-color: white;
-    border: 1px solid var(--color-gray3);
-    z-index: 1000;
+.dualArrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    height: 20px;
+    width: 20px;
+    gap: 0px;
     overflow: hidden;
 }
 
-.sortingOption {
-    display: block;
-    width: 100%;
-    padding: 10px 12px;
-    background-color: white;
-    border: none;
-    text-align: left;
-    cursor: pointer;
-    font-weight: 400;
-    font-style: Regular;
-    font-size: 16px;
-    line-height: 24px;
-    letter-spacing: 0%;
-    color: var(--color-purple-main);
-    transition: background-color 0.2s ease;
+.dualArrow svg {
+    height: 20px;
+    width: 20px;
 }
 
-.sortingOption:hover {
-    background-color: #7B2CBF22;
-}
-
-.sortingOption.active {
-    color: var(--color-purple);
-}
-
-.sortingOption.active path {
-    stroke: var(--color-purple);
-}
-
-.optionText {
-    display: flex;
+.flippedArrow {
+    display: inline-flex;
     align-items: center;
-    gap: 6px;
+    justify-content: center;
+    transform: scaleY(-1);
+    margin-left: -12px;
+}
+
+.flippedArrow svg {
+    height: 20px;
+    width: 20px;
+}
+
+/* Animation: noSorting -> sortingAsc */
+/* Left arrow moves to center, right arrow fades out */
+@keyframes noSortToAsc {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(2.1px);
+    }
+}
+
+@keyframes rightArrowFadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+.animateNoSortToAsc {
+    animation: noSortToAsc 0.15s ease-in-out forwards;
+}
+
+.animateNoSortToAsc .dualArrow {
+    animation: noSortToAsc 0.15s ease-in-out forwards;
+}
+
+.animateNoSortToAsc .flippedArrow {
+    animation: rightArrowFadeOut 0.15s ease-in-out forwards;
+}
+
+/* Animation: sortingAsc -> sortingDesc */
+@keyframes ascToDesc {
+    0% {
+        transform: rotate(0deg) scaleX(1);
+    }
+    100% {
+        transform: rotate(180deg) scaleX(-1);
+    }
+}
+
+.animateAscToDesc {
+    animation: ascToDesc 0.15s ease-in-out forwards;
+}
+
+/* Animation: sortingDesc -> noSorting */
+@keyframes descToNoSortRotate {
+    0% {
+        transform: rotate(-180deg) translateX(4px);
+    }
+    100% {
+        transform: rotate(0deg) translateX(0px);
+    }
+}
+
+@keyframes rightArrowFadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.animateDescToNoSort {
+    animation: descToNoSortRotate 0.15s ease-in-out forwards;
+}
+
+.animateDescToNoSort .flippedArrow {
+    animation: rightArrowFadeIn 0.15s ease-in-out forwards;
 }

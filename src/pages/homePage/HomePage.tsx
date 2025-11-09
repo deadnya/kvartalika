@@ -5,6 +5,7 @@ import AdminOverlay from "../../components/common/AdminOverlay/AdminOverlay";
 import { setMetaTags, resetMetaTags } from "../../utils/metaTagsManager";
 import styles from "./HomePage.module.css"
 import { usePageContentStore } from "../../store/pageContent.store";
+import { useIntersectionObserver } from "../../hooks/useIntersectionObserver";
 
 import MapIcon from "../../assets/icons/map.svg?react"
 import BuildingIcon from "../../assets/icons/building.svg?react"
@@ -33,6 +34,23 @@ const HomePage = () => {
     const [content, setLocalContent] = useState<HomePageContent>(homePageContent || DEFAULT_HOME_PAGE_CONTENT);
     const [footerData, setLocalFooterData] = useState<FooterDto | null>(homePageFooter);
     const [complexData, setLocalComplexData] = useState<ApartmentComplexPageContent | null>(homePageComplex);
+    const [heroImageLoaded, setHeroImageLoaded] = useState(false);
+
+    const ourProjectsRef = useIntersectionObserver({ threshold: 0.1 });
+    const hotDealsRef = useIntersectionObserver({ threshold: 0.1 });
+    const paymentMethodsRef = useIntersectionObserver({ threshold: 0.1 });
+    const promotionsRef = useIntersectionObserver({ threshold: 0.1 });
+    const sendRequestRef = useIntersectionObserver({ threshold: 0.1 });
+
+    const getVisibleHotDealsItems = () => {
+        const screenWidth = window.innerWidth;
+        const cardWidth = 358;
+        const gap = 24;
+        const padding = 416;
+        const availableWidth = screenWidth - padding;
+        const itemsCount = Math.max(1, Math.floor((availableWidth + gap) / (cardWidth + gap)));
+        return Math.min(itemsCount, content.hotDeals.length);
+    };
 
     const fetchContent = async () => {
         console.log("[HomePage] fetchContent starting");
@@ -74,7 +92,6 @@ const HomePage = () => {
         fetchFooterData();
     }, []);
 
-    // Set meta tags when content is loaded
     useEffect(() => {
         if (content) {
             setMetaTags({
@@ -88,7 +105,6 @@ const HomePage = () => {
         }
     }, [content]);
 
-    // Listen for custom event from HomePageEditor when data is saved
     useEffect(() => {
         const handleDataSaved = () => {
             fetchContent();
@@ -98,7 +114,6 @@ const HomePage = () => {
         return () => window.removeEventListener("homePageDataSaved", handleDataSaved);
     }, []);
 
-    // Listen for custom event from FooterEditor when data is saved
     useEffect(() => {
         const handleFooterDataSaved = () => {
             fetchFooterData();
@@ -115,7 +130,12 @@ const HomePage = () => {
             <div className={styles.titleMainContainer}>
                 <div className={styles.titleImageContainer}>
                     <div className={styles.imageWrapper}>
-                        <img src={content.heroImageSrc}></img>
+                        <img 
+                            src={content.heroImageSrc}
+                            onLoad={() => setHeroImageLoaded(true)}
+                            onError={() => setHeroImageLoaded(true)}
+                            style={{ opacity: heroImageLoaded ? 1 : 0.8 }}
+                        />
                         <div className={styles.triangleOverlay}></div>
                     </div>
                 </div>
@@ -144,7 +164,7 @@ const HomePage = () => {
                 </div>
             </div>
 
-            <div className={styles.ourProjects}>
+            <div ref={ourProjectsRef.ref} className={`${styles.ourProjects} ${ourProjectsRef.isVisible ? styles.fadeIn : ''}`}>
                 <div className={styles.ourProjectsTitleContainer}>
                     <span className={styles.ourProjectsText}>Наши проекты</span>
                     <Link
@@ -156,8 +176,8 @@ const HomePage = () => {
                 <div 
                     className={styles.projectContainer}
                     style={{
-                        backgroundImage: complexData?.images?.[0] ? `url('${complexData.images[0]}')` : "url('/images/HomePage2.jpg')"
-                    }}
+                        '--bg-image': complexData?.images?.[0] ? `url('${complexData.images[0]}')` : "url('/images/HomePage2.jpg')"
+                    } as React.CSSProperties}
                 >
                     {content.projects.map((project: ProjectInfo) => (
                         <div key={project.id} className={styles.projectBottomContent}>
@@ -201,7 +221,7 @@ const HomePage = () => {
                 </div>
             </div>
 
-            <div className={styles.hotDeals}>
+            <div ref={hotDealsRef.ref} className={`${styles.hotDeals} ${hotDealsRef.isVisible ? styles.fadeIn : ''}`}>
                 <div className={styles.hotDealsBlurOverlay}></div>
                 <div className={styles.hotDealsHeader}>
                     <span className={styles.hotDealsHeaderText}>Горячие предложения</span>
@@ -211,7 +231,7 @@ const HomePage = () => {
                     >Смотреть все</Link>
                 </div>
                 <div className={styles.hotDealsContentDesktop}>
-                    {content.hotDeals.filter((deal) => deal.variants && deal.variants.length > 0).slice(0, 4).map((deal) => (
+                    {content.hotDeals.filter((deal) => deal.variants && deal.variants.length > 0).slice(0, getVisibleHotDealsItems()).map((deal) => (
                         deal.homeId && (
                             <ApartmentCard
                                 key={deal.id}
@@ -248,7 +268,7 @@ const HomePage = () => {
                 </div>
             </div>
 
-            <div className={styles.paymentMethodsContainer}>
+            <div ref={paymentMethodsRef.ref} className={`${styles.paymentMethodsContainer} ${paymentMethodsRef.isVisible ? styles.fadeIn : ''}`}>
                 <div className={styles.paymentBlurOverlay}></div>
                 <h2 className={styles.paymentMethodsHeader}>Способы покупки</h2>
                                 <div className={styles.paymentMethods}>
@@ -272,23 +292,25 @@ const HomePage = () => {
                 </div>
             </div>
 
-            <div className={styles.promotions}>
-                <h2 className={styles.promotionsHeader}>Акции</h2>
-                <div className={styles.promotionsContent}>
-                    {content.promotions.map((promotion) => (
-                        <Promotion
-                            key={promotion.id}
-                            title={promotion.title}
-                            description={promotion.description}
-                            imageSrc={promotion.imageSrc}
-                            promotionId={promotion.id}
-                            longDescription={promotion.longDescription || promotion.description}
-                        />
-                    ))}
+            <div ref={promotionsRef.ref} className={styles.promotions}>
+                <div className={`${promotionsRef.isVisible ? styles.fadeIn : ''}`}>
+                    <h2 className={styles.promotionsHeader}>Акции</h2>
+                    <div className={styles.promotionsContent}>
+                        {content.promotions.map((promotion) => (
+                            <Promotion
+                                key={promotion.id}
+                                title={promotion.title}
+                                description={promotion.description}
+                                imageSrc={promotion.imageSrc}
+                                promotionId={promotion.id}
+                                longDescription={promotion.longDescription || promotion.description}
+                            />
+                        ))}
+                    </div>
                 </div>
             </div>
 
-            <div className={styles.sendRequestContainer}>
+            <div ref={sendRequestRef.ref} className={`${styles.sendRequestContainer} ${sendRequestRef.isVisible ? styles.fadeIn : ''}`}>
                 <div className={styles.sendRequestForm}>
                     <div className={styles.sendRequestHeader}>
                         <span className={styles.sendRequestHeaderTopText}>Готовы найти свою идеальную квартиру?</span>

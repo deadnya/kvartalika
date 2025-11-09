@@ -1,0 +1,25 @@
+.video-js {
+    max-width: 100%;
+    margin: 0 auto;
+    position: relative;
+}
+
+.video-js .vjs-control-bar {
+    background-color: rgba(0, 0, 0, 0.85); /* Slightly darker controls */
+}
+
+.video-js .vjs-quality-selector {
+    position: relative;
+    color: white;
+    cursor: pointer;
+}
+
+.video-js .vjs-menu-button {
+    line-height: 1.5;
+    color: white;
+}
+
+.video-js .vjs-big-play-centered {
+    color: #fff !important;
+    font-size: 3rem;
+}

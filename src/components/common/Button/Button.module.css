@@ -66,6 +66,11 @@
 .arrow {
     font-weight: bold;
     transform: translateX(7px);
+    transition: transform 0.2s ease-in-out;
+}
+
+.button:hover:not(.disabled) .arrow {
+    transform: translateX(12px);
 }
 
 .default:not(.disabled) .arrow path {

@@ -49,6 +49,8 @@ const getResponsiveDimensions = () => {
     return { width: "100%", height: "400px" };
   } else if (width <= 1366) {
     return { width: "600px", height: "400px" };
+  } else if (width <= 1500) {
+    return { width: "700px", height: "580px" };
   } else {
     return { width: "867px", height: "580px" };
   }

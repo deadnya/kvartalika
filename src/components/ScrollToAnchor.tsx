@@ -5,6 +5,14 @@ const ScrollToAnchor = () => {
   const location = useLocation();
 
   useEffect(() => {
+    // Reset scroll to top on page change (but not for hash navigation)
+    if (!location.hash) {
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    }
+  }, [location.pathname]);
+
+  useEffect(() => {
+    // Handle hash-based anchor navigation
     if (location.hash) {
       setTimeout(() => {
         const element = document.getElementById(location.hash.slice(1));
@@ -20,7 +28,7 @@ const ScrollToAnchor = () => {
         }
       }, 100);
     }
-  }, [location]);
+  }, [location.hash]);
 
   return null;
 };

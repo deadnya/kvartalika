@@ -136,7 +136,7 @@ const ApartmentCard: React.FC<ApartmentCardProps> = ({
                     <div className={styles.apartmentBottomContainer}>
                         <div className={styles.apartmentExtraParams}>
                             <div className={styles.apartmentExtraParam}>
-                                <span>{`${areaMin} - ${areaMax} м²`}</span>
+                                <span>{areaMin === areaMax ? `${areaMin} м²` : `${areaMin} - ${areaMax} м²`}</span>
                             </div>
                             <div className={styles.apartmentExtraParam}>
                                 <span>{getToiletCountText(toiletCount)}</span>

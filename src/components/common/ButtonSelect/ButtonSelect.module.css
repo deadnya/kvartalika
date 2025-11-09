@@ -18,27 +18,50 @@
     line-height: 22px;
     letter-spacing: -0.6px;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: color 0.15s ease;
     white-space: nowrap;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+}
+
+.buttonSelectButton::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 100%;
+    background-color: var(--color-purple);
+    z-index: -1;
+    transition: top 0.15s ease;
+    opacity: 1;
+}
+
+.buttonSelectButton:hover::before {
+    top: 0;
 }
 
 .buttonSelectButton:hover {
-    border-color: var(--color-purple);
-}
-
-.buttonSelectButton:active {
-    transform: scale(0.98);
+    color: white;
 }
 
 .buttonSelectButtonSelected {
-    background-color: var(--color-purple);
     color: white;
-    border-color: var(--color-purple);
+}
+
+.buttonSelectButtonSelected::before {
+    height: 100%;
+    bottom: 0;
+    top: auto;
+    z-index: -1;
 }
 
 .buttonSelectButtonSelected:hover {
-    background-color: var(--color-purple);
-    opacity: 0.7;
+    color: white;
 }
 
 @media (max-width: 1366px) {

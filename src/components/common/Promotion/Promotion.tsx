@@ -21,7 +21,7 @@ const Promotion: React.FC<PromotionProps> = ({
 
     return (
         <>
-            <div className={styles.promotion}>
+            <div className={styles.promotion} onClick={() => setIsModalOpen(true)}>
                 <img src={imageSrc} className={styles.image}></img>
                 <div className={styles.promotionDetails}>
                     <h3 className={styles.promotionTitle}>{title}</h3>
