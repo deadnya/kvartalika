@@ -226,10 +226,10 @@ const AboutUsPage = () => {
                                     <div className={styles.contactInfoBlock}>
                                         <MapIcon />
                                         <div className={styles.contactInfoContent}>
-                                            <span>{content.contactInfo?.address ?? "Томск, площадь Батенькова 2, подъезд 7, этаж 3, офис 310"}</span>
+                                            <span>{footerData?.address ?? "Томск, площадь Батенькова 2, подъезд 7, этаж 3, офис 310"}</span>
                                             <span>
                                                 Режим работы:<br/>
-                                                {footerData?.workingHours ?? content.contactInfo?.workingHours ?? "пн–пт: 9:00 –19:00\nсб: 10:00 –18:00"}
+                                                {footerData?.workingHours ?? "пн–пт: 9:00 –19:00\nсб: 10:00 –18:00"}
                                             </span>
                                         </div>
                                     </div>
@@ -238,13 +238,13 @@ const AboutUsPage = () => {
                                     <div className={styles.contactInfoBlock}>
                                         <PhoneIcon />
                                         <div className={styles.contactInfoContent}>
-                                            <span>{content.contactInfo?.phone ?? "+7 (3822) 30-99-22"}</span>
+                                            <span>{footerData?.phone ?? "+7 (3822) 30-99-22"}</span>
                                         </div>
                                     </div>
                                     <div className={styles.contactInfoBlock}>
                                         <EmailIcon />
                                         <div className={styles.contactInfoContent}>
-                                            <span>{content.contactInfo?.email ?? "info@kvartalika.ru"}</span>
+                                            <span>{footerData?.email ?? "info@kvartalika.ru"}</span>
                                         </div>
                                     </div>
                                 </div>
