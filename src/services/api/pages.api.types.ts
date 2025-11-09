@@ -302,3 +302,29 @@ export interface FooterDto {
   privacy: string,
   workingHours: string
 }
+
+export interface ContactRequestData {
+  name: string;
+  phone: string;
+  comment?: string;
+}
+
+export interface ContactRequestResponse {
+  id: number;
+  message: string;
+  success: boolean;
+}
+
+export interface FindRequestData {
+  lastName: string;
+  firstName: string;
+  patronymic: string;
+  phone: string;
+  email: string;
+}
+
+export interface FindRequestResponse {
+  id: number;
+  message: string;
+  success: boolean;
+}

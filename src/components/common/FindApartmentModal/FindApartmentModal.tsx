@@ -6,6 +6,7 @@ import styles from "./FindApartmentModal.module.css"
 
 import CloseIcon from "../../../assets/icons/close.svg?react"
 import { Link } from "react-router-dom";
+import { submitFindRequest } from "../../../services/find-request.service";
 
 interface FindApartmentModalProps {
     onClose?: () => void;
@@ -19,11 +20,6 @@ interface FormData {
     email: string;
 }
 
-interface FormErrors {
-    firstName?: string;
-    phone?: string;
-}
-
 const FindApartmentModal = ({ onClose }: FindApartmentModalProps) => {
     const [formData, setFormData] = useState<FormData>({
         lastName: "",
@@ -33,29 +29,12 @@ const FindApartmentModal = ({ onClose }: FindApartmentModalProps) => {
         email: ""
     });
 
-    const [errors, setErrors] = useState<FormErrors>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
+    const [submitError, setSubmitError] = useState<string>("");
 
     const handleClose = () => {
         onClose?.();
-    };
-
-    const validateForm = (): boolean => {
-        const newErrors: FormErrors = {};
-
-        if (!formData.firstName.trim()) {
-            newErrors.firstName = "Имя обязательно";
-        }
-
-        if (!formData.phone.trim()) {
-            newErrors.phone = "Номер телефона обязателен";
-        } else if (!/^\+?[\d\s\-()]{10,}$/.test(formData.phone)) {
-            newErrors.phone = "Некорректный номер телефона";
-        }
-
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
     };
 
     const handleInputChange = (field: keyof FormData, value: string) => {
@@ -63,27 +42,18 @@ const FindApartmentModal = ({ onClose }: FindApartmentModalProps) => {
             ...prev,
             [field]: value
         }));
-        if (errors[field as keyof FormErrors]) {
-            setErrors((prev) => ({
-                ...prev,
-                [field]: undefined
-            }));
-        }
+        setSubmitError("");
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!validateForm()) {
-            return;
-        }
-
         setIsSubmitting(true);
+        setSubmitError("");
 
         try {
-            console.log("Form submitted with data:", formData);
-
-            await new Promise((resolve) => setTimeout(resolve, 1000));
+            const response = await submitFindRequest(formData);
+            console.log("Find request submitted successfully:", response);
 
             setFormData({
                 lastName: "",
@@ -94,6 +64,8 @@ const FindApartmentModal = ({ onClose }: FindApartmentModalProps) => {
             });
             setIsSuccess(true);
         } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : "Ошибка при отправке заявки";
+            setSubmitError(errorMessage);
             console.error("Error submitting form:", error);
         } finally {
             setIsSubmitting(false);
@@ -138,6 +110,12 @@ const FindApartmentModal = ({ onClose }: FindApartmentModalProps) => {
                         <p className={styles.modalDesc}>Оставьте заявку на просмотр квартиры и наш менеджер подберет лучшие варианты специально для вас</p>
                     </div>
 
+                    {submitError && (
+                        <div style={{ color: "#d32f2f", marginBottom: "16px", fontSize: "14px", padding: "0 20px" }}>
+                            {submitError}
+                        </div>
+                    )}
+
                     <div className={styles.formContainer}>
                         <div className={styles.inputsContainer}>
                             <Input 
@@ -146,30 +124,24 @@ const FindApartmentModal = ({ onClose }: FindApartmentModalProps) => {
                                 value={formData.lastName}
                                 onChange={(e) => handleInputChange("lastName", e.target.value)}
                             />
-                            <div>
-                                <Input 
-                                    type="text"
-                                    placeholder="Имя*"
-                                    value={formData.firstName}
-                                    onChange={(e) => handleInputChange("firstName", e.target.value)}
-                                />
-                                {errors.firstName && <span style={{ color: "red", fontSize: "12px" }}>{errors.firstName}</span>}
-                            </div>
+                            <Input 
+                                type="text"
+                                placeholder="Имя*"
+                                value={formData.firstName}
+                                onChange={(e) => handleInputChange("firstName", e.target.value)}
+                            />
                             <Input 
                                 type="text"
                                 placeholder="Отчество"
                                 value={formData.patronymic}
                                 onChange={(e) => handleInputChange("patronymic", e.target.value)}
                             />
-                            <div>
-                                <Input 
-                                    type="tel"
-                                    placeholder="Номер телефона*"
-                                    value={formData.phone}
-                                    onChange={(e) => handleInputChange("phone", e.target.value)}
-                                />
-                                {errors.phone && <span style={{ color: "red", fontSize: "12px" }}>{errors.phone}</span>}
-                            </div>
+                            <Input 
+                                type="tel"
+                                placeholder="Номер телефона*"
+                                value={formData.phone}
+                                onChange={(e) => handleInputChange("phone", e.target.value)}
+                            />
                             <Input 
                                 type="email"
                                 placeholder="Электронная почта"

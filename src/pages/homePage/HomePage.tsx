@@ -27,6 +27,8 @@ import { getFooterData } from "../../services/api/pages.api.requests";
 import type { ApartmentComplexPageContent, HomePageContent, ProjectInfo } from "../../services/api/pages.api.types";
 import type { FooterDto } from "../../services/api/pages.api.types";
 import { DEFAULT_HOME_PAGE_CONTENT } from "../../services/api/pages.api.defaults";
+import { submitContactRequest } from "../../services/contact.service";
+import type { ContactRequestData } from "../../services/api/pages.api.types";
 
 const HomePage = () => {
     const navigate = useNavigate();
@@ -35,6 +37,15 @@ const HomePage = () => {
     const [footerData, setLocalFooterData] = useState<FooterDto | null>(homePageFooter);
     const [complexData, setLocalComplexData] = useState<ApartmentComplexPageContent | null>(homePageComplex);
     const [heroImageLoaded, setHeroImageLoaded] = useState(false);
+    
+    const [formData, setFormData] = useState<ContactRequestData>({
+        name: "",
+        phone: "",
+        comment: "",
+    });
+    const [formError, setFormError] = useState<string>("");
+    const [formSuccess, setFormSuccess] = useState<boolean>(false);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
     const ourProjectsRef = useIntersectionObserver({ threshold: 0.1 });
     const hotDealsRef = useIntersectionObserver({ threshold: 0.1 });
@@ -84,6 +95,39 @@ const HomePage = () => {
             setHomePageFooter(response.data);
         } catch (error) {
             console.error("Error fetching footer data:", error);
+        }
+    };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+        setFormError("");
+    };
+
+    const handleSubmitContactRequest = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setFormError("");
+        setFormSuccess(false);
+        setIsSubmitting(true);
+
+        try {
+            const response = await submitContactRequest(formData);
+            setFormSuccess(true);
+            setFormData({ name: "", phone: "", comment: "" });
+            console.log("Contact request submitted successfully:", response);
+            // Show success message for 5 seconds
+            setTimeout(() => {
+                setFormSuccess(false);
+            }, 5000);
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : "An error occurred";
+            setFormError(errorMessage);
+            console.error("Failed to submit contact request:", error);
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -346,16 +390,34 @@ const HomePage = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className={styles.formInputContainer}>
+                        <form className={styles.formInputContainer} onSubmit={handleSubmitContactRequest}>
+                            {formError && (
+                                <div style={{ color: "#d32f2f", marginBottom: "16px", fontSize: "14px" }}>
+                                    {formError}
+                                </div>
+                            )}
+                            {formSuccess && (
+                                <div style={{ color: "#388e3c", marginBottom: "16px", fontSize: "14px" }}>
+                                    Заявка успешно отправлена! Спасибо за ваше сообщение.
+                                </div>
+                            )}
                             <div className={styles.formInputs}>
                                 <div className={styles.formRow}>
                                     <Input 
                                         type="text"
                                         placeholder="Имя*"
+                                        name="name"
+                                        value={formData.name}
+                                        onChange={handleInputChange}
+                                        required
                                     />
                                     <Input 
                                         type="tel"
                                         placeholder="Номер телефона*"
+                                        name="phone"
+                                        value={formData.phone}
+                                        onChange={handleInputChange}
+                                        required
                                     />
                                 </div>
 
@@ -363,6 +425,9 @@ const HomePage = () => {
                                     <Input 
                                         type="text"
                                         placeholder="Ваш комментарий"
+                                        name="comment"
+                                        value={formData.comment}
+                                        onChange={handleInputChange}
                                     />
                                 </div>
                             </div>
@@ -372,10 +437,12 @@ const HomePage = () => {
                                 <div>
                                     <Button
                                         includeArrow={true}
-                                    >Оставить заявку</Button>
+                                        type="submit"
+                                        isDisabled={isSubmitting}
+                                    >{isSubmitting ? "Отправляется..." : "Оставить заявку"}</Button>
                                 </div>
                             </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>
