@@ -328,3 +328,30 @@ export interface FindRequestResponse {
   message: string;
   success: boolean;
 }
+
+export interface ContactRequestDto {
+  id: number;
+  name: string;
+  phone: string;
+  comment?: string | null;
+  telegram?: string | null;
+  checked: boolean;
+  createdAt: string;
+}
+
+export interface FindRequestDto {
+  id: number;
+  lastName?: string | null;
+  firstName: string;
+  patronymic?: string | null;
+  phone: string;
+  email?: string | null;
+  telegram?: string | null;
+  checked: boolean;
+  createdAt: string;
+}
+
+export interface BidsResponse {
+  contactRequests: ContactRequestDto[];
+  findRequests: FindRequestDto[];
+}

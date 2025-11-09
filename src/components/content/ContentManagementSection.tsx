@@ -6,8 +6,8 @@ import type {
   CategoryRequest,
   LayoutRequest,
 } from "../../services";
-import type { ApartmentComplexPageContent } from "../../services/api/pages.api.types";
-import { putApartmentComplex, postApartmentComplex } from "../../services/api/pages.api.requests";
+import type { ApartmentComplexPageContent, ContactRequestDto, FindRequestDto } from "../../services/api/pages.api.types";
+import { putApartmentComplex, postApartmentComplex, getAllBids, checkContactRequest, checkFindRequest } from "../../services/api/pages.api.requests";
 import ContentEditor, { type ContentType } from "./ContentEditor.tsx";
 import { useDebounce } from "../../hooks/useDebounce.ts";
 import { useContentStore } from "../../store/content.store.ts";
@@ -64,15 +64,35 @@ const ContentManagementSection = () => {
   const {
     bids,
     selectedBid,
-    getBids,
     editBid,
     saveBid,
     removeBid,
-    isLoadingBids,
   } = useContentManagerStore();
+
+  // Local state for bids loading
+  const [isLoadingBids, setIsLoadingBids] = useState(false);
+
+  useEffect(() => {
+    void (async () => {
+      try {
+        setIsLoadingBids(true);
+        const bidsData = await getAllBids();
+        setContactRequests(bidsData.contactRequests);
+        setFindRequests(bidsData.findRequests);
+      } catch (error) {
+        console.error("Failed to fetch bids:", error);
+      } finally {
+        setIsLoadingBids(false);
+      }
+    })();
+  }, []);
 
   // Apartment Complex State - we reuse homes since they're the same endpoint
   const [selectedApartmentComplex, setSelectedApartmentComplex] = useState<ApartmentComplexPageContent | null>(null);
+
+  // Bid State
+  const [contactRequests, setContactRequests] = useState<ContactRequestDto[]>([]);
+  const [findRequests, setFindRequests] = useState<FindRequestDto[]>([]);
 
   const [filter, setFilter] = useState("");
   const debouncedFilter = useDebounce(filter, 250);
@@ -88,7 +108,18 @@ const ContentManagementSection = () => {
 
   const refreshCurrent = useCallback(() => {
     if (ui.activeTab === "bids") {
-      void getBids();
+      void (async () => {
+        try {
+          setIsLoadingBids(true);
+          const bidsData = await getAllBids();
+          setContactRequests(bidsData.contactRequests);
+          setFindRequests(bidsData.findRequests);
+        } catch (error) {
+          console.error("Failed to fetch bids:", error);
+        } finally {
+          setIsLoadingBids(false);
+        }
+      })();
     } else if (ui.activeTab === "flats") {
       void loadFlats(true);
     } else if (ui.activeTab === "apartmentComplexes") {
@@ -101,7 +132,6 @@ const ContentManagementSection = () => {
     setFilter("");
   }, [
     ui.activeTab,
-    getBids,
     loadFlats,
     loadHomes,
     loadCategories,
@@ -222,40 +252,76 @@ const ContentManagementSection = () => {
   const currentList = useMemo(() => {
     let base: Array<{
       type: ContentType | "bid";
-      payload: PayLoadType;
+      payload: PayLoadType | ContactRequestDto | FindRequestDto;
       label: string;
+      isBid: boolean;
+      bidType: "contact" | "find" | null;
+      bidData: ContactRequestDto | FindRequestDto | null;
     }> = [];
 
     if (activeContentType === "bid") {
-      base = bids.map((b) => ({
+      // Contact Requests
+      const contactBids = contactRequests.map((b) => ({
         type: "bid" as const,
-        payload: b,
-        label: `${b.id}-${b.name || ""} ${b.email || ""}`.trim(),
+        payload: b as unknown as PayLoadType,
+        label: `${b.id} - ${b.name} (${b.phone})`,
+        isBid: true,
+        bidType: "contact" as const,
+        bidData: b,
       }));
+
+      // Find Requests
+      const findBids = findRequests.map((b) => {
+        const fullName = [b.lastName, b.firstName, b.patronymic]
+          .filter(Boolean)
+          .join(" ");
+        return {
+          type: "bid" as const,
+          payload: b as unknown as PayLoadType,
+          label: `${b.id} - ${fullName} (${b.phone})`,
+          isBid: true,
+          bidType: "find" as const,
+          bidData: b,
+        };
+      });
+
+      base = [...contactBids, ...findBids];
     } else if (activeContentType === "flat") {
       base = flats.map((f) => ({
         type: "flat" as const,
         payload: f,
         label:
           `${f.flat.id} ${f.flat.address || ""} ${f.flat.homeId || ""}`.trim(),
+        isBid: false,
+        bidType: null,
+        bidData: null,
       }));
     } else if (activeContentType === "apartmentComplex") {
       base = homes.map((h) => ({
         type: "apartmentComplex" as const,
         payload: h as unknown as ApartmentComplexPageContent,
         label: `${h.id} ${h.address || ""}`.trim(),
+        isBid: false,
+        bidType: null,
+        bidData: null,
       }));
     } else if (activeContentType === "category") {
       base = categories.map((c) => ({
         type: "category" as const,
         payload: c,
         label: c.name ?? `${c.id}`,
+        isBid: false,
+        bidType: null,
+        bidData: null,
       }));
     } else if (activeContentType === "layout") {
       base = layouts.map((l) => ({
         type: "layout" as const,
         payload: l,
         label: l.id.toString() + " " + l.layoutImage,
+        isBid: false,
+        bidType: null,
+        bidData: null,
       }));
     }
 
@@ -266,6 +332,8 @@ const ContentManagementSection = () => {
     activeContentType,
     debouncedFilter,
     bids,
+    contactRequests,
+    findRequests,
     flats,
     homes,
     categories,
@@ -409,15 +477,42 @@ const ContentManagementSection = () => {
             <div className="text-gray-500">Нет данных</div>
           )}
           {currentList.map((item) => {
-            const isBid = item.type === "bid";
-            const bid = item.payload as BidForm;
-            const isChecked = isBid && bid?.isChecked;
+            const isBid = item.isBid;
+            const bidData = item.bidData as ContactRequestDto | FindRequestDto | null;
+            const isChecked = bidData?.checked ?? false;
+
+            const handleToggleCheck = async (e: React.MouseEvent) => {
+              e.stopPropagation();
+              try {
+                if (item.bidType === "contact" && bidData) {
+                  await checkContactRequest((bidData as ContactRequestDto).id);
+                  // Update local state
+                  setContactRequests((prev) =>
+                    prev.map((b) =>
+                      b.id === (bidData as ContactRequestDto).id ? { ...b, checked: !b.checked } : b
+                    )
+                  );
+                } else if (item.bidType === "find" && bidData) {
+                  await checkFindRequest((bidData as FindRequestDto).id);
+                  // Update local state
+                  setFindRequests((prev) =>
+                    prev.map((b) =>
+                      b.id === (bidData as FindRequestDto).id ? { ...b, checked: !b.checked } : b
+                    )
+                  );
+                }
+              } catch (error) {
+                console.error("Failed to toggle bid check status:", error);
+              }
+            };
 
             return (
               <div
                 key={`${item.label}-${item.type}`}
-                onClick={() => openEdit(item.type, item.payload)}
-                className={`flex justify-between items-center p-2 border rounded hover:shadow-sm transition cursor-pointer ${
+                onClick={() => !isBid && openEdit(item.type, item.payload)}
+                className={`flex justify-between items-center p-2 border rounded hover:shadow-sm transition ${
+                  !isBid ? "cursor-pointer" : ""
+                } ${
                   isBid
                     ? isChecked
                       ? "bg-green-50"
@@ -427,32 +522,38 @@ const ContentManagementSection = () => {
               >
                 <div className="flex flex-col">
                   <div>{item.label}</div>
-                  {isBid && (
+                  {isBid && bidData && (
                     <div className="text-xs text-gray-600">
-                      {bid.phone || ""} — {bid.email || ""}
+                      {item.bidType === "contact"
+                        ? `${(bidData as ContactRequestDto).phone} — ${(bidData as ContactRequestDto).comment || "нет комментария"}`
+                        : `${(bidData as FindRequestDto).phone} — ${(bidData as FindRequestDto).email || "нет email"}`}
                     </div>
                   )}
                 </div>
                 <div className="flex gap-2 items-center">
                   {isBid && (
-                    <div
+                    <button
+                      onClick={handleToggleCheck}
                       className={`text-sm px-2 py-1 rounded text-white mr-4 ${
-                        isChecked ? "bg-green-600" : "bg-red-500"
+                        isChecked ? "bg-green-600 hover:bg-green-700" : "bg-red-500 hover:bg-red-600"
                       }`}
+                      type="button"
                     >
                       {isChecked ? "Просмотрено" : "Не просмотрено"}
-                    </div>
+                    </button>
                   )}
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      openEdit(item.type, item.payload);
-                    }}
-                    className="text-primary-600 hover:underline text-sm"
-                    type="button"
-                  >
-                    Изменить
-                  </button>
+                  {!isBid && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openEdit(item.type, item.payload);
+                      }}
+                      className="text-primary-600 hover:underline text-sm"
+                      type="button"
+                    >
+                      Изменить
+                    </button>
+                  )}
                 </div>
               </div>
             );

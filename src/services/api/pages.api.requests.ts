@@ -1,5 +1,5 @@
 import { apiClient } from "../api.config";
-import type { HomePageContent, HomePageContentRequest, AboutUsPageContent, ApartmentComplexPageContent, ApartmentsPageContent, ApartmentComplexCardProps, AparmentComplexDto, FooterDto, ApartmentDto, ApartmentDtoResponse, CategoryDto } from "./pages.api.types";
+import type { HomePageContent, HomePageContentRequest, AboutUsPageContent, ApartmentComplexPageContent, ApartmentsPageContent, ApartmentComplexCardProps, AparmentComplexDto, FooterDto, ApartmentDto, ApartmentDtoResponse, CategoryDto, ContactRequestDto, FindRequestDto, BidsResponse } from "./pages.api.types";
 import { MOCK_HOME_PAGE_CONTENT } from "./mocks/homePage.mock";
 import { MOCK_ABOUT_US_PAGE_CONTENT } from "./mocks/aboutUsPage.mock";
 import { MOCK_APARTMENT_COMPLEX_PAGE_CONTENT } from "./mocks/apartmentComplexPage.mock";
@@ -183,3 +183,66 @@ export const getApartmentComplexes = async (): Promise<AparmentComplexDto[]> => 
   console.log(response.data)
   return response.data
 }
+
+export const getContactRequests = async (): Promise<ContactRequestDto[]> => {
+  try {
+    const response = await apiClient.get<ContactRequestDto[]>(`/contact_request`);
+    console.log("Contact requests fetched:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch contact requests:", error);
+    return [];
+  }
+};
+
+export const getFindRequests = async (): Promise<FindRequestDto[]> => {
+  try {
+    const response = await apiClient.get<FindRequestDto[]>(`/find_request`);
+    console.log("Find requests fetched:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch find requests:", error);
+    return [];
+  }
+};
+
+export const getAllBids = async (): Promise<BidsResponse> => {
+  try {
+    const [contactRequests, findRequests] = await Promise.all([
+      getContactRequests(),
+      getFindRequests()
+    ]);
+    return {
+      contactRequests,
+      findRequests
+    };
+  } catch (error) {
+    console.error("Failed to fetch all bids:", error);
+    return {
+      contactRequests: [],
+      findRequests: []
+    };
+  }
+};
+
+export const checkContactRequest = async (id: number): Promise<ContactRequestDto> => {
+  try {
+    const response = await apiClient.post<ContactRequestDto>(`/contact_request/${id}/check`);
+    console.log("Contact request checked:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to check contact request:", error);
+    throw error;
+  }
+};
+
+export const checkFindRequest = async (id: number): Promise<FindRequestDto> => {
+  try {
+    const response = await apiClient.post<FindRequestDto>(`/find_request/${id}/check`);
+    console.log("Find request checked:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to check find request:", error);
+    throw error;
+  }
+};
