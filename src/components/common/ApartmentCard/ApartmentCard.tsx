@@ -115,6 +115,9 @@ const ApartmentCard: React.FC<ApartmentCardProps> = ({
                         onError={() => setImageError(true)}
                         alt={`${roomCount}-комнатная квартира в ${complexName || "комплексе"}`}
                     />
+                    <div className={styles.hoverOverlay}>
+                        <span className={styles.hoverText}>Узнать цену</span>
+                    </div>
                     {purpleBlockText && (
                         <div className={styles.purpleTextBlock}>
                             {purpleBlockText}

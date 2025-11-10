@@ -29,7 +29,7 @@
 }
 
 .contentLeft {
-    width: 70%;
+    width: 50%;
     display: flex;
     flex-direction: column;
 }
@@ -107,6 +107,7 @@
 }
 
 .goodThings {
+    flex-wrap: wrap;
     display: flex;
     flex-direction: row;
     gap: 12px;
@@ -190,7 +191,7 @@
     display: flex;
     flex-direction: column;
     gap: 30px;
-    width: 30%;
+    width: 50%;
 }
 
 .buttonContainer {
@@ -497,7 +498,7 @@
 
 @media (min-width: 1921px) {
     .contentLeft {
-        width: 70%;
+        width: 50%;
     }
 
     .galleryContainer {
@@ -505,6 +506,6 @@
     }
 
     .contentRight {
-        width: 30%;
+        width: 50%;
     }
 }

@@ -616,7 +616,6 @@
         width: 350px;
         font-size: 36px;
         line-height: 48px;
-        left: 180px;
         bottom: -20px;
     }
 
@@ -769,15 +768,16 @@
     }
 
     .principleTitleText {
-        width: 300px;
+        width: 380px;
         font-size: 32px;
         line-height: 44px;
-        left: 171px;
+        left: 100px;
         bottom: -30px;
     }
 
     .principleDescription {
         font-size: 16px;
+        width: 70%;
         line-height: 26px;
     }
 
@@ -913,10 +913,12 @@
 
     .principleTitleText {
         position: absolute;
-        font-size: 28px;
-        line-height: 38px;
-        bottom: -10px;
-        left: 110px;
+        font-size: 24px;
+        line-height: 34px;
+        bottom: auto;
+        top: 90px;
+        width: 90%;
+        max-width: 360px;
     }
 
     .principleDescription {
@@ -1044,6 +1046,17 @@
         flex-direction: column;
         gap: 12px;
     }
+
+    .principleImage {
+        height: 120px;
+    }
+}
+
+@media (max-width: 600px) {
+    .principleTitleText {
+        left: 50%;
+        transform: translateX(-50%) translateY(-50%);
+    }
 }
 
 @media (max-width: 360px) {
@@ -1127,9 +1140,11 @@
     }
 
     .principleTitleText {
-        font-size: 20px;
-        line-height: 28px;
-        bottom: -140px;
+        font-size: 24px;
+        line-height: 34px;
+        bottom: auto;
+        top: 90px;
+        width: 90%;
     }
 
     .principleDescription {

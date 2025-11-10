@@ -9,8 +9,7 @@
 .carouselContent {
     position: relative;
     width: fit-content;
-    overflow: hidden;
-    box-shadow: 0px 0px 12px 0px #1212121F;
+    overflow: visible;
 }
 
 .carouselItem {
