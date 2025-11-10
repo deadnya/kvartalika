@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import styles from "./PromotionModal.module.css"
 import CloseIcon from '../../../assets/icons/close.svg?react';
+import Portal from '../Portal';
 
 interface PromotionModalProps {
     title: string;
@@ -42,22 +43,24 @@ const PromotionModal: React.FC<PromotionModalProps> = ({
     ));
 
     return (
-        <div className={styles.backdrop} onClick={handleBackdropClick}>
-            <div className={styles.modal}>
-                <button className={styles.closeButton} onClick={onClose}>
-                    <CloseIcon />
-                </button>
+        <Portal>
+            <div className={styles.backdrop} onClick={handleBackdropClick}>
+                <div className={styles.modal}>
+                    <button className={styles.closeButton} onClick={onClose}>
+                        <CloseIcon />
+                    </button>
 
-                <img src={imageSrc} alt={title} className={styles.image} />
+                    <img src={imageSrc} alt={title} className={styles.image} />
 
-                <div className={styles.content}>
-                    <h2 className={styles.title}>{title}</h2>
-                    <div className={styles.textContainer}>
-                        {textParagraphs}
+                    <div className={styles.content}>
+                        <h2 className={styles.title}>{title}</h2>
+                        <div className={styles.textContainer}>
+                            {textParagraphs}
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </Portal>
     );
 };
 
