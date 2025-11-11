@@ -15,8 +15,6 @@ const ApartmentCard = ({ layout }: ApartmentCardProps) => {
     navigate(`/layout/${layout.id}`);
   };
 
-  console.log(layout);
-
   return (
     <div
       className={

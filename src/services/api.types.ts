@@ -71,6 +71,7 @@ export interface VariantRequest {
   floor: number;
   status: string;
   hasDecoration?: boolean;
+  number: number;
 }
 
 export interface CreateFlatVariantRequest {
@@ -80,6 +81,7 @@ export interface CreateFlatVariantRequest {
   floor: number;
   status: "AVAILABLE" | "RESERVED" | "SOLD";
   hasDecoration: boolean;
+  number: number;
 }
 
 export interface UpdateFlatVariantRequest {
@@ -89,6 +91,7 @@ export interface UpdateFlatVariantRequest {
   floor: number;
   status: "AVAILABLE" | "RESERVED" | "SOLD";
   hasDecoration: boolean;
+  number: number;
 }
 
 export interface FlatVariantDto {
@@ -99,6 +102,7 @@ export interface FlatVariantDto {
   floor: number;
   status: "AVAILABLE" | "RESERVED" | "SOLD";
   hasDecoration: boolean;
+  number: number;
 }
 
 export interface FlatRequest {

@@ -180,7 +180,7 @@ export const usePageLoadingState = (config?: LoadingConfig) => {
     } catch (error) {
       // Only set error if this is still the current execution
       if (token === executionTokenRef.current) {
-        console.error("Page loading error:", error);
+        // Silently handle error
         completedRef.current = true;
         setState((prev) => ({
           ...prev,

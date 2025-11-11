@@ -52,8 +52,7 @@ const FindApartmentModal = ({ onClose }: FindApartmentModalProps) => {
         setSubmitError("");
 
         try {
-            const response = await submitFindRequest(formData);
-            console.log("Find request submitted successfully:", response);
+            await submitFindRequest(formData);
 
             setFormData({
                 lastName: "",

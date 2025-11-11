@@ -41,7 +41,7 @@ const AuthPage = () => {
         await loginAsContentManager(req);
       }
     } catch (err) {
-      console.log(err);
+      // Silently handle error
     }
   };
 

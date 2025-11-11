@@ -187,7 +187,6 @@ const ContentManagementSection = () => {
 
   const handleSave = useCallback(
     async (payload: PayLoadType) => {
-      console.log("SAVINGGGG");
       if (activeContentType === "flat")
         await saveFlat(payload as FlatWithCategoryRequest);
       if (activeContentType === "apartmentComplex") {
@@ -224,7 +223,6 @@ const ContentManagementSection = () => {
     if (activeContentType === "apartmentComplex" && selectedApartmentComplex?.id) {
       // TODO: Call API to delete apartment complex
       // For now, just close the form and refresh
-      console.log("Delete apartment complex:", selectedApartmentComplex.id);
     }
     if (activeContentType === "category" && selectedCategory?.id)
       await removeCategory(selectedCategory.id);

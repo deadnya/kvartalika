@@ -15,7 +15,7 @@ export const Pagination = ({ currentPage, totalPages, onPageChange }: Pagination
     }
 
     const getPageNumbers = (): (number | string)[] => {
-        if (totalPages <= 5) {
+        if (totalPages <= 7) {
             return Array.from({ length: totalPages }, (_, i) => i + 1);
         }
 
@@ -23,21 +23,30 @@ export const Pagination = ({ currentPage, totalPages, onPageChange }: Pagination
         
         pages.push(1);
 
-        if (currentPage > 3) {
+        // Show ellipsis or page 2 before the current range
+        if (currentPage > 4) {
             pages.push("...");
         } else {
             pages.push(2);
         }
 
-        if (currentPage <= 3) {
-            pages.push(3);
-        } else if (currentPage >= totalPages - 2) {
-            pages.push(totalPages - 2);
+        // Show previous, current, and next pages (3 buttons in the middle)
+        if (currentPage > 2) {
+            pages.push(currentPage - 1);
         } else {
-            pages.push(currentPage);
+            pages.push(3);
         }
 
-        if (currentPage < totalPages - 2) {
+        pages.push(currentPage);
+
+        if (currentPage < totalPages - 1) {
+            pages.push(currentPage + 1);
+        } else {
+            pages.push(totalPages - 2);
+        }
+
+        // Show ellipsis or second-to-last page after the current range
+        if (currentPage < totalPages - 3) {
             pages.push("...");
         } else {
             pages.push(totalPages - 1);

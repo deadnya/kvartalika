@@ -67,6 +67,7 @@ export interface FlatVariantDto {
   floor: number;
   status: "AVAILABLE" | "RESERVED" | "SOLD";
   hasDecoration: boolean;
+  number: number;
 }
 
 export interface ApartmentDto {

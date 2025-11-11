@@ -365,9 +365,8 @@ export const useContentStore = create<ContentState & ContentActions>(
       }
     },
 
-    uploadPhotos: async (files: File[]) => {
-      // stub: реализуй через соответствующий сервис
-      console.log("uploadPhotos", files);
+    uploadPhotos: async () => {
+      // stub: реализuй через соответствующий сервис
       return true;
     },
 

@@ -11,6 +11,10 @@ import { getApartmentComplex } from '../../../services/api/pages.api.requests';
 
 import fallback from "/fallback.png"
 
+// Simple in-memory cache for complex names to avoid duplicate requests
+const complexNameCache = new Map<string, string>();
+const fetchingPromises = new Map<string, Promise<string | null>>();
+
 const getToiletCountText = (count: number): string => {
     const lastDigit = count % 10;
     const lastTwoDigits = count % 100;
@@ -73,18 +77,51 @@ const ApartmentCard: React.FC<ApartmentCardProps> = ({
     
     const displayImage = imageError || !imageSrc || (imageSrc == "") ? fallback : imageSrc;
 
-    // Fetch apartment complex name if not provided
+    // Fetch apartment complex name if not provided (with caching to prevent duplicate requests)
     useEffect(() => {
         if (!houseComplexTitle && houseComplexId) {
             const fetchComplexName = async () => {
-                try {
-                    const response = await getApartmentComplex(houseComplexId as string);
-                    setComplexName(response.data.name);
-                } catch (error) {
-                    console.error("Failed to fetch complex name:", error);
-                    setComplexName(null);
+                const complexId = houseComplexId as string;
+                
+                // Check cache first
+                if (complexNameCache.has(complexId)) {
+                    setComplexName(complexNameCache.get(complexId) || null);
+                    return;
                 }
+
+                // If a fetch is already in progress for this ID, wait for it
+                if (fetchingPromises.has(complexId)) {
+                    try {
+                        const name = await fetchingPromises.get(complexId);
+                        setComplexName(name || null);
+                    } catch (error) {
+                        console.error("Failed to fetch complex name:", error);
+                        setComplexName(null);
+                    }
+                    return;
+                }
+
+                // Start a new fetch
+                const fetchPromise = (async () => {
+                    try {
+                        const response = await getApartmentComplex(complexId);
+                        const name = response.data.name;
+                        complexNameCache.set(complexId, name);
+                        setComplexName(name);
+                        return name;
+                    } catch (error) {
+                        console.error("Failed to fetch complex name:", error);
+                        setComplexName(null);
+                        return null;
+                    } finally {
+                        fetchingPromises.delete(complexId);
+                    }
+                })();
+
+                fetchingPromises.set(complexId, fetchPromise);
+                await fetchPromise;
             };
+            
             fetchComplexName();
         } else {
             setComplexName(houseComplexTitle || null);

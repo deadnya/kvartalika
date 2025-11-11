@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import Button from "../../components/common/Button";
 import AdminOverlay from "../../components/common/AdminOverlay/AdminOverlay";
 import { setMetaTags, resetMetaTags } from "../../utils/metaTagsManager";
@@ -11,6 +12,7 @@ import MapIcon from "../../assets/icons/map.svg?react"
 import BuildingIcon from "../../assets/icons/building.svg?react"
 import PhoneIcon from "../../assets/icons/phone.svg?react"
 import EmailIcon from "../../assets/icons/email.svg?react"
+import CloseIcon from "../../assets/icons/close.svg?react"
 
 import ApartmentCard from "../../components/common/ApartmentCard/ApartmentCard";
 import Carousel from "../../components/common/Carousel/Carousel";
@@ -22,7 +24,7 @@ import PaymentIcon2 from "../../assets/icons/homePagePayment2.svg?react"
 import PaymentIcon3 from "../../assets/icons/homePagePayment3.svg?react"
 import PaymentIcon4 from "../../assets/icons/homePagePayment4.svg?react"
 import Promotion from "../../components/common/Promotion/Promotion";
-import { getApartmentComplexPageContent, getHomePageContent } from "../../services/api/pages.api.requests";
+import { getHomePageContent } from "../../services/api/pages.api.requests";
 import { getFooterData } from "../../services/api/pages.api.requests";
 import type { ApartmentComplexPageContent, HomePageContent, ProjectInfo } from "../../services/api/pages.api.types";
 import type { FooterDto } from "../../services/api/pages.api.types";
@@ -32,7 +34,7 @@ import type { ContactRequestData } from "../../services/api/pages.api.types";
 
 const HomePage = () => {
     const navigate = useNavigate();
-    const { homePageContent, homePageFooter, homePageComplex, setHomePageContent, setHomePageFooter, setHomePageComplex } = usePageContentStore();
+    const { homePageContent, homePageFooter, homePageComplex, setHomePageContent, setHomePageFooter } = usePageContentStore();
     const [content, setLocalContent] = useState<HomePageContent>(homePageContent || DEFAULT_HOME_PAGE_CONTENT);
     const [footerData, setLocalFooterData] = useState<FooterDto | null>(homePageFooter);
     const [complexData, setLocalComplexData] = useState<ApartmentComplexPageContent | null>(homePageComplex);
@@ -44,8 +46,8 @@ const HomePage = () => {
         comment: "",
     });
     const [formError, setFormError] = useState<string>("");
-    const [formSuccess, setFormSuccess] = useState<boolean>(false);
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
 
     const ourProjectsRef = useIntersectionObserver({ threshold: 0.1 });
     const hotDealsRef = useIntersectionObserver({ threshold: 0.1 });
@@ -63,40 +65,24 @@ const HomePage = () => {
         return Math.min(itemsCount, content.hotDeals.length);
     };
 
-    const fetchContent = async () => {
-        console.log("[HomePage] fetchContent starting");
-        try {
-            const data = await getHomePageContent();
-            console.log("[HomePage] fetchContent received data");
-            if (data.projects[0]) fetchComplex(data.projects[0].id)
-            setLocalContent(data);
-            setHomePageContent(data);
-            console.log("[HomePage] fetchContent complete");
-        } catch (error) {
-            console.error("[HomePage] fetchContent error:", error);
-            setLocalContent(DEFAULT_HOME_PAGE_CONTENT);
+    // Sync store data to local state when they change
+    useEffect(() => {
+        if (homePageContent) {
+            setLocalContent(homePageContent);
         }
-    };
+    }, [homePageContent]);
 
-    const fetchComplex = async (id: string) => {
-        try {
-            const data = await getApartmentComplexPageContent(id);
-            setLocalComplexData(data);
-            setHomePageComplex(data);
-        } catch (error) {
-            console.error("Error fetching complex content:", error);
+    useEffect(() => {
+        if (homePageFooter) {
+            setLocalFooterData(homePageFooter);
         }
-    };
+    }, [homePageFooter]);
 
-    const fetchFooterData = async () => {
-        try {
-            const response = await getFooterData();
-            setLocalFooterData(response.data);
-            setHomePageFooter(response.data);
-        } catch (error) {
-            console.error("Error fetching footer data:", error);
+    useEffect(() => {
+        if (homePageComplex) {
+            setLocalComplexData(homePageComplex);
         }
-    };
+    }, [homePageComplex]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -110,30 +96,53 @@ const HomePage = () => {
     const handleSubmitContactRequest = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setFormError("");
-        setFormSuccess(false);
         setIsSubmitting(true);
 
         try {
-            const response = await submitContactRequest(formData);
-            setFormSuccess(true);
+            await submitContactRequest(formData);
             setFormData({ name: "", phone: "", comment: "" });
-            console.log("Contact request submitted successfully:", response);
-            // Show success message for 5 seconds
-            setTimeout(() => {
-                setFormSuccess(false);
-            }, 5000);
+            setShowSuccessModal(true);
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : "An error occurred";
             setFormError(errorMessage);
-            console.error("Failed to submit contact request:", error);
         } finally {
             setIsSubmitting(false);
         }
     };
 
     useEffect(() => {
-        fetchContent();
-        fetchFooterData();
+        const handleDataSaved = () => {
+            (async () => {
+                try {
+                    const data = await getHomePageContent();
+                    setLocalContent(data);
+                    setHomePageContent(data);
+                } catch (error) {
+                    // Silently handle error
+                }
+            })();
+        };
+
+        window.addEventListener("homePageDataSaved", handleDataSaved);
+        return () => window.removeEventListener("homePageDataSaved", handleDataSaved);
+    }, []);
+
+    useEffect(() => {
+        const handleFooterDataSaved = () => {
+            // Refetch only the footer data when admin saves
+            (async () => {
+                try {
+                    const response = await getFooterData();
+                    setLocalFooterData(response.data);
+                    setHomePageFooter(response.data);
+                } catch (error) {
+                    // Silently handle error
+                }
+            })();
+        };
+
+        window.addEventListener("footerDataSaved", handleFooterDataSaved);
+        return () => window.removeEventListener("footerDataSaved", handleFooterDataSaved);
     }, []);
 
     useEffect(() => {
@@ -149,24 +158,6 @@ const HomePage = () => {
         }
     }, [content]);
 
-    useEffect(() => {
-        const handleDataSaved = () => {
-            fetchContent();
-        };
-
-        window.addEventListener("homePageDataSaved", handleDataSaved);
-        return () => window.removeEventListener("homePageDataSaved", handleDataSaved);
-    }, []);
-
-    useEffect(() => {
-        const handleFooterDataSaved = () => {
-            fetchFooterData();
-        };
-
-        window.addEventListener("footerDataSaved", handleFooterDataSaved);
-        return () => window.removeEventListener("footerDataSaved", handleFooterDataSaved);
-    }, []);
-
     return (
         <>
             <AdminOverlay />
@@ -178,7 +169,7 @@ const HomePage = () => {
                             src={content.heroImageSrc}
                             onLoad={() => setHeroImageLoaded(true)}
                             onError={() => setHeroImageLoaded(true)}
-                            style={{ opacity: heroImageLoaded ? 1 : 0.8 }}
+                            style={{ opacity: heroImageLoaded ? 1 : 1}}
                         />
                         <div className={styles.triangleOverlay}></div>
                     </div>
@@ -281,7 +272,7 @@ const HomePage = () => {
                                 key={deal.id}
                                 roomCount={deal.numberOfRooms}
                                 toiletCount={deal.numberOfBathrooms}
-                                houseComplexTitle=""
+                                houseComplexTitle={deal.houseComplexTitle || ""}
                                 address={deal.address}
                                 variants={deal.variants}
                                 houseComplexId={deal.homeId}
@@ -299,7 +290,7 @@ const HomePage = () => {
                                     key={deal.id}
                                     roomCount={deal.numberOfRooms}
                                     toiletCount={deal.numberOfBathrooms}
-                                    houseComplexTitle=""
+                                    houseComplexTitle={deal.houseComplexTitle || ""}
                                     address={deal.address}
                                     variants={deal.variants}
                                     houseComplexId={deal.homeId}
@@ -362,91 +353,120 @@ const HomePage = () => {
                     </div>
 
                     <div className={styles.sendRequestContent}>
-                        <div className={styles.contactInfo}>
-                            <div className={styles.contactInfoColumn}>
-                                <div className={styles.contactInfoBlock}>
-                                    <MapIcon />
-                                    <div className={styles.contactInfoContent}>
-                                        <span>{footerData?.address ?? "Томск, площадь Батенькова 2, подъезд 7, этаж 3, офис 310"}</span>
-                                        <span>
-                                            Режим работы:<br/>
-                                            {footerData?.workingHours ?? content.contactInfo?.workingHours ?? "пн–пт: 9:00 –19:00\nсб: 10:00 –18:00"}
-                                        </span>
+                        <>
+                            <div className={styles.contactInfo}>
+                                <div className={styles.contactInfoColumn}>
+                                    <div className={styles.contactInfoBlock}>
+                                        <MapIcon />
+                                        <div className={styles.contactInfoContent}>
+                                            <span>{footerData?.address ?? "Томск, площадь Батенькова 2, подъезд 7, этаж 3, офис 310"}</span>
+                                            <span>
+                                                Режим работы:<br/>
+                                                {footerData?.workingHours ?? content.contactInfo?.workingHours ?? "пн–пт: 9:00 –19:00\nсб: 10:00 –18:00"}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className={styles.contactInfoColumn}>
+                                    <div className={styles.contactInfoBlock}>
+                                        <PhoneIcon />
+                                        <div className={styles.contactInfoContent}>
+                                            <a href={`tel:${footerData?.phone.replace(/\s+/g, '')}`}>{footerData?.phone}</a>
+                                        </div>
+                                    </div>
+                                    <div className={styles.contactInfoBlock}>
+                                        <EmailIcon />
+                                        <div className={styles.contactInfoContent}>
+                                            <a href={`mailto:${footerData?.email}`}>{footerData?.email}</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div className={styles.contactInfoColumn}>
-                                <div className={styles.contactInfoBlock}>
-                                    <PhoneIcon />
-                                    <div className={styles.contactInfoContent}>
-                                        <a href={`tel:${footerData?.phone.replace(/\s+/g, '')}`}>{footerData?.phone}</a>
+                            <form className={styles.formInputContainer} onSubmit={handleSubmitContactRequest}>
+                                {formError && (
+                                    <div style={{ color: "#d32f2f", marginBottom: "16px", fontSize: "14px" }}>
+                                        {formError}
                                     </div>
-                                </div>
-                                <div className={styles.contactInfoBlock}>
-                                    <EmailIcon />
-                                    <div className={styles.contactInfoContent}>
-                                        <a href={`mailto:${footerData?.email}`}>{footerData?.email}</a>
+                                )}
+                                <div className={styles.formInputs}>
+                                    <div className={styles.formRow}>
+                                        <Input 
+                                            type="text"
+                                            placeholder="Имя*"
+                                            name="name"
+                                            value={formData.name}
+                                            onChange={handleInputChange}
+                                            required
+                                        />
+                                        <Input 
+                                            type="tel"
+                                            placeholder="Номер телефона*"
+                                            name="phone"
+                                            value={formData.phone}
+                                            onChange={handleInputChange}
+                                            required
+                                        />
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                        <form className={styles.formInputContainer} onSubmit={handleSubmitContactRequest}>
-                            {formError && (
-                                <div style={{ color: "#d32f2f", marginBottom: "16px", fontSize: "14px" }}>
-                                    {formError}
-                                </div>
-                            )}
-                            {formSuccess && (
-                                <div style={{ color: "#388e3c", marginBottom: "16px", fontSize: "14px" }}>
-                                    Заявка успешно отправлена! Спасибо за ваше сообщение.
-                                </div>
-                            )}
-                            <div className={styles.formInputs}>
-                                <div className={styles.formRow}>
-                                    <Input 
-                                        type="text"
-                                        placeholder="Имя*"
-                                        name="name"
-                                        value={formData.name}
-                                        onChange={handleInputChange}
-                                        required
-                                    />
-                                    <Input 
-                                        type="tel"
-                                        placeholder="Номер телефона*"
-                                        name="phone"
-                                        value={formData.phone}
-                                        onChange={handleInputChange}
-                                        required
-                                    />
+
+                                    <div className={styles.formRow}>
+                                        <Input 
+                                            type="text"
+                                            placeholder="Ваш комментарий"
+                                            name="comment"
+                                            value={formData.comment}
+                                            onChange={handleInputChange}
+                                        />
+                                    </div>
                                 </div>
 
-                                <div className={styles.formRow}>
-                                    <Input 
-                                        type="text"
-                                        placeholder="Ваш комментарий"
-                                        name="comment"
-                                        value={formData.comment}
-                                        onChange={handleInputChange}
-                                    />
+                                <div className={styles.formBottom}>
+                                    <span>Нажимая "Отправить заявку", вы соглашаетесь с <Link to="/privacy" className={styles.formLink}>Политикой конфиденциальности</Link></span>
+                                    <div>
+                                        <Button
+                                            includeArrow={true}
+                                            type="submit"
+                                            isDisabled={isSubmitting}
+                                        >{isSubmitting ? "Отправляется..." : "Оставить заявку"}</Button>
+                                    </div>
                                 </div>
-                            </div>
-
-                            <div className={styles.formBottom}>
-                                <span>Нажимая "Отправить заявку", вы соглашаетесь с <Link to="/privacy" className={styles.formLink}>Политикой конфиденциальности</Link></span>
-                                <div>
-                                    <Button
-                                        includeArrow={true}
-                                        type="submit"
-                                        isDisabled={isSubmitting}
-                                    >{isSubmitting ? "Отправляется..." : "Оставить заявку"}</Button>
-                                </div>
-                            </div>
-                        </form>
+                            </form>
+                        </>
                     </div>
                 </div>
             </div>
             </div>
+            {showSuccessModal && createPortal(
+                <div className={styles.modalOverlay} onClick={(e) => {
+                    if (e.target === e.currentTarget) {
+                        setShowSuccessModal(false);
+                    }
+                }}>
+                    <div className={styles.modalWindow} onClick={(e) => e.stopPropagation()}>
+                        <button 
+                            type="button"
+                            className={styles.closeButton} 
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                setShowSuccessModal(false);
+                            }}
+                        >
+                            <CloseIcon />
+                        </button>
+                        
+                        <div className={styles.successContainer}>
+                            <div className={styles.textContainer}>
+                                <h3 className={styles.successTitle}>Благодарим Вас за оставленную заявку!</h3>
+                                <p className={styles.successDesc}>Наши специалисты свяжутся с Вами в ближайшее время, чтобы обсудить детали Вашей заявки и ответить на все Ваши вопросы.</p>
+                            </div>
+                            <div className={styles.buttonContainer}>
+                                <Button onClick={() => setShowSuccessModal(false)}>Продолжить</Button>  
+                            </div>
+                        </div>
+                    </div>
+                </div>,
+                document.body
+            )}
             </>
         );
     };

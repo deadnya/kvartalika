@@ -193,7 +193,8 @@ const ContentEditor: FC<ContentEditorUnifiedProps> = ({
         variantFormData.price === undefined || variantFormData.price === null || isNaN(variantFormData.price) ||
         variantFormData.floor === undefined || variantFormData.floor === null || isNaN(variantFormData.floor) ||
         !variantFormData.status ||
-        variantFormData.hasDecoration === undefined) {
+        variantFormData.hasDecoration === undefined ||
+        variantFormData.number === undefined || variantFormData.number === null || isNaN(variantFormData.number)) {
       setError("Все поля варианта должны быть заполнены");
       return;
     }
@@ -206,6 +207,7 @@ const ContentEditor: FC<ContentEditorUnifiedProps> = ({
         floor: variantFormData.floor,
         status: variantFormData.status as "AVAILABLE" | "RESERVED" | "SOLD",
         hasDecoration: variantFormData.hasDecoration,
+        number: variantFormData.number,
       };
       
       await createVariant(createData);
@@ -223,7 +225,8 @@ const ContentEditor: FC<ContentEditorUnifiedProps> = ({
         variantFormData.price === undefined || variantFormData.price === null || isNaN(variantFormData.price) ||
         variantFormData.floor === undefined || variantFormData.floor === null || isNaN(variantFormData.floor) ||
         !variantFormData.status ||
-        variantFormData.hasDecoration === undefined) {
+        variantFormData.hasDecoration === undefined ||
+        variantFormData.number === undefined || variantFormData.number === null || isNaN(variantFormData.number)) {
       setError("Все поля варианта должны быть заполнены");
       return;
     }
@@ -236,6 +239,7 @@ const ContentEditor: FC<ContentEditorUnifiedProps> = ({
         floor: variantFormData.floor,
         status: variantFormData.status as "AVAILABLE" | "RESERVED" | "SOLD",
         hasDecoration: variantFormData.hasDecoration,
+        number: variantFormData.number,
       };
       
       await updateVariant(updateData);
@@ -257,6 +261,7 @@ const ContentEditor: FC<ContentEditorUnifiedProps> = ({
         floor: variant.floor,
         status: variant.status,
         hasDecoration: variant.hasDecoration,
+        number: variant.number,
       });
     } else {
       setEditingVariant(null);
@@ -282,7 +287,8 @@ const ContentEditor: FC<ContentEditorUnifiedProps> = ({
         variantFormData.price === undefined || variantFormData.price === null || isNaN(variantFormData.price) ||
         variantFormData.floor === undefined || variantFormData.floor === null || isNaN(variantFormData.floor) ||
         !variantFormData.status ||
-        variantFormData.hasDecoration === undefined) {
+        variantFormData.hasDecoration === undefined ||
+        variantFormData.number === undefined || variantFormData.number === null || isNaN(variantFormData.number)) {
       setError("Все поля варианта должны быть заполнены");
       return;
     }
@@ -293,6 +299,7 @@ const ContentEditor: FC<ContentEditorUnifiedProps> = ({
       floor: variantFormData.floor,
       status: variantFormData.status as "AVAILABLE" | "RESERVED" | "SOLD",
       hasDecoration: variantFormData.hasDecoration,
+      number: variantFormData.number,
     };
 
     setLocalVariants(prev => [...prev, newVariant]);
@@ -307,7 +314,8 @@ const ContentEditor: FC<ContentEditorUnifiedProps> = ({
         variantFormData.price === undefined || variantFormData.price === null || isNaN(variantFormData.price) ||
         variantFormData.floor === undefined || variantFormData.floor === null || isNaN(variantFormData.floor) ||
         !variantFormData.status ||
-        variantFormData.hasDecoration === undefined) {
+        variantFormData.hasDecoration === undefined ||
+        variantFormData.number === undefined || variantFormData.number === null || isNaN(variantFormData.number)) {
       setError("Все поля варианта должны быть заполнены");
       return;
     }
@@ -318,6 +326,7 @@ const ContentEditor: FC<ContentEditorUnifiedProps> = ({
       floor: variantFormData.floor,
       status: variantFormData.status as "AVAILABLE" | "RESERVED" | "SOLD",
       hasDecoration: variantFormData.hasDecoration,
+      number: variantFormData.number,
     };
 
     setLocalVariants(prev => 
@@ -359,6 +368,7 @@ const ContentEditor: FC<ContentEditorUnifiedProps> = ({
         floor: variant.floor,
         status: variant.status,
         hasDecoration: variant.hasDecoration,
+        number: variant.number,
       });
     } else {
       setEditingLocalVariant(null);
@@ -389,6 +399,7 @@ const ContentEditor: FC<ContentEditorUnifiedProps> = ({
             floor: variant.floor,
             status: variant.status,
             hasDecoration: variant.hasDecoration ?? false,
+            number: variant.number,
           }));
           
           const flatPayloadWithVariants = {
@@ -413,6 +424,7 @@ const ContentEditor: FC<ContentEditorUnifiedProps> = ({
             floor: variant.floor,
             status: variant.status,
             hasDecoration: variant.hasDecoration ?? false,
+            number: variant.number,
           }));
           
           const flatPayloadWithVariants = {
@@ -892,7 +904,8 @@ const ContentEditor: FC<ContentEditorUnifiedProps> = ({
                 <div className="space-y-3">
                   {flatVariants.map((variant) => (
                     <div key={variant.id} className="border rounded p-3 bg-gray-50">
-                      <div className="grid grid-cols-5 gap-4 text-sm">
+                      <div className="grid grid-cols-6 gap-4 text-sm">
+                        <div><strong>№ квартиры:</strong> {variant.number}</div>
                         <div><strong>Площадь:</strong> {variant.area} м²</div>
                         <div><strong>Цена:</strong> {variant.price.toLocaleString()} ₽</div>
                         <div><strong>Этаж:</strong> {variant.floor}</div>
@@ -942,7 +955,8 @@ const ContentEditor: FC<ContentEditorUnifiedProps> = ({
                 <div className="space-y-3">
                   {localVariants.map((variant, index) => (
                     <div key={index} className="border rounded p-3 bg-blue-50">
-                      <div className="grid grid-cols-5 gap-4 text-sm">
+                      <div className="grid grid-cols-6 gap-4 text-sm">
+                        <div><strong>№ квартиры:</strong> {variant.number}</div>
                         <div><strong>Площадь:</strong> {variant.area} м²</div>
                         <div><strong>Цена:</strong> {variant.price.toLocaleString()} ₽</div>
                         <div><strong>Этаж:</strong> {variant.floor}</div>
@@ -2479,6 +2493,22 @@ const ContentEditor: FC<ContentEditorUnifiedProps> = ({
                     onChange={(e) => setVariantFormData(prev => ({
                       ...prev,
                       floor: e.target.value ? parseInt(e.target.value) : undefined
+                    }))}
+                    className="w-full border rounded px-3 py-2"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-1">
+                    № квартиры
+                  </label>
+                  <input
+                    type="number"
+                    value={variantFormData.number || ""}
+                    onChange={(e) => setVariantFormData(prev => ({
+                      ...prev,
+                      number: e.target.value ? parseInt(e.target.value) : undefined
                     }))}
                     className="w-full border rounded px-3 py-2"
                     required

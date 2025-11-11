@@ -51,11 +51,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src }) => {
             player.ready(() => {
                 const qualityLevels = (player as any).qualityLevels();
 
-                // Add logging for available quality levels
-                console.log("Available quality levels:", qualityLevels.levels_);
-
                 qualityLevels.on("change", () => {
-                    console.log("Quality level changed to:", qualityLevels.selectedIndex);
+                    // Quality level changed
                 });
             });
         }, 0);

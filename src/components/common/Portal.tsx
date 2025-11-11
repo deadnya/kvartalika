@@ -10,7 +10,6 @@ const Portal: React.FC<PortalProps> = ({ children }) => {
     const portalRoot = document.getElementById('portal-root');
     
     if (!portalRoot) {
-        console.warn('Portal root element not found');
         return null;
     }
     

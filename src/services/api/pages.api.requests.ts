@@ -1,20 +1,10 @@
 import { apiClient } from "../api.config";
 import type { HomePageContent, HomePageContentRequest, AboutUsPageContent, ApartmentComplexPageContent, ApartmentsPageContent, ApartmentComplexCardProps, AparmentComplexDto, FooterDto, ApartmentDto, ApartmentDtoResponse, CategoryDto, ContactRequestDto, FindRequestDto, BidsResponse } from "./pages.api.types";
-import { MOCK_HOME_PAGE_CONTENT } from "./mocks/homePage.mock";
-import { MOCK_ABOUT_US_PAGE_CONTENT } from "./mocks/aboutUsPage.mock";
-import { MOCK_APARTMENT_COMPLEX_PAGE_CONTENT } from "./mocks/apartmentComplexPage.mock";
-import { MOCK_APARTMENT_COMPLEXES_PAGE_CONTENT } from "./mocks/apartmentComplexesPage.mock";
-import { MOCK_APARTMENTS_PAGE_CONTENT } from "./mocks/apartmentsPage.mock";
 
 export const getHomePageContent = async (): Promise<HomePageContent> => {
-  try {
-    const response = await apiClient.get<HomePageContent>("/home");
-    if (response.status == 204) throw new Error("No content")
-    return response.data;
-  } catch (error) {
-    console.error("Failed to fetch home page content, using mock data:", error);
-    return MOCK_HOME_PAGE_CONTENT;
-  }
+  const response = await apiClient.get<HomePageContent>("/home");
+  if (response.status == 204) throw new Error("No content")
+  return response.data;
 };
 
 export const postHomePageContent = async (content: HomePageContentRequest) => {
@@ -22,7 +12,7 @@ export const postHomePageContent = async (content: HomePageContentRequest) => {
     const response = await apiClient.post("/home", content);
     return response.data;
   } catch (error) {
-    console.error("Failed to post home page content", error);
+    // Silently handle error
   }
 }
 
@@ -31,19 +21,14 @@ export const putHomePageContent = async (content: HomePageContentRequest) => {
     const response = await apiClient.put("/home", content);
     return response.data;
   } catch (error) {
-    console.error("Failed to put home page content", error);
+    // Silently handle error
   }
 }
 
 export const getAboutUsPageContent = async (): Promise<AboutUsPageContent> => {
-  try {
-    const response = await apiClient.get<AboutUsPageContent>("/aboutus");
-    if (response.status == 204) throw new Error("No content")
-    return response.data;
-  } catch (error) {
-    console.error("Failed to fetch about us page content, using mock data:", error);
-    return MOCK_ABOUT_US_PAGE_CONTENT;
-  }
+  const response = await apiClient.get<AboutUsPageContent>("/aboutus");
+  if (response.status == 204) throw new Error("No content")
+  return response.data;
 };
 
 export const postAboutUsPageContent = async (content: AboutUsPageContent) => {
@@ -51,7 +36,7 @@ export const postAboutUsPageContent = async (content: AboutUsPageContent) => {
     const response = await apiClient.post("/aboutus", content);
     return response.data;
   } catch (error) {
-    console.error("Failed to post about us page content", error);
+    // Silently handle error
   }
 };
 
@@ -60,18 +45,13 @@ export const putAboutUsPageContent = async (content: AboutUsPageContent) => {
     const response = await apiClient.put("/aboutus", content);
     return response.data;
   } catch (error) {
-    console.error("Failed to put about us page content", error);
+    // Silently handle error
   }
 };
 
 export const getApartmentComplexPageContent = async (complexId: string): Promise<ApartmentComplexPageContent> => {
-  try {
-    const response = await apiClient.get<ApartmentComplexPageContent>(`/homes/${complexId}`);
-    return response.data;
-  } catch (error) {
-    console.error("Failed to fetch apartment complex page content, using mock data:", error);
-    return MOCK_APARTMENT_COMPLEX_PAGE_CONTENT;
-  }
+  const response = await apiClient.get<ApartmentComplexPageContent>(`/homes/${complexId}`);
+  return response.data;
 };
 
 export const putApartmentComplex = async (complexId: string, complex: ApartmentComplexPageContent) => {
@@ -82,7 +62,6 @@ export const putApartmentComplex = async (complexId: string, complex: ApartmentC
     ...rest,
   };
   const response = await apiClient.put<ApartmentComplexPageContent>(`/homes/${complexId}`, payload);
-  console.log(response)
   return response.data;
 }
 
@@ -94,28 +73,17 @@ export const postApartmentComplex = async (complexId: string, complex: Apartment
     ...rest,
   };
   const response = await apiClient.post<ApartmentComplexPageContent>(`/homes/${complexId}`, payload);
-  console.log(response)
   return response.data;
 }
 
 export const getApartmentComplexesPageContent = async (): Promise<ApartmentComplexCardProps[]> => {
-  try {
-    const response = await apiClient.get<ApartmentComplexCardProps[]>("/homes");
-    return response.data;
-  } catch (error) {
-    console.error("Failed to fetch apartment complexes page content, using mock data:", error);
-    return MOCK_APARTMENT_COMPLEXES_PAGE_CONTENT;
-  }
+  const response = await apiClient.get<ApartmentComplexCardProps[]>("/homes");
+  return response.data;
 };
 
 export const getApartmentsPageContent = async (): Promise<ApartmentsPageContent> => {
-  try {
-    const response = await apiClient.get<ApartmentsPageContent>("/apartments/content");
-    return response.data;
-  } catch (error) {
-    console.error("Failed to fetch apartments page content, using mock data:", error);
-    return MOCK_APARTMENTS_PAGE_CONTENT;
-  }
+  const response = await apiClient.get<ApartmentsPageContent>("/homes");
+  return response.data;
 };
 
 export const getApartmentComplex = async (id: string | number) => {
@@ -125,19 +93,16 @@ export const getApartmentComplex = async (id: string | number) => {
 
 export const getFooterData = async () => {
   const response = await apiClient.get<FooterDto>(`/page_info`)
-  console.log(response)
   return response;
 }
 
 export const putFooterData = async (data: FooterDto) => {
   const response = await apiClient.put<FooterDto>(`/page_info`, data)
-  console.log(response)
   return response;
 }
 
 export const getApartmentsForComplex = async (id: string): Promise<ApartmentDtoResponse[]> => {
   const response = await apiClient.get<ApartmentDtoResponse[]>(`/homes/${id}/flats`)
-  console.log(response)
   return response.data;
 }
 
@@ -157,40 +122,30 @@ export interface SearchApartmentsRequest {
 }
 
 export const searchApartments = async (filters: SearchApartmentsRequest): Promise<ApartmentDto[]> => {
-  try {
-    const response = await apiClient.post<ApartmentDtoResponse[]>("/search", filters);
-    return response.data.map(item => item.flat);
-  } catch (error) {
-    console.error("Failed to search apartments, using mock data:", error);
-    return MOCK_APARTMENTS_PAGE_CONTENT.apartments;
-  }
+  const response = await apiClient.post<ApartmentDtoResponse[]>("/search", filters);
+  return response.data.map(item => item.flat);
 };
 
 export const getApartment = async (id: string): Promise<ApartmentDtoResponse> => {
   const response = await apiClient.get<ApartmentDtoResponse>(`/flats/${id}`)
-  console.log(response.data)
   return response.data;
 }
 
 export const getCategories = async (): Promise<CategoryDto[]> => {
   const response = await apiClient.get<CategoryDto[]>(`/categories`)
-  console.log(response.data)
   return response.data
 }
 
 export const getApartmentComplexes = async (): Promise<AparmentComplexDto[]> => {
   const response = await apiClient.get<AparmentComplexDto[]>(`/homes`)
-  console.log(response.data)
   return response.data
 }
 
 export const getContactRequests = async (): Promise<ContactRequestDto[]> => {
   try {
     const response = await apiClient.get<ContactRequestDto[]>(`/contact_request`);
-    console.log("Contact requests fetched:", response.data);
     return response.data;
   } catch (error) {
-    console.error("Failed to fetch contact requests:", error);
     return [];
   }
 };
@@ -198,10 +153,8 @@ export const getContactRequests = async (): Promise<ContactRequestDto[]> => {
 export const getFindRequests = async (): Promise<FindRequestDto[]> => {
   try {
     const response = await apiClient.get<FindRequestDto[]>(`/find_request`);
-    console.log("Find requests fetched:", response.data);
     return response.data;
   } catch (error) {
-    console.error("Failed to fetch find requests:", error);
     return [];
   }
 };
@@ -217,7 +170,6 @@ export const getAllBids = async (): Promise<BidsResponse> => {
       findRequests
     };
   } catch (error) {
-    console.error("Failed to fetch all bids:", error);
     return {
       contactRequests: [],
       findRequests: []
@@ -228,10 +180,8 @@ export const getAllBids = async (): Promise<BidsResponse> => {
 export const checkContactRequest = async (id: number): Promise<ContactRequestDto> => {
   try {
     const response = await apiClient.post<ContactRequestDto>(`/contact_request/${id}/check`);
-    console.log("Contact request checked:", response.data);
     return response.data;
   } catch (error) {
-    console.error("Failed to check contact request:", error);
     throw error;
   }
 };
@@ -239,10 +189,8 @@ export const checkContactRequest = async (id: number): Promise<ContactRequestDto
 export const checkFindRequest = async (id: number): Promise<FindRequestDto> => {
   try {
     const response = await apiClient.post<FindRequestDto>(`/find_request/${id}/check`);
-    console.log("Find request checked:", response.data);
     return response.data;
   } catch (error) {
-    console.error("Failed to check find request:", error);
     throw error;
   }
 };

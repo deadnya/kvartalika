@@ -46,7 +46,7 @@ const ApartmentComplexesPage: React.FC = () => {
                             floorCount={complex.numberOfFloors}
                             description={complex.description}
                             finishDate={complex.yearBuilt}
-                            imageSrc={complex.images[0] ?? ""}
+                            imageSrc={complex.images[0] ?? null}
                             id={complex.id}
                         />
                     ))}

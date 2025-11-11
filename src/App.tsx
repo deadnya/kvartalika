@@ -72,16 +72,6 @@ const InnerApp = () => {
 
       const loaded = images.filter((img) => img.complete && img.naturalHeight > 0).length;
       
-      // Debug: log all images on page
-      if (elapsed > 1000 && elapsed < 1100) {
-        console.log("[DEBUG] Images in DOM:", images.map(img => ({
-          src: img.src?.substring(0, 50),
-          complete: img.complete,
-          naturalHeight: img.naturalHeight,
-          className: img.className
-        })));
-      }
-      
       // Update minimum image count (once we see more images, that's our baseline)
       if (images.length > minImageCount) {
         minImageCount = images.length;
@@ -98,13 +88,9 @@ const InnerApp = () => {
         lastImageCount = images.length;
       }
 
-      // Log status
-      console.log(`[Loader Check] Elapsed: ${elapsed}ms | Images: ${loaded}/${images.length} (min:${minImageCount}) | Stable: ${stableCheckCount}/10 | AllLoaded: ${allLoaded} | DataReady: ${pageDataReadyRef.current}`);
-
       // If we have enough images, all are loaded and stable, or page data is ready, we're done
       if ((allLoaded && stableCheckCount >= 10) || pageDataReadyRef.current) {
         // 10 * 100ms = 1 second stable
-        console.log("[Loader] ✅ All conditions met - HIDING LOADER");
         imagesLoadedRef.current = true;
         pageDataReadyRef.current = false; // Reset for next page
         pageLoading.start([]);
@@ -113,7 +99,6 @@ const InnerApp = () => {
 
       // If timeout reached, show content anyway
       if (elapsed > MAX_WAIT_TIME) {
-        console.log("[Loader] ⏱️ TIMEOUT - showing content anyway");
         imagesLoadedRef.current = true;
         pageDataReadyRef.current = false; // Reset for next page
         pageLoading.start([]);
@@ -127,7 +112,6 @@ const InnerApp = () => {
     };
 
     // Start the image check loop
-    console.log("[Loader] Starting image monitor for path:", location.pathname);
     timeoutId = setTimeout(checkAllImagesLoaded, 300);
 
     return () => {

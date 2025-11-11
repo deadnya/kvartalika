@@ -158,7 +158,7 @@
     padding-left: 208px;
     gap: 80px;
     position: relative;
-    overflow: visible;
+    overflow: hidden;
 }
 
 .apartmentVariants::before {

@@ -11,7 +11,7 @@ interface ApartmentComplexCardProps {
     floorCount: number;
     description: string;
     finishDate: string;
-    imageSrc: string;
+    imageSrc: string | null;
     id: string;
 }
 
@@ -58,7 +58,7 @@ const ApartmentComplexCard = ({
                 </div>
             </div>
             <div className={styles.imageContainer}>
-                <img src={imageSrc} className={styles.image}></img>
+                {imageSrc && <img src={imageSrc} className={styles.image}></img>}
                 <div className={styles.finishDateContainer}>
                     <span>{`Срок сдачи дома: ${finishDate}`}</span>
                 </div>

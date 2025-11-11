@@ -185,7 +185,7 @@ const ApartmentPage = () => {
                                 filteredVariants.map((variant) => (
                                     <ApartmentVariantCard
                                         key={variant.id}
-                                        variantId={`Вариант #${variant.id}`}
+                                        variantId={`Квартира #${variant.number ?? variant.id}`}
                                         status={variant.status}
                                         price={variant.price}
                                         area={`${variant.area} м²`}

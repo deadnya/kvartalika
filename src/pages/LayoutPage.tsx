@@ -23,7 +23,6 @@ const LayoutPage = () => {
       if (!layoutId) return;
       const id = Number(layoutId);
       if (Number.isNaN(id)) {
-        console.warn("Invalid apartmentId:", layoutId);
         return;
       }
       const layout = await getLayoutById(id);

@@ -91,10 +91,9 @@ const AboutUsPage = () => {
         setIsSubmitting(true);
 
         try {
-            const response = await submitContactRequest(formData);
+            await submitContactRequest(formData);
             setFormSuccess(true);
             setFormData({ name: "", phone: "", comment: "" });
-            console.log("Contact request submitted successfully:", response);
             // Show success message for 5 seconds
             setTimeout(() => {
                 setFormSuccess(false);
@@ -102,7 +101,6 @@ const AboutUsPage = () => {
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : "An error occurred";
             setFormError(errorMessage);
-            console.error("Failed to submit contact request:", error);
         } finally {
             setIsSubmitting(false);
         }

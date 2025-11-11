@@ -12,22 +12,17 @@ export const usePageReady = (pageId: string, isReady: boolean) => {
     useEffect(() => {
         // Register this page as needing a ready signal
         if (!registeredRef.current) {
-            console.log(`[PageReady] Registering ${pageId}`);
             registerPageReady(pageId);
             registeredRef.current = true;
         }
 
         // Signal ready when page data is loaded
         if (isReady) {
-            console.log(`[PageReady] ✅ ${pageId} is READY`);
             signalPageReady(pageId);
-        } else {
-            console.log(`[PageReady] ⏳ ${pageId} still loading...`);
         }
 
         return () => {
             // Cleanup: clear signal on unmount
-            console.log(`[PageReady] Clearing ${pageId} on unmount`);
             clearPageReady(pageId);
         };
     }, [isReady, pageId, registerPageReady, signalPageReady, clearPageReady]);
