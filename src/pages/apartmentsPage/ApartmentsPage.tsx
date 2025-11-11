@@ -293,14 +293,14 @@ const ApartmentsPage = () => {
                             />
                         </div>
 
-                        <div className={styles.inputBlock2}>
+                        {/* <div className={styles.inputBlock2}>
                             <span className={styles.inputBlockLabel}>Санузлы</span>
                             <ButtonSelect 
                                 variants={["1", "2", "3"]} 
                                 value={bathroomCount}
                                 onChange={setBathroomCount}
                             />
-                        </div>
+                        </div> */}
 
                         <div className={styles.inputBlock2}>
                             <span className={styles.inputBlockLabel}>Отделка</span>
