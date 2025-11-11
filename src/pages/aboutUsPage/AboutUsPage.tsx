@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { setMetaTags } from '../../utils/metaTagsManager'
 import { useIntersectionObserver } from '../../hooks/useIntersectionObserver'
 import styles from "./AboutUsPage.module.css"
@@ -16,6 +17,7 @@ import StroygroupIcon from "../../assets/icons/stroygroup.svg?react"
 import MapIcon from "../../assets/icons/map.svg?react"
 import PhoneIcon from "../../assets/icons/phone.svg?react"
 import EmailIcon from "../../assets/icons/email.svg?react"
+import CloseIcon from "../../assets/icons/close.svg?react"
 
 import { Input } from '../../components/common/Input/Input'
 import Button from '../../components/common/Button/Button'
@@ -41,8 +43,8 @@ const AboutUsPage = () => {
         comment: "",
     });
     const [formError, setFormError] = useState<string>("");
-    const [formSuccess, setFormSuccess] = useState<boolean>(false);
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
 
     // Intersection Observer refs
     const mottoRef = useIntersectionObserver({ threshold: 0.1 });
@@ -87,17 +89,12 @@ const AboutUsPage = () => {
     const handleSubmitContactRequest = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setFormError("");
-        setFormSuccess(false);
         setIsSubmitting(true);
 
         try {
             await submitContactRequest(formData);
-            setFormSuccess(true);
             setFormData({ name: "", phone: "", comment: "" });
-            // Show success message for 5 seconds
-            setTimeout(() => {
-                setFormSuccess(false);
-            }, 5000);
+            setShowSuccessModal(true);
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : "An error occurred";
             setFormError(errorMessage);
@@ -297,11 +294,6 @@ const AboutUsPage = () => {
                                         {formError}
                                     </div>
                                 )}
-                                {formSuccess && (
-                                    <div style={{ color: "#388e3c", marginBottom: "16px", fontSize: "14px" }}>
-                                        Заявка успешно отправлена! Спасибо за ваше сообщение.
-                                    </div>
-                                )}
                                 <div className={styles.formInputs}>
                                     <div className={styles.formRow}>
                                         <Input 
@@ -348,6 +340,38 @@ const AboutUsPage = () => {
                     </div>
                 </div>
             </div>
+            {showSuccessModal && createPortal(
+                <div className={styles.modalOverlay} onClick={(e) => {
+                    if (e.target === e.currentTarget) {
+                        setShowSuccessModal(false);
+                    }
+                }}>
+                    <div className={styles.modalWindow} onClick={(e) => e.stopPropagation()}>
+                        <button 
+                            type="button"
+                            className={styles.closeButton} 
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                setShowSuccessModal(false);
+                            }}
+                        >
+                            <CloseIcon />
+                        </button>
+                        
+                        <div className={styles.successContainer}>
+                            <div className={styles.textContainer}>
+                                <h3 className={styles.successTitle}>Благодарим Вас за оставленную заявку!</h3>
+                                <p className={styles.successDesc}>Наши специалисты свяжутся с Вами в ближайшее время, чтобы обсудить детали Вашей заявки и ответить на все Ваши вопросы.</p>
+                            </div>
+                            <div className={styles.buttonContainer}>
+                                <Button onClick={() => setShowSuccessModal(false)}>Продолжить</Button>  
+                            </div>
+                        </div>
+                    </div>
+                </div>,
+                document.body
+            )}
         </>
     );
 };
