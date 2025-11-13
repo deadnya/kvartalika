@@ -63,6 +63,7 @@ const HomePageEditor = ({ onClose }: HomePageEditorProps) => {
         metaDescription: content.metaDescription,
         metaKeywords: content.metaKeywords,
         metaImage: content.metaImage,
+        apartmentsImage: content.apartmentsImage,
         contactInfo: content.contactInfo,
       };
       await putHomePageContent(requestContent);
@@ -224,6 +225,23 @@ const HomePageEditor = ({ onClose }: HomePageEditorProps) => {
                 }
                 className="w-full border rounded px-3 py-2"
                 placeholder="e.g., 1, 2, 3, 4"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Apartments Page Image URL
+              </label>
+              <input
+                type="text"
+                value={content.apartmentsImage || ""}
+                onChange={(e) =>
+                  setContent((prev) => ({
+                    ...prev,
+                    apartmentsImage: e.target.value || null,
+                  }))
+                }
+                className="w-full border rounded px-3 py-2"
               />
             </div>
 

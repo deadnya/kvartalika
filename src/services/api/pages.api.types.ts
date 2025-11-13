@@ -147,6 +147,8 @@ export interface HomePageContentRequest {
   metaKeywords?: string | null;
   metaImage?: string | null;
   
+  apartmentsImage?: string | null;
+  
   contactInfo?: {
     address: string;
     workingHours: string;
@@ -301,7 +303,9 @@ export interface FooterDto {
   address: string,
   description: string,
   privacy: string,
-  workingHours: string
+  workingHours: string,
+  tg?: string | null,
+  vk?: string | null
 }
 
 export interface ContactRequestData {

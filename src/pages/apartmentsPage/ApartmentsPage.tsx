@@ -19,7 +19,7 @@ import { useSearchParams } from "react-router-dom";
 import { usePageContentStore } from "../../store/pageContent.store";
 
 const ApartmentsPage = () => {
-    const { setApartmentsPageContent } = usePageContentStore();
+    const { setApartmentsPageContent, homePageContent } = usePageContentStore();
     const [searchParams, setSearchParams] = useSearchParams();
     const [apartments, setApartments] = useState<ApartmentDto[]>([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -233,7 +233,7 @@ const ApartmentsPage = () => {
     return (
         <div className={styles.container}>
             <div className={styles.topImageContainer}>
-                <img src={apartmentsPage1}></img>
+                <img src={homePageContent?.apartmentsImage || apartmentsPage1}></img>
                 <div className={styles.topImageTriangleOverlay}></div>
             </div> 
 
