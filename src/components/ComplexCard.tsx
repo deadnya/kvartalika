@@ -13,7 +13,8 @@ const ComplexCard = ({ complex }: ComplexCardProps) => {
   images = Array.isArray(images) ? images : [images];
 
   const handleCardClick = () => {
-    navigate(`/complex/${complex.id}`);
+    const slug = complex.slug;
+    navigate(slug ? `/${slug}` : `/complex/${complex.id}`);
   };
 
   function formatFloors(count: number): string {
@@ -128,7 +129,7 @@ const ComplexCard = ({ complex }: ComplexCardProps) => {
 
         <div className="mt-auto space-y-3">
           <Link
-            to={`/complex/${complex.id}`}
+            to={complex.slug ? `/${complex.slug}` : `/complex/${complex.id}`}
             className="block w-full bg-surface-100 hover:bg-surface-200 text-surface-800 py-3 px-4 rounded-xl text-center font-semibold transition-all duration-200 border border-surface-200 hover:border-surface-300 hover:shadow-md"
           >
             Подробнее

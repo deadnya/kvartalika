@@ -6,6 +6,7 @@ export interface ApartmentComplexCardProps {
   yearBuilt: string;
   images: string[];
   id: string;
+  slug?: string | null;
 }
 
 export interface ApartmentComplexesPageContent {
@@ -148,6 +149,7 @@ export interface HomePageContentRequest {
   metaImage?: string | null;
   
   apartmentsImage?: string | null;
+  complexImage?: string | null;
   
   contactInfo?: {
     address: string;
@@ -359,4 +361,9 @@ export interface FindRequestDto {
 export interface BidsResponse {
   contactRequests: ContactRequestDto[];
   findRequests: FindRequestDto[];
+}
+
+export interface SlugResponse {
+  type: "home" | "flat";
+  data: ApartmentComplexPageContent | ApartmentDtoResponse;
 }

@@ -48,18 +48,18 @@ const Header = () => {
             >Главная</Link>
 
             <Link 
-              to="/complexes" 
-              className={`${styles.navLink} ${isActiveLink("/complexes") ? styles.navLinkActive : ""}`}
+              to="/zhiliye-kompleksi" 
+              className={`${styles.navLink} ${isActiveLink("/zhiliye-kompleksi") ? styles.navLinkActive : ""}`}
             >Жилые комплексы</Link>
 
             <Link 
-              to="/apartments" 
-              className={`${styles.navLink} ${isActiveLink("/apartments") ? styles.navLinkActive : ""}`}
+              to="/kvartiri-v-tomske" 
+              className={`${styles.navLink} ${isActiveLink("/kvartiri-v-tomske") ? styles.navLinkActive : ""}`}
             >Квартиры</Link>
 
             <Link 
-              to="/about" 
-              className={`${styles.navLink} ${isActiveLink("/about") ? styles.navLinkActive : ""}`}
+              to="/o-kompanii" 
+              className={`${styles.navLink} ${isActiveLink("/o-kompanii") ? styles.navLinkActive : ""}`}
             >О нас</Link>
           </nav>
 
@@ -94,22 +94,22 @@ const Header = () => {
                 Главная
               </Link>
               <Link
-                to="/complexes"
-                className={`${styles.mobileNavLink} ${isActiveLink("/complexes") ? styles.mobileNavLinkActive : ""}`}
+                to="/zhiliye-kompleksi"
+                className={`${styles.mobileNavLink} ${isActiveLink("/zhiliye-kompleksi") ? styles.mobileNavLinkActive : ""}`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Жилые комплексы
               </Link>
               <Link
-                to="/apartments"
-                className={`${styles.mobileNavLink} ${isActiveLink("/apartments") ? styles.mobileNavLinkActive : ""}`}
+                to="/kvartiri-v-tomske"
+                className={`${styles.mobileNavLink} ${isActiveLink("/kvartiri-v-tomske") ? styles.mobileNavLinkActive : ""}`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Квартиры
               </Link>
               <Link 
-                to="/about" 
-                className={`${styles.mobileNavLink} ${isActiveLink("/about") ? styles.mobileNavLinkActive : ""}`}
+                to="/o-kompanii" 
+                className={`${styles.mobileNavLink} ${isActiveLink("/o-kompanii") ? styles.mobileNavLinkActive : ""}`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 О нас

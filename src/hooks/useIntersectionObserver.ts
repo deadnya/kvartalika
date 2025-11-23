@@ -8,17 +8,19 @@ export const useIntersectionObserver = (
     options: UseIntersectionObserverOptions = {}
 ) => {
     const { triggerOnce = true, threshold = 0.1, rootMargin = '0px', ...rest } = options;
-    const ref = useRef<HTMLDivElement>(null);
+    const [ref, setRef] = useState<Element | null>(null);
     const [isVisible, setIsVisible] = useState(false);
     const hasBeenVisible = useRef(false);
 
     useEffect(() => {
+        if (!ref) return;
+
         const observer = new IntersectionObserver(([entry]) => {
             if (entry.isIntersecting) {
                 setIsVisible(true);
                 hasBeenVisible.current = true;
-                if (triggerOnce && ref.current) {
-                    observer.unobserve(ref.current);
+                if (triggerOnce) {
+                    observer.unobserve(ref);
                 }
             }
         }, {
@@ -27,17 +29,13 @@ export const useIntersectionObserver = (
             ...rest,
         });
 
-        if (ref.current) {
-            observer.observe(ref.current);
-        }
+        observer.observe(ref);
 
         return () => {
-            if (ref.current) {
-                observer.unobserve(ref.current);
-            }
+            observer.unobserve(ref);
             observer.disconnect();
         };
-    }, [triggerOnce, threshold, rootMargin]);
+    }, [ref, triggerOnce, threshold, rootMargin]);
 
-    return { ref, isVisible, hasBeenVisible: hasBeenVisible.current };
+    return { ref: setRef, isVisible, hasBeenVisible: hasBeenVisible.current };
 };

@@ -12,7 +12,8 @@ const ApartmentCard = ({ apartment, onBookingClick, homeName }: ApartmentCardPro
     const navigate = useNavigate();
 
     const handleCardClick = () => {
-        navigate(`/apartment/${apartment.flat.id}`);
+        const slug = apartment.flat.slug;
+        navigate(slug ? `/${slug}` : `/apartment/${apartment.flat.id}`);
     };
 
     function formatSanuzel(count: number): string {
@@ -111,7 +112,7 @@ const ApartmentCard = ({ apartment, onBookingClick, homeName }: ApartmentCardPro
                     {isAvailable ? (
                         <>
                             <Link
-                                to={`/apartment/${apartment.flat.id ?? ""}`}
+                                to={apartment.flat.slug ? `/${apartment.flat.slug}` : `/apartment/${apartment.flat.id ?? ""}`}
                                 className="block w-full bg-surface-100 hover:bg-surface-200 text-surface-800 py-3 px-4 rounded-xl text-center font-semibold transition-all duration-200 border border-surface-200 hover:border-surface-300 hover:shadow-md"
                                 onClick={e => e.stopPropagation()}
                             >

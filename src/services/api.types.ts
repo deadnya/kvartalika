@@ -157,6 +157,7 @@ export interface HomeRequest {
   model3D?: string;
   pan?: string;
   published?: boolean;
+  slug?: string | null;
 }
 
 export interface ApartmentComplexRequest {

@@ -25,6 +25,7 @@ import RouterListener from "./components/RouterListener.tsx";
 import AboutUsPage from "./pages/aboutUsPage/AboutUsPage.tsx";
 import TermsOfServicePage from "./pages/termsOfServicePage/TermsOfServicePage.tsx";
 import NotFoundPage from "./pages/notFoundPage/NotFoundPage.tsx";
+import SlugPage from "./pages/SlugPage.tsx";
 
 // Preload home page on app start
 import("./pages/homePage/HomePage.tsx").catch(() => {});
@@ -36,9 +37,27 @@ executePreloadStrategies(['homePage', 'aboutPage', 'complexesPage', 'apartmentsP
 
 function ScrollToTop() {
   const { pathname } = useLocation();
+  const lastPathnameRef = useRef<string>("");
+
+  // URLs that are variations of the same page (apartment listings)
+  const apartmentListUrls = [
+    "/apartments",
+    "/kvartiri-v-tomske",
+    "/kupit-odnokomnatnuyu-kvartiru-v-tomske",
+    "/dvukhkomnatnie-kvartiri-v-tomske",
+    "/trekhkomnatnie-kvartiri-v-tomske"
+  ];
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    // Don't scroll if both previous and current paths are apartment list URLs
+    const isPrevApartmentList = apartmentListUrls.includes(lastPathnameRef.current);
+    const isCurrentApartmentList = apartmentListUrls.includes(pathname);
+
+    if (!(isPrevApartmentList && isCurrentApartmentList)) {
+      window.scrollTo(0, 0);
+    }
+
+    lastPathnameRef.current = pathname;
   }, [pathname]);
 
   return null;
@@ -53,7 +72,8 @@ const InnerApp = () => {
 
   // Monitor and wait for all images to load, then hide the loader
   useEffect(() => {
-    if (imagesLoadedRef.current) return;
+    // Reset images loaded flag when route changes
+    imagesLoadedRef.current = false;
 
     // Reset data ready flag when route changes
     pageDataReadyRef.current = false;
@@ -61,7 +81,7 @@ const InnerApp = () => {
     let timeoutId: NodeJS.Timeout;
     let rafId: number;
     const startTime = Date.now();
-    const MAX_WAIT_TIME = 45000; // 45 seconds max wait
+    const MAX_WAIT_TIME = 3000; // Reduced to 3 seconds - don't wait too long
     let stableCheckCount = 0;
     let lastImageCount = 0;
     let minImageCount = 0; // Minimum images we expect to see
@@ -118,7 +138,7 @@ const InnerApp = () => {
       clearTimeout(timeoutId);
       cancelAnimationFrame(rafId);
     };
-  }, [pageLoading, location.pathname]);
+  }, [location.pathname]);
 
   return (
     <>
@@ -152,24 +172,29 @@ const InnerApp = () => {
                 }
               />
               <Route path="/apartments" element={<ApartmentsPage />} />
+              <Route path="/kvartiri-v-tomske" element={<ApartmentsPage />} />
+              <Route path="/kupit-odnokomnatnuyu-kvartiru-v-tomske" element={<ApartmentsPage />} />
+              <Route path="/dvukhkomnatnie-kvartiri-v-tomske" element={<ApartmentsPage />} />
+              <Route path="/trekhkomnatnie-kvartiri-v-tomske" element={<ApartmentsPage />} />
+              <Route path="/zhiliye-kompleksi" element={<ApartmentComplexesPage />} />
               <Route path="/complexes" element={<ApartmentComplexesPage />} />
               <Route path="/layouts" element={<LayoutsPage />} />
-              <Route path="/complex/:homeId" element={<ComplexPage />} />
-              <Route
-                path="/apartment/:apartmentId"
-                element={<ApartmentPage />}
-              />
               <Route path="/layout/:layoutId" element={<LayoutPage />} />
-              <Route path="/privacy" element={<PrivacyPage />} />
-              <Route path="/termsofservice" element={<TermsOfServicePage />} />
-              <Route path="/about" element={<AboutUsPage />} />
+              <Route path="/complex/:homeId" element={<ComplexPage />} />
+              <Route path="/apartment/:apartmentId" element={<ApartmentPage />} />
+              <Route path="/politika-konfidencialnosti" element={<PrivacyPage />} />
+              <Route path="/usloviya-ispolzovaniya" element={<TermsOfServicePage />} />
+              <Route path="/o-kompanii" element={<AboutUsPage />} />
+              <Route path="/zhk-nizhniy-51" element={<ComplexPage />} />
+              <Route path="/:slug" element={<SlugPage />} />
               
+              <Route path="/not/found" element={<NotFoundPage />}/>
               <Route path="*" element={<NotFoundPage />}/>
             </Routes>
           </main>
 
           {/* Footer inside flex container to stick to bottom */}
-          {!(pageLoading.isLoading && !["/auth", "/admin", "/content"].includes(location.pathname)) && <Footer />}
+          <Footer />
         </div>
       </AnimatedPageLoader>
       

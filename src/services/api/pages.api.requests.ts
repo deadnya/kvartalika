@@ -1,5 +1,5 @@
 import { apiClient } from "../api.config";
-import type { HomePageContent, HomePageContentRequest, AboutUsPageContent, ApartmentComplexPageContent, ApartmentsPageContent, ApartmentComplexCardProps, AparmentComplexDto, FooterDto, ApartmentDto, ApartmentDtoResponse, CategoryDto, ContactRequestDto, FindRequestDto, BidsResponse } from "./pages.api.types";
+import type { HomePageContent, HomePageContentRequest, AboutUsPageContent, ApartmentComplexPageContent, ApartmentsPageContent, ApartmentComplexCardProps, AparmentComplexDto, FooterDto, ApartmentDto, ApartmentDtoResponse, CategoryDto, ContactRequestDto, FindRequestDto, BidsResponse, SlugResponse } from "./pages.api.types";
 
 export const getHomePageContent = async (): Promise<HomePageContent> => {
   const response = await apiClient.get<HomePageContent>("/home");
@@ -51,6 +51,11 @@ export const putAboutUsPageContent = async (content: AboutUsPageContent) => {
 
 export const getApartmentComplexPageContent = async (complexId: string): Promise<ApartmentComplexPageContent> => {
   const response = await apiClient.get<ApartmentComplexPageContent>(`/homes/${complexId}`);
+  return response.data;
+};
+
+export const getApartmentComplexPageContentBySlug = async (slug: string): Promise<ApartmentComplexPageContent> => {
+  const response = await apiClient.get<ApartmentComplexPageContent>(`/homes/slug/${slug}`);
   return response.data;
 };
 
@@ -106,6 +111,11 @@ export const getApartmentsForComplex = async (id: string): Promise<ApartmentDtoR
   return response.data;
 }
 
+export const getApartmentsForComplexBySlug = async (slug: string): Promise<ApartmentDtoResponse[]> => {
+  const response = await apiClient.get<ApartmentDtoResponse[]>(`/homes/slug/${slug}/flats`)
+  return response.data;
+}
+
 export interface SearchApartmentsRequest {
   minPrice: number;
   maxPrice: number;
@@ -128,6 +138,11 @@ export const searchApartments = async (filters: SearchApartmentsRequest): Promis
 
 export const getApartment = async (id: string): Promise<ApartmentDtoResponse> => {
   const response = await apiClient.get<ApartmentDtoResponse>(`/flats/${id}`)
+  return response.data;
+}
+
+export const getApartmentBySlug = async (slug: string): Promise<ApartmentDtoResponse> => {
+  const response = await apiClient.get<ApartmentDtoResponse>(`/flats/slug/${slug}`)
   return response.data;
 }
 
@@ -193,4 +208,9 @@ export const checkFindRequest = async (id: number): Promise<FindRequestDto> => {
   } catch (error) {
     throw error;
   }
+};
+
+export const getSlugContent = async (slug: string): Promise<SlugResponse> => {
+  const response = await apiClient.get<SlugResponse>(`/slug/${slug}`);
+  return response.data;
 };

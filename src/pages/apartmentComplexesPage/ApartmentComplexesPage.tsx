@@ -4,18 +4,28 @@ import { useEffect, useState } from "react"
 import apartmentComplexesImage1 from "/images/ApartmentComplexesPage1.jpg"
 import BreadcrumbNav from "../../components/common/BreadcrumbNav"
 import ApartmentComplexCard from "../../components/common/ApartmentComplexCard/ApartmentComplexCard";
-import { getApartmentComplexesPageContent } from "../../services/api/pages.api.requests"
+import { getApartmentComplexesPageContent, getHomePageContent } from "../../services/api/pages.api.requests"
 import type { ApartmentComplexCardProps } from "../../services/api/pages.api.types"
 import { usePageContentStore } from "../../store/pageContent.store"
 
 const ApartmentComplexesPage: React.FC = () => {
-  const { complexesPageContent, setComplexesPageContent } = usePageContentStore();
+  const { complexesPageContent, setComplexesPageContent, homePageContent, setHomePageContent } = usePageContentStore();
   const [content, setLocalContent] = useState<ApartmentComplexCardProps[] | null>(complexesPageContent || null);
 
   const fetchContent = async () => {
     const data = await getApartmentComplexesPageContent();
     setLocalContent(data);
     setComplexesPageContent(data);
+    
+    // Also fetch home page content if we don't have it, to get the image
+    if (!homePageContent) {
+        try {
+            const homeData = await getHomePageContent();
+            setHomePageContent(homeData);
+        } catch (e) {
+            console.error("Failed to fetch home page content for image", e);
+        }
+    }
   }
 
   useEffect(() => {
@@ -25,7 +35,7 @@ const ApartmentComplexesPage: React.FC = () => {
     return (
         <div className={styles.container}>
             <div className={styles.topImageContainer}>
-                <img src={apartmentComplexesImage1}></img>
+                <img src={homePageContent?.complexImage || apartmentComplexesImage1}></img>
                 <div className={styles.topImageTriangleOverlay}></div>
             </div>
 
@@ -48,6 +58,7 @@ const ApartmentComplexesPage: React.FC = () => {
                             finishDate={complex.yearBuilt}
                             imageSrc={complex.images[0] ?? null}
                             id={complex.id}
+                            slug={complex.slug}
                         />
                     ))}
                 </div>

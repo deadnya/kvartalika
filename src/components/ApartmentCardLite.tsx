@@ -12,7 +12,8 @@ const ApartmentCardLite = ({ apartment }: ApartmentCardLiteProps) => {
     const isAvailable = apartment.flat.variants?.some(v => v.status === "AVAILABLE");
 
     const handleCardClick = () => {
-        navigate(`/apartment/${apartment.flat.id}`);
+        const slug = apartment.flat.slug;
+        navigate(slug ? `/${slug}` : `/apartment/${apartment.flat.id}`);
     };
 
     return (
@@ -57,7 +58,7 @@ const ApartmentCardLite = ({ apartment }: ApartmentCardLiteProps) => {
                 <div className="mt-auto">
                     {isAvailable ? (
                         <Link
-                            to={`/apartment/${apartment.flat.id ?? ""}`}
+                            to={apartment.flat.slug ? `/${apartment.flat.slug}` : `/apartment/${apartment.flat.id ?? ""}`}
                             className="block w-full bg-surface-100 hover:bg-surface-200 text-surface-800 py-2.5 px-4 rounded-xl text-center text-sm font-semibold transition-all duration-200 border border-surface-200 hover:border-surface-300"
                             onClick={e => e.stopPropagation()}
                         >

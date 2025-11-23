@@ -187,12 +187,12 @@ const HomePage = () => {
                         </div>
                         <div className={styles.titleButtonsContainer}>
                             <Button
-                                onClick={() => {navigate("/apartments")}}
+                                onClick={() => {navigate("/kvartiri-v-tomske")}}
                             >Смотреть квартиры</Button>
 
                             <Button
                                 variant="outlined"
-                                onClick={() => {navigate("/about")}}
+                                onClick={() => {navigate("/o-kompanii")}}
                             >Подробнее о нас</Button>
                         </div>
                     </div>
@@ -203,7 +203,7 @@ const HomePage = () => {
                 <div className={styles.ourProjectsTitleContainer}>
                     <span className={styles.ourProjectsText}>Наши проекты</span>
                     <Link
-                        to="/complexes"
+                        to="/zhiliye-kompleksi"
                         className={styles.viewMore}
                     >Смотреть все</Link>
                 </div>
@@ -243,7 +243,7 @@ const HomePage = () => {
                             <div className={styles.projectButtonsContainer}>
                                 <Button
                                     includeArrow={true}
-                                    onClick={() => {navigate(`/apartments?complex=${project.id}`)}}
+                                    onClick={() => {navigate(`/kvartiri-v-tomske?complex=${project.id}`)}}
                                 >Смотреть квартиры</Button>
 
                                 <Button
@@ -278,6 +278,7 @@ const HomePage = () => {
                                 houseComplexId={deal.homeId}
                                 flatId={deal.id}
                                 imageSrc={deal.images?.[0] || ""}
+                                apartmentSlug={deal.slug}
                             />
                         )
                     ))}
@@ -296,6 +297,7 @@ const HomePage = () => {
                                     houseComplexId={deal.homeId}
                                     flatId={deal.id}
                                     imageSrc={deal.images?.[0] || ""}
+                                    apartmentSlug={deal.slug}
                                 />
                             )
                         ))}
@@ -420,7 +422,7 @@ const HomePage = () => {
                                 </div>
 
                                 <div className={styles.formBottom}>
-                                    <span>Нажимая "Отправить заявку", вы соглашаетесь с <Link to="/privacy" className={styles.formLink}>Политикой конфиденциальности</Link></span>
+                                    <span>Нажимая "Отправить заявку", вы соглашаетесь с <Link to="/politika-konfidencialnosti" className={styles.formLink}>Политикой конфиденциальности</Link></span>
                                     <div>
                                         <Button
                                             includeArrow={true}

@@ -184,6 +184,9 @@ export const MOCK_HOME_PAGE_CONTENT: HomePageContent = {
     },
   ],
   
+  apartmentsImage: null,
+  complexImage: null,
+  
   contactInfo: {
     address: "Томск, площадь Батенькова 2, подъезд 7, этаж 3, офис 310",
     workingHours: "пн–пт: 9:00 –19:00\nсб: 10:00 –18:00",

@@ -13,6 +13,7 @@ interface ApartmentComplexCardProps {
     finishDate: string;
     imageSrc: string | null;
     id: string;
+    slug?: string | null;
 }
 
 const ApartmentComplexCard = ({
@@ -23,6 +24,7 @@ const ApartmentComplexCard = ({
     finishDate,
     imageSrc,
     id,
+    slug
 }: ApartmentComplexCardProps) => {
 
     const navigate = useNavigate();
@@ -49,7 +51,7 @@ const ApartmentComplexCard = ({
                 <div className={styles.complexButtons}>
                     <Button
                         variant="outlined"
-                        onClick={() => {navigate(`/complex/${id}`)}}
+                        onClick={() => {navigate(slug ? `/${slug}` : `/complex/${id}`)}}
                     >Подробнее о проекте</Button>
                     <Button
                         includeArrow={true}

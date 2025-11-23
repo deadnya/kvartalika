@@ -5,59 +5,91 @@ import { Gallery } from "../../components/common/Gallery/Gallery";
 
 import CheckIcon from "../../assets/icons/check.svg?react"
 import { Toggle } from "../../components/common/Toggle/Toggle";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Button from "../../components/common/Button";
 import { ApartmentVariantCard } from "../../components/common/ApartmentVariantCard/ApartmentVariantCard";
 import FindApartmentModal from "../../components/common/FindApartmentModal/FindApartmentModal";
 import { useNavigate, useParams } from "react-router-dom";
-import { getApartment, getApartmentComplex } from "../../services/api/pages.api.requests";
+import { getApartment, getApartmentComplex, getApartmentBySlug } from "../../services/api/pages.api.requests";
 import type { ApartmentDtoResponse } from "../../services/api/pages.api.types";
 
-const ApartmentPage = () => {
+interface ApartmentPageProps {
+    initialData?: ApartmentDtoResponse;
+}
+
+const ApartmentPage = ({ initialData }: ApartmentPageProps) => {
     const navigate = useNavigate()
-    const { apartmentId } = useParams<{ apartmentId: string }>();
+    const { apartmentId, apartmentSlug, slug } = useParams<{ apartmentId?: string; apartmentSlug?: string; slug?: string }>();
+    // Support both old params (apartmentId/apartmentSlug) and new slug route (slug)
+    const finalId = apartmentId ?? null;
     const [isEnabled, setIsEnabled] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [apartmentData, setApartmentData] = useState<ApartmentDtoResponse | null>(null);
+    const [apartmentData, setApartmentData] = useState<ApartmentDtoResponse | null>(initialData || null);
     const [apartmentComplex, setApartmentComplex] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [categories, setCategories] = useState<any[]>([]);
+    const navigationAttemptedRef = useRef(false);
 
     const handleModalClose = () => {
         setIsModalOpen(false);
     };
 
+    // Guard: If we've already tried to navigate away, don't try again
+    if (navigationAttemptedRef.current) {
+        return null;
+    }
+
     useEffect(() => {
         const fetchApartmentData = async () => {
-            if (apartmentId) {
-                try {
-                    const data = await getApartment(apartmentId);
-                    setApartmentData(data);
+            try {
+                let data: ApartmentDtoResponse;
+                
+                if (initialData) {
+                    data = initialData;
+                } else {
+                    // Support both old params (apartmentId/apartmentSlug) and new slug route (slug)
+                    const effectiveSlug = apartmentSlug ?? slug;
                     
-                    // Set categories from response
-                    if (data.categories && data.categories.length > 0) {
-                        setCategories(data.categories);
+                    // Use slug-based API if slug is provided
+                    if (effectiveSlug) {
+                        data = await getApartmentBySlug(effectiveSlug);
+                    } else if (finalId) {
+                        data = await getApartment(finalId);
+                    } else {
+                        navigationAttemptedRef.current = true;
+                        setIsLoading(false);
+                        navigate("/not/found");
+                        return;
                     }
-                    
-                    // Fetch apartment complex if homeId exists
-                    if (data.flat.homeId) {
-                        try {
-                            const complexResponse = await getApartmentComplex(data.flat.homeId);
-                            setApartmentComplex(complexResponse.data);
-                        } catch (error) {
-                            console.error("Failed to fetch apartment complex:", error);
-                        }
-                    }
-                } catch (error) {
-                    console.error("Failed to fetch apartment data:", error);
-                } finally {
-                    setIsLoading(false);
                 }
+                
+                setApartmentData(data);
+                
+                if (data.categories && data.categories.length > 0) {
+                    setCategories(data.categories);
+                }
+                
+                if (data.flat.homeId) {
+                    try {
+                        const complexResponse = await getApartmentComplex(data.flat.homeId);
+                        setApartmentComplex(complexResponse.data);
+                    } catch (error) {
+                        console.error("Failed to fetch apartment complex:", error);
+                    }
+                }
+                
+                // Set loading to false after successfully fetching apartment data
+                setIsLoading(false);
+            } catch (error) {
+                console.error("Failed to fetch apartment data:", error);
+                navigationAttemptedRef.current = true;
+                setIsLoading(false);
+                navigate("/not/found");
             }
         };
 
         fetchApartmentData();
-    }, [apartmentId]);
+    }, [apartmentSlug, slug, finalId, navigate, initialData]);
 
     // Set meta tags when apartment data is loaded
     useEffect(() => {
@@ -177,7 +209,10 @@ const ApartmentPage = () => {
                             >Записаться на просмотр</Button>
                             <Button
                                 variant="outlined"
-                                onClick={() => {navigate(`/complex/${apartmentComplex.id}`)}}
+                                onClick={() => {
+                                    const slug = apartmentComplex?.slug;
+                                    navigate(slug ? `/${slug}` : `/complex/${apartmentComplex?.id}`)
+                                }}
                             >Подробнее о ЖК</Button>
                         </div>
                         <div className={styles.apartmentVariants}>

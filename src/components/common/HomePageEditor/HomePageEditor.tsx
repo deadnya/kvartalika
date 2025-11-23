@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAuthStore } from "../../../store/auth.store";
+import { usePageContentStore } from "../../../store/pageContent.store";
 import { getHomePageContent, putHomePageContent } from "../../../services/api/pages.api.requests";
 import type { HomePageContent } from "../../../services/api/pages.api.types";
 import { DEFAULT_HOME_PAGE_CONTENT } from "../../../services/api/pages.api.defaults";
@@ -10,6 +11,7 @@ interface HomePageEditorProps {
 
 const HomePageEditor = ({ onClose }: HomePageEditorProps) => {
   const { role, isAuthenticated } = useAuthStore();
+  const { setHomePageContent } = usePageContentStore();
   const [content, setContent] = useState<HomePageContent>({
     ...DEFAULT_HOME_PAGE_CONTENT,
     hotDealFlatIds: DEFAULT_HOME_PAGE_CONTENT.hotDealFlatIds || [],
@@ -64,9 +66,15 @@ const HomePageEditor = ({ onClose }: HomePageEditorProps) => {
         metaKeywords: content.metaKeywords,
         metaImage: content.metaImage,
         apartmentsImage: content.apartmentsImage,
+        complexImage: content.complexImage,
         contactInfo: content.contactInfo,
       };
       await putHomePageContent(requestContent);
+      
+      // Refresh store with new data
+      const newData = await getHomePageContent();
+      setHomePageContent(newData);
+
       setSuccess(true);
       // Emit event to notify HomePage to refresh
       window.dispatchEvent(new Event("homePageDataSaved"));
@@ -239,6 +247,23 @@ const HomePageEditor = ({ onClose }: HomePageEditorProps) => {
                   setContent((prev) => ({
                     ...prev,
                     apartmentsImage: e.target.value || null,
+                  }))
+                }
+                className="w-full border rounded px-3 py-2"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Complexes Page Image URL
+              </label>
+              <input
+                type="text"
+                value={content.complexImage || ""}
+                onChange={(e) =>
+                  setContent((prev) => ({
+                    ...prev,
+                    complexImage: e.target.value || null,
                   }))
                 }
                 className="w-full border rounded px-3 py-2"

@@ -48,6 +48,8 @@ interface ApartmentCardProps {
     includeComplexButton?: boolean;
     purpleBlockText?: string;
     containerClassName?: string;
+    apartmentSlug?: string | null;
+    complexSlug?: string | null;
 }
 
 const ApartmentCard: React.FC<ApartmentCardProps> = ({
@@ -63,7 +65,9 @@ const ApartmentCard: React.FC<ApartmentCardProps> = ({
     areaMax: areaMaxProp,
     includeComplexButton = true,
     purpleBlockText,
-    containerClassName = ""
+    containerClassName = "",
+    apartmentSlug,
+    complexSlug
 }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [imageError, setImageError] = useState(false);
@@ -145,7 +149,10 @@ const ApartmentCard: React.FC<ApartmentCardProps> = ({
 
     return (
         <>
-            <div className={`${styles.container} ${containerClassName}`} onClick={() => {navigate(`/apartment/${flatId}`)}}>
+            <div className={`${styles.container} ${containerClassName}`} onClick={() => {
+                const url = apartmentSlug ? `/${apartmentSlug}` : `/apartment/${flatId}`;
+                navigate(url);
+            }}>
                 <div className={styles.imageContainer}>
                     <img 
                         src={displayImage}
@@ -192,7 +199,12 @@ const ApartmentCard: React.FC<ApartmentCardProps> = ({
                             {includeComplexButton && (
                                 <Button
                                     variant='outlined'
-                                    onClick={(e) => {e.preventDefault(); e.stopPropagation(); navigate(`/complex/${houseComplexId}`)}}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        const url = complexSlug ? `/zhk-${complexSlug}` : `/complex/${houseComplexId}`;
+                                        navigate(url);
+                                    }}
                                 >Подробнее о ЖК</Button>
                             )}
                         </div>

@@ -9,27 +9,24 @@ interface AnimatedPageLoaderProps {
 
 const AnimatedPageLoader = ({ isLoading, children, isContentReady = true }: AnimatedPageLoaderProps) => {
   const [showLoader, setShowLoader] = useState(true);
-  const [showContent, setShowContent] = useState(false);
+  const [removeLoader, setRemoveLoader] = useState(false);
 
   useEffect(() => {
-    // Only show content when loading is done AND content is actually ready
     if (!isLoading && isContentReady) {
-      setShowContent(true);
-    } else {
-      setShowContent(false);
+      setShowLoader(false);
     }
   }, [isLoading, isContentReady]);
 
   const handleExitComplete = () => {
-    setShowLoader(false);
+    setRemoveLoader(true);
   };
 
   return (
     <>
-      {showContent && children}
-      {showLoader && (
+      {children}
+      {!removeLoader && (
         <PageLoader 
-          isLoading={isLoading || !isContentReady} 
+          isLoading={showLoader} 
           onExitComplete={handleExitComplete}
         />
       )}

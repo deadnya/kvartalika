@@ -1,14 +1,30 @@
-import {useEffect} from 'react';
+import {useEffect, useRef} from 'react';
 import {useLocation} from 'react-router-dom';
 
 const ScrollToAnchor = () => {
   const location = useLocation();
+  const lastPathnameRef = useRef<string>("");
+
+  // URLs that are variations of the same page (apartment listings)
+  const apartmentListUrls = [
+    "/apartments",
+    "/kvartiri-v-tomske",
+    "/kupit-odnokomnatnuyu-kvartiru-v-tomske",
+    "/dvukhkomnatnie-kvartiri-v-tomske",
+    "/trekhkomnatnie-kvartiri-v-tomske"
+  ];
 
   useEffect(() => {
-    // Reset scroll to top on page change (but not for hash navigation)
+    // Reset scroll to top on page change (but not for hash navigation or apartment list switches)
     if (!location.hash) {
-      window.scrollTo({ top: 0, behavior: 'auto' });
+      const isPrevApartmentList = apartmentListUrls.includes(lastPathnameRef.current);
+      const isCurrentApartmentList = apartmentListUrls.includes(location.pathname);
+      
+      if (!(isPrevApartmentList && isCurrentApartmentList)) {
+        window.scrollTo({ top: 0, behavior: 'auto' });
+      }
     }
+    lastPathnameRef.current = location.pathname;
   }, [location.pathname]);
 
   useEffect(() => {

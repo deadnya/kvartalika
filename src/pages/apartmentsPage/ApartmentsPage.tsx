@@ -13,42 +13,51 @@ import { SortingVariant, type SortingType } from "../../components/common/Sortin
 import CloseIcon from "../../assets/icons/close.svg?react"
 import ApartmentCard from "../../components/common/ApartmentCard/ApartmentCard";
 import { Pagination } from "../../components/common/Pagination/Pagination";
-import { getApartmentsPageContent, searchApartments, getCategories, getApartmentComplexes, type SearchApartmentsRequest } from "../../services/api/pages.api.requests";
+import { getApartmentsPageContent, searchApartments, getApartmentComplexes, type SearchApartmentsRequest } from "../../services/api/pages.api.requests";
 import type { ApartmentDto } from "../../services/api/pages.api.types";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useLocation, useNavigate } from "react-router-dom";
 import { usePageContentStore } from "../../store/pageContent.store";
 
 const ApartmentsPage = () => {
     const { setApartmentsPageContent, homePageContent } = usePageContentStore();
+    const location = useLocation();
+    const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
     const [apartments, setApartments] = useState<ApartmentDto[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [complexOptions, setComplexOptions] = useState<any[]>([]);
-    //const [categoryOptions, setCategoryOptions] = useState<any[]>([]);
+
+    const getRoomsFromPath = (): number | null => {
+        const path = location.pathname;
+        if (path.includes('odnokomnatnuyu')) return 1;
+        if (path.includes('dvukhkomnatnie')) return 2;
+        if (path.includes('trekhkomnatnie')) return 3;
+        return null;
+    };
 
     const [selectedComplex, setSelectedComplex] = useState<string | number | null>(() => {
         const val = searchParams.get("complex");
         return val || null;
-    })
+    });
     const [priceRange, setPriceRange] = useState<{ min: number; max: number }>(() => ({
         min: parseInt(searchParams.get("priceMin") || "3500000"),
         max: parseInt(searchParams.get("priceMax") || "15000000"),
-    }))
+    }));
     const [selectedCategory, setSelectedCategory] = useState<string | number | null>(() => {
         const val = searchParams.get("category");
         return val || null;
-    })
+    });
     const [roomCount, setRoomCount] = useState<string | number | (string | number)[] | null>(() => {
-        const val = searchParams.get("rooms");
-        return val ? (val.includes(",") ? val.split(",") : val) : null;
-    })
+        // Start with null (no room count selected) - will be synced from URL via useEffect
+        return null;
+    });
     const [bathroomCount, setBathroomCount] = useState<string | number | (string | number)[] | null>(() => {
         const val = searchParams.get("bathrooms");
         return val ? (val.includes(",") ? val.split(",") : val) : null;
-    })
-    const [hasFinish, setHasFinish] = useState<boolean>(() => searchParams.get("finish") === "true")
-    const [parks, setParks] = useState<boolean>(() => searchParams.get("parks") === "true")
-    const [schools, setSchools] = useState<boolean>(() => searchParams.get("schools") === "true")
+    });
+    const [hasFinish, setHasFinish] = useState<boolean>(() => searchParams.get("finish") === "true");
+    const [parks, setParks] = useState<boolean>(() => searchParams.get("parks") === "true");
+    const [schools, setSchools] = useState<boolean>(() => searchParams.get("schools") === "true");
     const [shops, setShops] = useState<boolean>(() => searchParams.get("shops") === "true");
     const [sortByCost, setSortByCost] = useState<SortingType>(() => (searchParams.get("sortCost") as SortingType) || "noSorting");
     const [sortByArea, setSortByArea] = useState<SortingType>(() => (searchParams.get("sortArea") as SortingType) || "noSorting");
@@ -81,6 +90,17 @@ const ApartmentsPage = () => {
 
         fetchContent();
     }, [setApartmentsPageContent]);
+
+    // Update roomCount when pathname changes
+    useEffect(() => {
+        const newRoomCount = getRoomsFromPath();
+        if (newRoomCount !== null) {
+            setRoomCount(newRoomCount.toString());
+        } else {
+            // If no room in path, reset roomCount to null
+            setRoomCount(null);
+        }
+    }, [location.pathname]);
 
             // Search apartments based on filters
     useEffect(() => {
@@ -192,7 +212,6 @@ const ApartmentsPage = () => {
         if (selectedCategory !== null) params.set("category", selectedCategory.toString());
         if (priceRange.min !== 3500000) params.set("priceMin", priceRange.min.toString());
         if (priceRange.max !== 15000000) params.set("priceMax", priceRange.max.toString());
-        if (roomCount !== null) params.set("rooms", roomCount.toString());
         if (bathroomCount !== null) params.set("bathrooms", bathroomCount.toString());
         if (hasFinish) params.set("finish", "true");
         if (parks) params.set("parks", "true");
@@ -200,21 +219,11 @@ const ApartmentsPage = () => {
         if (shops) params.set("shops", "true");
         
         setSearchParams(params, { replace: true });
-    }, [currentPage, sortByCost, sortByArea, sortByRoomCount, selectedComplex, selectedCategory, priceRange, roomCount, bathroomCount, hasFinish, parks, schools, shops]);
+    }, [currentPage, sortByCost, sortByArea, sortByRoomCount, selectedComplex, selectedCategory, priceRange, bathroomCount, hasFinish, parks, schools, shops]);
 
     const clearFilters = () => {
-        setSelectedComplex(null);
-        setPriceRange({ min: 3500000, max: 15000000 });
-        setSelectedCategory(null);
-        setRoomCount(null);
-        setBathroomCount(null);
-        setHasFinish(false);
-        setParks(false);
-        setSchools(false);
-        setShops(false);
-        setSortByCost("noSorting");
-        setSortByArea("noSorting");
-        setSortByRoomCount("noSorting");
+
+        navigate("/kvartiri-v-tomske", { replace: false });
     };
 
     const itemsPerPage = 12;
@@ -289,7 +298,20 @@ const ApartmentsPage = () => {
                             <ButtonSelect 
                                 variants={["1", "2", "3"]} 
                                 value={roomCount}
-                                onChange={setRoomCount}
+                                onChange={(value) => {
+                                    if (value === null) {
+                                        navigate("/kvartiri-v-tomske", { replace: false });
+                                    } else {
+                                        const roomNum = typeof value === 'string' ? value : value.toString();
+                                        if (roomNum === "1") {
+                                            navigate("/kupit-odnokomnatnuyu-kvartiru-v-tomske", { replace: false });
+                                        } else if (roomNum === "2") {
+                                            navigate("/dvukhkomnatnie-kvartiri-v-tomske", { replace: false });
+                                        } else if (roomNum === "3") {
+                                            navigate("/trekhkomnatnie-kvartiri-v-tomske", { replace: false });
+                                        }
+                                    }
+                                }}
                             />
                         </div>
 
@@ -385,6 +407,7 @@ const ApartmentsPage = () => {
                                     imageSrc={apartment.images?.[0] || ""}
                                     flatId={apartment.id}
                                     containerClassName={styles.containerCompactWidth}
+                                    apartmentSlug={apartment.slug}
                                 />
                             );
                         })

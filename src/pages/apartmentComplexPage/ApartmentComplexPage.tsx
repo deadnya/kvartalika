@@ -1,5 +1,4 @@
 import { lazy, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import { setMetaTags, resetMetaTags } from "../../utils/metaTagsManager";
 import styles from "./ApartmentComplexPage.module.css"
 import { BigImageGallery } from "../../components/common/BigImageGallery/BigImageGallery.tsx";
@@ -9,6 +8,7 @@ import { getApartmentComplexPageContent, getApartmentsForComplex } from "../../s
 import type { ApartmentComplexPageContent, ApartmentDtoResponse } from "../../services/api/pages.api.types";
 import { DEFAULT_APARTMENT_COMPLEX_PAGE_CONTENT } from "../../services/api/pages.api.defaults";
 import { usePageContentStore } from "../../store/pageContent.store";
+import { useParams } from "react-router-dom";
 
 import BreadcrumbNav from "../../components/common/BreadcrumbNav/BreadcrumbNav.tsx";
 
@@ -30,15 +30,21 @@ import Carousel from "../../components/common/Carousel/Carousel.tsx";
 
 const YandexMap = lazy(() => import("../../components/YandexMap.tsx"));
 
-const ApartmentComplexPage = () => {
-    const { homeId } = useParams<{ homeId: string }>();
+interface ApartmentComplexPageProps {
+    initialData?: ApartmentComplexPageContent;
+}
+
+const ApartmentComplexPage = ({ initialData }: ApartmentComplexPageProps) => {
+    const { homeId } = useParams<{ homeId?: string }>();
+    // Use homeId from params, or ID from initialData, or default to "1"
+    const complexId = homeId || (initialData?.id ? String(initialData.id) : "1");
     const { complexPageContent, complexPageApartments, setComplexPageContent, setComplexPageApartments } = usePageContentStore();
     const [content, setLocalContent] = useState<ApartmentComplexPageContent | null>(
-        homeId && complexPageContent[homeId] ? complexPageContent[homeId] : null
+        initialData || (complexPageContent[complexId] ? complexPageContent[complexId] : null)
     );
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [apartments, setLocalApartments] = useState<ApartmentDtoResponse[]>(
-        homeId && complexPageApartments[homeId] ? complexPageApartments[homeId] : []
+        complexPageApartments[complexId] ? complexPageApartments[complexId] : []
     );
 
     const locationRef = useIntersectionObserver({ threshold: 0.1 });
@@ -55,24 +61,26 @@ const ApartmentComplexPage = () => {
     };
 
     useEffect(() => {
-        if (!homeId) return;
-
         const loadContent = async () => {
             try {
-                const data = await getApartmentComplexPageContent(homeId);
-                const aparts = await getApartmentsForComplex(homeId);
+                // If initialData is provided, we don't need to fetch content again
+                if (!initialData) {
+                    const data = await getApartmentComplexPageContent(complexId);
+                    setLocalContent(data);
+                    setComplexPageContent(complexId, data);
+                }
                 
-                setLocalContent(data);
+                // We still need to fetch apartments as they are not part of initialData
+                const aparts = await getApartmentsForComplex(complexId);
                 setLocalApartments(aparts);
-                setComplexPageContent(homeId, data);
-                setComplexPageApartments(homeId, aparts);
+                setComplexPageApartments(complexId, aparts);
             } catch (error) {
                 console.error("Error loading complex page:", error);
             }
         };
 
         loadContent();
-    }, [homeId, setComplexPageContent, setComplexPageApartments]);
+    }, [setComplexPageContent, setComplexPageApartments, initialData, complexId]);
 
     // Set meta tags when content is loaded
     useEffect(() => {
@@ -189,6 +197,7 @@ const ApartmentComplexPage = () => {
                                     flatId={apartment.flat.id}
                                     imageSrc={apartment.flat.images?.[0] || ""}
                                     includeComplexButton={false}
+                                    apartmentSlug={apartment.flat.slug}
                                 />
                             ))}
                         </div>
@@ -207,6 +216,7 @@ const ApartmentComplexPage = () => {
                                         flatId={apartment.flat.id}
                                         imageSrc={apartment.flat.images?.[0] || ""}
                                         includeComplexButton={false}
+                                        apartmentSlug={apartment.flat.slug}
                                     />
                                 ))}
                             />
@@ -354,7 +364,7 @@ const ApartmentComplexPage = () => {
                                 </div>
 
                                 <div className={styles.formBottom}>
-                                    <span>Нажимая "Отправить заявку", вы соглашаетесь с <Link to="/privacy" className={styles.formLink}>Политикой конфиденциальности</Link></span>
+                                    <span>Нажимая "Отправить заявку", вы соглашаетесь с <Link to="/politika-konfidencialnosti" className={styles.formLink}>Политикой конфиденциальности</Link></span>
                                     <div>
                                         <Button
                                             includeArrow={true}
