@@ -94,6 +94,7 @@
     background-color: #fafbfc;
     clip-path: polygon(0% 90%, 0% 100%, 100% 100%);
     pointer-events: none;
+    transform: translateY(1px);
 }
 
 .mottoContainer {
@@ -162,6 +163,7 @@
     background-color: #fafbfc;
     clip-path: polygon(0% 0%, 0% 7.5%, 100% 0%);
     pointer-events: none;
+    transform: translateY(-1px);
 }
 
 .principles {
@@ -253,6 +255,7 @@
     background-color: var(--color-background);
     clip-path: polygon(0% 90%, 0% 100%, 100% 100%);
     pointer-events: none;
+    transform: translateY(1px);
 }
 
 .ourValuesList {
@@ -460,6 +463,7 @@
     background-color: white;
     clip-path: polygon(0% 0%, 0% 7.5%, 100% 0%);
     pointer-events: none;
+    transform: translateY(-1px);
 }
 
 .sendRequestForm {

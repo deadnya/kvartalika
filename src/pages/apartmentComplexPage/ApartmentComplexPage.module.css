@@ -50,6 +50,7 @@
     clip-path: polygon(0% 100%, 0% 0%, 100% 100%);
     pointer-events: none;
     z-index: 10;
+    transform: translateY(1px);
 }
 
 .generalInfo {
@@ -960,6 +961,10 @@
 }
 
 @media (max-width: 1023px) {
+    .container {
+        margin-top: 60px;
+    }
+    
     .availableApartmentsContent {
         flex-wrap: wrap;
     }

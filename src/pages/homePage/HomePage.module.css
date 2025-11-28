@@ -62,6 +62,7 @@
     background-color: #fafbfc;
     clip-path: polygon(0% 0%, 0% 100%, 100% 100%);
     pointer-events: none;
+    transform: translateY(1px);
 }
 
 .titleContainer {
