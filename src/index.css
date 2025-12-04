@@ -756,3 +756,14 @@
   flex-direction: column;
   gap: 40px;
 }
+
+/* Plyr custom purple theme */
+.plyr {
+  --plyr-color-main: #7b2cbf;
+  --plyr-video-control-color: #fff;
+  --plyr-video-control-color-hover: #fff;
+  --plyr-video-control-background-hover: #7b2cbf;
+  --plyr-range-fill-background: #7b2cbf;
+  --plyr-menu-background: rgba(30, 30, 30, 0.95);
+  --plyr-menu-color: #fff;
+}

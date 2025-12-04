@@ -1,76 +1,110 @@
-import React, { useEffect, useRef } from "react";
-import videojs from "video.js";
-import "video.js/dist/video-js.css";
-import "videojs-contrib-quality-levels";
-import "@videojs/http-streaming";
+import { useEffect, useRef } from "react";
+import Plyr from "plyr";
+import Hls from "hls.js";
+import "plyr/dist/plyr.css";
 
 interface VideoPlayerProps {
-    src: string; // Path to HLS playlist (e.g., master.m3u8)
+    src: string;
 }
 
 const VideoPlayer: React.FC<VideoPlayerProps> = ({ src }) => {
     const videoRef = useRef<HTMLVideoElement>(null);
-    const playerRef = useRef<any>(null);
+    const playerRef = useRef<Plyr | null>(null);
+    const hlsRef = useRef<Hls | null>(null);
 
     useEffect(() => {
         if (!videoRef.current) return;
 
-        // Small delay to ensure element is in DOM
-        const timer = setTimeout(() => {
-            if (!videoRef.current || playerRef.current) return;
+        const video = videoRef.current;
 
-            // Initialize the Video.js player
-            const player = videojs(videoRef.current, {
-                controls: true,
-                autoplay: false,
-                preload: "auto",
-                fluid: true,
-                html5: {
-                    hls: {
-                        overrideNative: true,
-                        enableLowInitialPlaylist: true,
-                    }
-                }
-            });
+        // Initialize HLS.js for HLS streams
+        if (Hls.isSupported()) {
+            const hls = new Hls();
+            hlsRef.current = hls;
 
-            // Save the player reference
-            playerRef.current = player;
+            hls.loadSource(src);
+            hls.attachMedia(video);
 
-            // Attach HLS source to the player
-            player.src({
-                src,
-                type: "application/x-mpegURL",
-            });
+            hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                // Get available quality levels
+                const availableQualities = hls.levels.map((level) => level.height);
+                availableQualities.unshift(0); // Add "Auto" option
 
-            // Handle errors
-            player.on("error", () => {
-                console.error("Player error:", player.error());
-            });
-
-            // Use the quality levels plugin
-            player.ready(() => {
-                const qualityLevels = (player as any).qualityLevels();
-
-                qualityLevels.on("change", () => {
-                    // Quality level changed
+                // Initialize Plyr with quality options
+                const player = new Plyr(video, {
+                    controls: [
+                        "play-large",
+                        "play",
+                        "progress",
+                        "current-time",
+                        "mute",
+                        "volume",
+                        "settings",
+                        "fullscreen",
+                    ],
+                    settings: ["quality"],
+                    quality: {
+                        default: 0,
+                        options: availableQualities,
+                        forced: true,
+                        onChange: (quality: number) => {
+                            if (quality === 0) {
+                                // Auto quality
+                                hls.currentLevel = -1;
+                            } else {
+                                // Find the level with matching height
+                                const levelIndex = hls.levels.findIndex(
+                                    (level) => level.height === quality
+                                );
+                                if (levelIndex !== -1) {
+                                    hls.currentLevel = levelIndex;
+                                }
+                            }
+                        },
+                    },
+                    i18n: {
+                        qualityLabel: {
+                            0: "Авто",
+                        },
+                    },
                 });
-            });
-        }, 0);
 
-        // Cleanup the Video.js instance on component unmount
+                playerRef.current = player;
+            });
+        } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+            // Native HLS support (Safari)
+            video.src = src;
+
+            const player = new Plyr(video, {
+                controls: [
+                    "play-large",
+                    "play",
+                    "progress",
+                    "current-time",
+                    "mute",
+                    "volume",
+                    "settings",
+                    "fullscreen",
+                ],
+            });
+
+            playerRef.current = player;
+        }
+
         return () => {
-            clearTimeout(timer);
+            if (hlsRef.current) {
+                hlsRef.current.destroy();
+                hlsRef.current = null;
+            }
             if (playerRef.current) {
-                playerRef.current.dispose();
+                playerRef.current.destroy();
                 playerRef.current = null;
             }
         };
     }, [src]);
 
     return (
-        <div data-vjs-player>
-            <video className="video-js vjs-big-play-centered" ref={videoRef} playsInline />
-        </div>
+        <video ref={videoRef} playsInline />
     );
 };
 
