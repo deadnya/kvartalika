@@ -2,7 +2,7 @@ import type { AboutUsPageContent } from "../pages.api.types";
 
 export const MOCK_ABOUT_US_PAGE_CONTENT: AboutUsPageContent = {
   hero: {
-    imageSrc: "/images/AboutUsPage1.jpg",
+    imageSrc: "",
     motto: {
       partOne: "С ГК «Кварталика»",
       partTwo: "ваша жизнь становится",

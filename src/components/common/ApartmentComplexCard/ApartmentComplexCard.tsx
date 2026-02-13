@@ -1,4 +1,5 @@
 import styles from "./ApartmentComplexCard.module.css"
+import Image from "../Image"
 
 import MapIcon from "../../../assets/icons/map.svg?react"
 import BuildingIcon from "../../../assets/icons/building.svg?react"
@@ -60,7 +61,7 @@ const ApartmentComplexCard = ({
                 </div>
             </div>
             <div className={styles.imageContainer}>
-                {imageSrc && <img src={imageSrc} className={styles.image}></img>}
+                {imageSrc && <Image src={imageSrc} className={styles.image} alt="Complex" previewSrc={null} />}
                 <div className={styles.finishDateContainer}>
                     <span>{`Срок сдачи дома: ${finishDate}`}</span>
                 </div>

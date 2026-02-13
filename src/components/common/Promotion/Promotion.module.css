@@ -11,11 +11,15 @@
 
 .image {
     height: 300px;
+}
+
+.image img {
+    height: 100%;
     object-fit: cover;
     transition: transform 0.3s ease-in-out;
 }
 
-.promotion:hover .image {
+.promotion:hover .image img {
     transform: scale(1.05);
 }
 
@@ -49,6 +53,10 @@
 @media (max-width: 1366px) {
     .image {
         height: 220px;
+    }
+
+    .image img {
+        height: 100%;
     }
 
     .promotionDetails {

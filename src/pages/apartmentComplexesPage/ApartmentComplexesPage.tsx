@@ -1,7 +1,7 @@
 import styles from "./ApartmentComplexesPage.module.css"
 import { useEffect, useState } from "react"
+import Image from "../../components/common/Image"
 
-import apartmentComplexesImage1 from "/images/ApartmentComplexesPage1.jpg"
 import BreadcrumbNav from "../../components/common/BreadcrumbNav"
 import ApartmentComplexCard from "../../components/common/ApartmentComplexCard/ApartmentComplexCard";
 import { getApartmentComplexesPageContent, getHomePageContent } from "../../services/api/pages.api.requests"
@@ -35,7 +35,12 @@ const ApartmentComplexesPage: React.FC = () => {
     return (
         <div className={styles.container}>
             <div className={styles.topImageContainer}>
-                <img src={homePageContent?.complexImage || apartmentComplexesImage1}></img>
+                <Image 
+                    src={homePageContent?.complexImage || ""}
+                    alt="Complexes Banner"
+                    previewSrc={null}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
                 <div className={styles.topImageTriangleOverlay}></div>
             </div>
 

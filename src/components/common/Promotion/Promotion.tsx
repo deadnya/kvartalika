@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styles from "./Promotion.module.css"
 import Button from '../Button';
 import PromotionModal from './PromotionModal';
+import Image from '../Image';
 
 interface PromotionProps {
     title: string;
@@ -22,7 +23,12 @@ const Promotion: React.FC<PromotionProps> = ({
     return (
         <>
             <div className={styles.promotion} onClick={() => setIsModalOpen(true)}>
-                <img src={imageSrc} className={styles.image}></img>
+                <Image 
+                    src={imageSrc} 
+                    previewSrc={null}
+                    alt={title}
+                    className={styles.image}
+                />
                 <div className={styles.promotionDetails}>
                     <h3 className={styles.promotionTitle}>{title}</h3>
                     <p className={styles.promotionDescription}>{description}</p>

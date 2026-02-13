@@ -7,6 +7,8 @@ import { setMetaTags, resetMetaTags } from "../../utils/metaTagsManager";
 import styles from "./HomePage.module.css"
 import { usePageContentStore } from "../../store/pageContent.store";
 import { useIntersectionObserver } from "../../hooks/useIntersectionObserver";
+import Image from "../../components/common/Image";
+import { usePageReadyWithImages } from "../../hooks/usePageReadyWithImages";
 
 import MapIcon from "../../assets/icons/map.svg?react"
 import BuildingIcon from "../../assets/icons/building.svg?react"
@@ -37,8 +39,11 @@ const HomePage = () => {
     const { homePageContent, homePageFooter, homePageComplex, setHomePageContent, setHomePageFooter } = usePageContentStore();
     const [content, setLocalContent] = useState<HomePageContent>(homePageContent || DEFAULT_HOME_PAGE_CONTENT);
     const [footerData, setLocalFooterData] = useState<FooterDto | null>(homePageFooter);
-    const [complexData, setLocalComplexData] = useState<ApartmentComplexPageContent | null>(homePageComplex);
-    const [heroImageLoaded, setHeroImageLoaded] = useState(false);
+    const [complexData, setComplexData] = useState<ApartmentComplexPageContent | null>(homePageComplex);
+    const [dataLoaded, setDataLoaded] = useState(false);
+    
+    // Track image preview loading and mark page as ready
+    usePageReadyWithImages('home-page', dataLoaded);
     
     const [formData, setFormData] = useState<ContactRequestData>({
         name: "",
@@ -69,6 +74,7 @@ const HomePage = () => {
     useEffect(() => {
         if (homePageContent) {
             setLocalContent(homePageContent);
+            setDataLoaded(true);
         }
     }, [homePageContent]);
 
@@ -80,7 +86,7 @@ const HomePage = () => {
 
     useEffect(() => {
         if (homePageComplex) {
-            setLocalComplexData(homePageComplex);
+            setComplexData(homePageComplex);
         }
     }, [homePageComplex]);
 
@@ -165,11 +171,11 @@ const HomePage = () => {
             <div className={styles.titleMainContainer}>
                 <div className={styles.titleImageContainer}>
                     <div className={styles.imageWrapper}>
-                        <img 
+                        <Image 
                             src={content.heroImageSrc}
-                            onLoad={() => setHeroImageLoaded(true)}
-                            onError={() => setHeroImageLoaded(true)}
-                            style={{ opacity: heroImageLoaded ? 1 : 1}}
+                            previewSrc="/images/preview.jpg"
+                            alt="Hero banner"
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                         />
                         <div className={styles.triangleOverlay}></div>
                     </div>

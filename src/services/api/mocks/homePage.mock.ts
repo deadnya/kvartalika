@@ -8,7 +8,7 @@ export const MOCK_HOME_PAGE_CONTENT: HomePageContent = {
   },
   heroMotto:
     "Сочетаем глубокую экспертизу в области недвижимости с современным подходом к созданию комфортной городской среды. С нами вы сможете наслаждаться каждым днём, чувствуя себя в безопасности и комфорте.",
-  heroImageSrc: "/images/HomePage1.png",
+  heroImageSrc: "",
   
   projects: [
     {

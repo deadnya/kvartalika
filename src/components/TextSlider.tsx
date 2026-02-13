@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, type FC } from 'react'
+import Image from './common/Image'
 
 const capitalize = (str: string | undefined, lower = false) =>
     (lower ? str?.toLowerCase() : str)?.replace(/(?:^|\s|["'([{])+\S/, match => match.toUpperCase());
@@ -85,7 +86,14 @@ const TextSlider: FC<TextSliderProps> = ({
         </div>
       </div>
       <div className="history-image-wrapper">
-        {images?.[currentIndex] ? <img src={images?.[currentIndex]} alt={images?.[currentIndex]} /> : "Нет изображения"}
+        {images?.[currentIndex] ? 
+          <Image 
+            src={images?.[currentIndex]} 
+            alt={images?.[currentIndex]} 
+            previewSrc={null}
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          /> : "Нет изображения"
+        }
       </div>
       <div className="min-w-0 min-h-0 overflow-y-auto">
         <div className="h-full bg-white rounded-md p-4 shadow-sm border border-transparent hover:border-gray-100">

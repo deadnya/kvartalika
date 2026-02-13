@@ -4,6 +4,7 @@ import { createPortal } from 'react-dom'
 import { setMetaTags } from '../../utils/metaTagsManager'
 import { useIntersectionObserver } from '../../hooks/useIntersectionObserver'
 import styles from "./AboutUsPage.module.css"
+import Image from "../../components/common/Image"
 
 import image01 from "/images/01.png"
 import image02 from "/images/02.png"
@@ -147,7 +148,12 @@ const AboutUsPage = () => {
             <div className={styles.container}>
                 <div className={styles.topContainer}>
                     <div className={styles.topImageContainer}>
-                        <img src={content.hero.imageSrc}></img>
+                        <Image 
+                            src={content.hero.imageSrc}
+                            alt="Hero"
+                            previewSrc={null}
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        />
                         <div className={styles.topImageTriangleOverlay}></div>
                     </div>
                     <BreadcrumbNav currentPage="О нас" />
@@ -170,9 +176,9 @@ const AboutUsPage = () => {
 
                 <div className={styles.imageRow}>
                     <div className={styles.imageRowTriangleOverlay}></div>
-                    <img src={content.imageRow.imageSrc1}></img>
-                    <img src={content.imageRow.imageSrc2}></img>
-                    <img src={content.imageRow.imageSrc3}></img>
+                    <Image src={content.imageRow.imageSrc1} alt="About Us 1" previewSrc={null} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <Image src={content.imageRow.imageSrc2} alt="About Us 2" previewSrc={null} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <Image src={content.imageRow.imageSrc3} alt="About Us 3" previewSrc={null} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </div>
 
                 <div className={styles.principles}>
@@ -196,7 +202,12 @@ const AboutUsPage = () => {
 
                 <div className={styles.ourValues}>
                     <div ref={ourValuesImageRef.ref} className={`${styles.valuesImageContainer} ${ourValuesImageRef.isVisible ? styles.fadeIn : ''}`}>
-                        <img src={content.valuesImage}></img>
+                        <Image 
+                            src={content.valuesImage}
+                            alt="Values"
+                            previewSrc={null}
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        />
                         <div className={styles.valuesImageTriangleOverlay}></div>
                     </div>
                     <div className={styles.ourValuesList}>

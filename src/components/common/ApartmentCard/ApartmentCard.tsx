@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import styles from "./ApartmentCard.module.css"
+import Image from "../Image"
 
 import BuildingIcon from "../../../assets/icons/building.svg?react"
 import MapIcon from "../../../assets/icons/map.svg?react"
@@ -154,10 +155,12 @@ const ApartmentCard: React.FC<ApartmentCardProps> = ({
                 navigate(url);
             }}>
                 <div className={styles.imageContainer}>
-                    <img 
+                    <Image 
                         src={displayImage}
                         onError={() => setImageError(true)}
                         alt={`${roomCount}-комнатная квартира в ${complexName || "комплексе"}`}
+                        previewSrc={null}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                     />
                     <div className={styles.hoverOverlay}>
                         <span className={styles.hoverText}>Узнать цену</span>

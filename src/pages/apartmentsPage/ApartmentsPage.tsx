@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import BreadcrumbNav from "../../components/common/BreadcrumbNav";
 import { Select } from "../../components/common/Select/Select";
 import styles from "./ApartmentsPage.module.css"
+import Image from "../../components/common/Image"
 
-import apartmentsPage1 from "/images/ApartmentsPage1.jpg"
 import { RangeSelect } from "../../components/common/RangeSelect/RangeSelect";
 import { ButtonSelect } from "../../components/common/ButtonSelect/ButtonSelect";
 import { Checkbox } from "../../components/common/Checkbox/Checkbox";
@@ -43,7 +43,7 @@ const ApartmentsPage = () => {
         min: parseInt(searchParams.get("priceMin") || "3500000"),
         max: parseInt(searchParams.get("priceMax") || "15000000"),
     }));
-    const [selectedCategory, setSelectedCategory] = useState<string | number | null>(() => {
+    const [selectedCategory] = useState<string | number | null>(() => {
         const val = searchParams.get("category");
         return val || null;
     });
@@ -51,14 +51,14 @@ const ApartmentsPage = () => {
         // Start with null (no room count selected) - will be synced from URL via useEffect
         return null;
     });
-    const [bathroomCount, setBathroomCount] = useState<string | number | (string | number)[] | null>(() => {
+    const [bathroomCount] = useState<string | number | (string | number)[] | null>(() => {
         const val = searchParams.get("bathrooms");
         return val ? (val.includes(",") ? val.split(",") : val) : null;
     });
     const [hasFinish, setHasFinish] = useState<boolean>(() => searchParams.get("finish") === "true");
-    const [parks, setParks] = useState<boolean>(() => searchParams.get("parks") === "true");
-    const [schools, setSchools] = useState<boolean>(() => searchParams.get("schools") === "true");
-    const [shops, setShops] = useState<boolean>(() => searchParams.get("shops") === "true");
+    const [parks] = useState<boolean>(() => searchParams.get("parks") === "true");
+    const [schools] = useState<boolean>(() => searchParams.get("schools") === "true");
+    const [shops] = useState<boolean>(() => searchParams.get("shops") === "true");
     const [sortByCost, setSortByCost] = useState<SortingType>(() => (searchParams.get("sortCost") as SortingType) || "noSorting");
     const [sortByArea, setSortByArea] = useState<SortingType>(() => (searchParams.get("sortArea") as SortingType) || "noSorting");
     const [sortByRoomCount, setSortByRoomCount] = useState<SortingType>(() => (searchParams.get("sortRooms") as SortingType) || "noSorting");
@@ -242,7 +242,12 @@ const ApartmentsPage = () => {
     return (
         <div className={styles.container}>
             <div className={styles.topImageContainer}>
-                <img src={homePageContent?.apartmentsImage || apartmentsPage1}></img>
+                <Image 
+                    src={homePageContent?.apartmentsImage || ""}
+                    alt="Apartments Banner" 
+                    previewSrc={null}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
                 <div className={styles.topImageTriangleOverlay}></div>
             </div> 
 

@@ -20,13 +20,13 @@ export const MOCK_APARTMENT_COMPLEX_PAGE_CONTENT: ApartmentComplexPageContent = 
   history: [
     {
       id: "1",
-      title: "Фундамент",
+      header: "Фундамент",
       description: "Строительство началось с прокладки фундамента...",
       image: "images/nizhniy/image1.jpg",
     },
     {
       id: "2",
-      title: "Стены",
+      header: "Стены",
       description: "Возведение несущих стен комплекса...",
       image: "images/nizhniy/side.jpg",
     },

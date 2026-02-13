@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import styles from "./PromotionModal.module.css"
 import CloseIcon from '../../../assets/icons/close.svg?react';
 import Portal from '../Portal';
+import Image from '../Image';
 
 interface PromotionModalProps {
     title: string;
@@ -50,7 +51,12 @@ const PromotionModal: React.FC<PromotionModalProps> = ({
                         <CloseIcon />
                     </button>
 
-                    <img src={imageSrc} alt={title} className={styles.image} />
+                    <Image 
+                        src={imageSrc} 
+                        previewSrc={null}
+                        alt={title} 
+                        className={styles.image} 
+                    />
 
                     <div className={styles.content}>
                         <h2 className={styles.title}>{title}</h2>

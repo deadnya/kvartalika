@@ -1,6 +1,7 @@
 import { lazy, useEffect, useState } from "react";
 import { setMetaTags, resetMetaTags } from "../../utils/metaTagsManager";
 import styles from "./ApartmentComplexPage.module.css"
+import Image from "../../components/common/Image"
 import { BigImageGallery } from "../../components/common/BigImageGallery/BigImageGallery.tsx";
 import VideoPlayer from "../../components/common/VideoPlayer/VideoPlayer.tsx";
 import { useIntersectionObserver } from "../../hooks/useIntersectionObserver";
@@ -246,7 +247,12 @@ const ApartmentComplexPage = ({ initialData }: ApartmentComplexPageProps) => {
                                 </div>
                             </div>
 
-                            <img className={styles.transportAvailabilityImage} src={content.transportImage || ""}></img>
+                            <Image 
+                                className={styles.transportAvailabilityImage} 
+                                src={content.transportImage || ""}
+                                alt="Transport"
+                                previewSrc={null}
+                            />
                         </div>
                     </div>
                 </div>
@@ -310,7 +316,12 @@ const ApartmentComplexPage = ({ initialData }: ApartmentComplexPageProps) => {
                                 </div>
                             </div>
 
-                            <img src={content.technologiesImage ?? undefined} className={styles.technologiesImage}></img>
+                            <Image 
+                                src={content.technologiesImage ?? ""} 
+                                className={styles.technologiesImage}
+                                alt="Technologies"
+                                previewSrc={null}
+                            />
                         </div>
                     </div>
                 </div>
